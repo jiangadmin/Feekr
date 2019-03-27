@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.jiang.feekr;
+package com.tl.film;
 
 import java.util.ArrayList;
 import java.util.List;

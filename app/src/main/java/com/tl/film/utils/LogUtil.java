@@ -1,10 +1,10 @@
 
-package com.jiang.feekr.utils;
+package com.tl.film.utils;
 
 import android.app.Activity;
 import android.util.Log;
 
-import com.jiang.feekr.MyAPP;
+import com.tl.film.MyAPP;
 
 /**
  * Created by 垚垚

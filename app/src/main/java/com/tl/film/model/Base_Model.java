@@ -1,4 +1,4 @@
-package com.jiang.feekr.model;
+package com.tl.film.model;
 
 /**
  * @author jiangyao

@@ -1,6 +1,4 @@
-package com.jiang.feekr.activity;
-
-import android.app.Activity;
+package com.tl.film.activity;
 
 /**
  * @author jiangyao
@@ -9,5 +7,5 @@ import android.app.Activity;
  * Phone: 186 6120 1018
  * TODO:
  */
-public class Base_Activity extends Activity {
+public class Home_Activity extends Base_Activity {
 }

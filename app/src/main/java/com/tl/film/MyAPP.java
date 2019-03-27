@@ -1,4 +1,4 @@
-package com.jiang.feekr;
+package com.tl.film;
 
 import android.app.ActivityManager;
 import android.app.Application;
@@ -42,7 +42,6 @@ public class MyAPP extends Application {
         if (sHandler == null) {
             sHandler = new DemoHandler(getApplicationContext());
         }
-
 
     }
 

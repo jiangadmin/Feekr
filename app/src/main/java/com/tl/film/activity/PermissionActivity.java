@@ -1,4 +1,4 @@
-package com.jiang.feekr.activity;
+package com.tl.film.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.jiang.feekr.MyAPP;
+import com.tl.film.MyAPP;
 
 public class PermissionActivity extends Activity {
     private static final int PERMISSION_REQUEST = 1;

@@ -1,4 +1,4 @@
-package com.jiang.feekr.receiver;
+package com.tl.film.receiver;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
@@ -8,11 +8,11 @@ import android.os.Build;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.jiang.feekr.MainActivity;
-import com.jiang.feekr.MyAPP;
-import com.jiang.feekr.R;
-import com.jiang.feekr.activity.PermissionActivity;
-import com.jiang.feekr.utils.LogUtil;
+import com.tl.film.MainActivity;
+import com.tl.film.MyAPP;
+import com.tl.film.R;
+import com.tl.film.activity.PermissionActivity;
+import com.tl.film.utils.LogUtil;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;

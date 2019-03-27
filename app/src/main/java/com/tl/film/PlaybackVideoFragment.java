@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.jiang.feekr;
+package com.tl.film;
 
 import android.net.Uri;
 import android.os.Bundle;

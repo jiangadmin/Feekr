@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.jiang.feekr;
+package com.tl.film;
 
 import android.graphics.drawable.Drawable;
 import android.support.v17.leanback.widget.ImageCardView;

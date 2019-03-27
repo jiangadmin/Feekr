@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.jiang.feekr">
+    package="com.tl.film">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <!-- the following 2 com.xiaomi.mipushdemo should be changed to your package name -->
     <permission
-        android:name="com.jiang.feekr.permission.MIPUSH_RECEIVE"
+        android:name="com.tl.film.permission.MIPUSH_RECEIVE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.jiang.feekr.permission.MIPUSH_RECEIVE" />
@@ -25,15 +25,20 @@
         android:required="true" />
 
     <application
-        android:name=".MyAPP"
+        android:name="com.tl.film.MyAPP"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
-            android:name=".MainActivity"
+            android:name="com.tl.film.activity.Welcome_Activity"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name="com.tl.film.MainActivity"
             android:banner="@drawable/app_icon_your_company"
             android:icon="@drawable/app_icon_your_company"
             android:label="@string/app_name"
@@ -47,14 +52,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsActivity" />
-        <activity android:name=".PlaybackActivity" />
-        <activity android:name=".BrowseErrorActivity" />
+        <activity android:name="com.tl.film.DetailsActivity" />
+        <activity android:name="com.tl.film.PlaybackActivity" />
+        <activity android:name="com.tl.film.BrowseErrorActivity" />
 
-        <activity android:name=".activity.PermissionActivity" />
+        <activity android:name="com.tl.film.activity.PermissionActivity" />
 
         <receiver
-            android:name="com.jiang.feekr.receiver.MIMessageReceiver"
+            android:name="com.tl.film.receiver.MIMessageReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
@@ -66,7 +71,6 @@
                 <action android:name="com.xiaomi.mipush.ERROR" />
             </intent-filter>
         </receiver>
-
 
         <service
             android:name="com.xiaomi.push.service.XMPushService"
