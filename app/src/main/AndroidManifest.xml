@@ -14,7 +14,7 @@
         android:name="com.tl.film.permission.MIPUSH_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.jiang.feekr.permission.MIPUSH_RECEIVE" />
+    <uses-permission android:name="com.tl.film.permission.MIPUSH_RECEIVE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature
@@ -52,11 +52,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tl.film.DetailsActivity" />
-        <activity android:name="com.tl.film.PlaybackActivity" />
-        <activity android:name="com.tl.film.BrowseErrorActivity" />
+        <activity
+            android:name="com.tl.film.DetailsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="com.tl.film.PlaybackActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="com.tl.film.BrowseErrorActivity"
 
-        <activity android:name="com.tl.film.activity.PermissionActivity" />
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name="com.tl.film.activity.PermissionActivity"
+            android:screenOrientation="landscape" />
 
         <receiver
             android:name="com.tl.film.receiver.MIMessageReceiver"

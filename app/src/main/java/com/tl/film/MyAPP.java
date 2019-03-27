@@ -24,8 +24,8 @@ public class MyAPP extends Application {
     private static final String TAG = "MyAPP";
 
     // MI.
-    private static final String APP_ID = "2882303761517967940";
-    private static final String APP_KEY = "5751796728940";
+    private static final String APP_ID = "2882303761517970521";
+    private static final String APP_KEY = "5251797038521";
 
     private static DemoHandler sHandler = null;
 
