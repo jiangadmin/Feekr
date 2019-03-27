@@ -2,6 +2,9 @@ package com.tl.film.activity;
 
 import android.app.Activity;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * @author jiangyao
  * date: 2019/3/22
@@ -10,4 +13,5 @@ import android.app.Activity;
  * TODO:
  */
 public class Base_Activity extends Activity {
+    public static List<String> logList = new CopyOnWriteArrayList<>();
 }

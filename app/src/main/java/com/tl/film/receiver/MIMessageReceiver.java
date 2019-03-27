@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.tl.film.MainActivity;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
+import com.tl.film.activity.Base_Activity;
 import com.tl.film.activity.PermissionActivity;
 import com.tl.film.utils.LogUtil;
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -67,7 +68,7 @@ public class MIMessageReceiver extends PushMessageReceiver {
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
         LogUtil.e(TAG, "onReceivePassThroughMessage is called. " + message.toString());
         String log = context.getString(R.string.recv_passthrough_message, message.getContent());
-        MainActivity.logList.add(0, getSimpleDate() + " " + log);
+        Base_Activity.logList.add(0, getSimpleDate() + " " + log);
 
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
@@ -84,7 +85,7 @@ public class MIMessageReceiver extends PushMessageReceiver {
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
         LogUtil.e(TAG, "onNotificationMessageClicked is called. " + message.toString());
         String log = context.getString(R.string.click_notification_message, message.getContent());
-        MainActivity.logList.add(0, getSimpleDate() + " " + log);
+        Base_Activity.logList.add(0, getSimpleDate() + " " + log);
 
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
@@ -103,7 +104,7 @@ public class MIMessageReceiver extends PushMessageReceiver {
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         LogUtil.e(TAG, "onNotificationMessageArrived is called. " + message.toString());
         String log = context.getString(R.string.arrive_notification_message, message.getContent());
-        MainActivity.logList.add(0, getSimpleDate() + " " + log);
+        Base_Activity.logList.add(0, getSimpleDate() + " " + log);
 
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
@@ -184,7 +185,7 @@ public class MIMessageReceiver extends PushMessageReceiver {
         } else {
             log = message.getReason();
         }
-        MainActivity.logList.add(0, getSimpleDate() + "    " + log);
+        Base_Activity.logList.add(0, getSimpleDate() + "    " + log);
 
         Message msg = Message.obtain();
         msg.obj = log;

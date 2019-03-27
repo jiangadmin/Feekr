@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MainActivity extends Activity {
 
-    public static List<String> logList = new CopyOnWriteArrayList<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

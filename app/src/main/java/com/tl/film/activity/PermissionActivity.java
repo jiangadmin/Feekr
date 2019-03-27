@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.tl.film.MyAPP;
+import com.tl.film.utils.LogUtil;
 
 public class PermissionActivity extends Activity {
+    private static final String TAG = "PermissionActivity";
     private static final int PERMISSION_REQUEST = 1;
 
     @Override
@@ -30,9 +31,7 @@ public class PermissionActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST) {
             boolean granted = false;
             for (int i = 0; i < grantResults.length; ++i) {
@@ -42,7 +41,7 @@ public class PermissionActivity extends Activity {
             }
 
             if (granted) {
-                Log.w("PermissionActivity", "Permissions granted:");
+                LogUtil.e(TAG, "Permissions granted:");
                 MyAPP.reInitPush(this);
             }
             finish();

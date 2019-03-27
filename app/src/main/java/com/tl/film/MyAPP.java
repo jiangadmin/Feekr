@@ -18,7 +18,7 @@ import java.util.List;
  * date: 2019/3/25
  * Email: www.fangmu@qq.com
  * Phone: 186 6120 1018
- * TODO:
+ * TODO: Application
  */
 public class MyAPP extends Application {
     private static final String TAG = "MyAPP";
@@ -27,7 +27,7 @@ public class MyAPP extends Application {
     private static final String APP_ID = "2882303761517970521";
     private static final String APP_KEY = "5251797038521";
 
-    private static DemoHandler sHandler = null;
+    private static ApplicationHandler sHandler = null;
 
     public static final boolean LogShow = true;
 
@@ -40,7 +40,7 @@ public class MyAPP extends Application {
         }
 
         if (sHandler == null) {
-            sHandler = new DemoHandler(getApplicationContext());
+            sHandler = new ApplicationHandler(getApplicationContext());
         }
 
     }
@@ -63,16 +63,16 @@ public class MyAPP extends Application {
         MiPushClient.registerPush(ctx.getApplicationContext(), APP_ID, APP_KEY);
     }
 
-    public static DemoHandler getHandler() {
+    public static ApplicationHandler getHandler() {
         return sHandler;
     }
 
 
-    public static class DemoHandler extends Handler {
+    public static class ApplicationHandler extends Handler {
 
         private Context context;
 
-        public DemoHandler(Context context) {
+        public ApplicationHandler(Context context) {
             this.context = context;
         }
 
