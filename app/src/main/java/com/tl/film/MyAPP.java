@@ -2,6 +2,7 @@ package com.tl.film;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -9,8 +10,12 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.tl.film.utils.LogUtil;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -43,8 +48,40 @@ public class MyAPP extends Application {
             sHandler = new ApplicationHandler(getApplicationContext());
         }
 
+        LogUtil.e(TAG, "BLE MAC:" + getBtAddressByReflection());
+
     }
 
+
+    public static String getBtAddressByReflection() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Field field = null;
+        try {
+            field = BluetoothAdapter.class.getDeclaredField("mService");
+            field.setAccessible(true);
+            Object bluetoothManagerService = field.get(bluetoothAdapter);
+            if (bluetoothManagerService == null) {
+                return null;
+            }
+            Method method = bluetoothManagerService.getClass().getMethod("getAddress");
+            if (method != null) {
+                Object obj = method.invoke(bluetoothManagerService);
+                if (obj != null) {
+                    return obj.toString();
+                }
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
 
     private boolean shouldInit() {
         ActivityManager am = ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));
@@ -81,7 +118,7 @@ public class MyAPP extends Application {
             String s = (String) msg.obj;
 
             if (!TextUtils.isEmpty(s)) {
-                Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+                LogUtil.e(TAG,s);
             }
         }
     }

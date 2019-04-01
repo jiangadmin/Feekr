@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <!--<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>-->
+    <!--<uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>-->
     <!-- the following 2 com.xiaomi.mipushdemo should be changed to your package name -->
     <permission
         android:name="com.tl.film.permission.MIPUSH_RECEIVE"
@@ -35,6 +39,21 @@
 
         <activity
             android:name="com.tl.film.activity.Welcome_Activity"
+            android:screenOrientation="landscape">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name=".activity.Home_Activity"
             android:screenOrientation="landscape" />
 
         <activity
@@ -44,14 +63,10 @@
             android:label="@string/app_name"
             android:logo="@drawable/app_icon_your_company"
             android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+
         <activity
             android:name="com.tl.film.DetailsActivity"
             android:screenOrientation="landscape" />
@@ -127,6 +142,7 @@
             </intent-filter>
 
         </receiver>
+
     </application>
 
 </manifest>

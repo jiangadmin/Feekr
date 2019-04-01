@@ -1,6 +1,8 @@
 package com.tl.film.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 
 import com.tl.film.R;
@@ -20,5 +22,33 @@ public class Welcome_Activity extends Base_Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        new Timer(3000,3000).start();
+
+    }
+
+    class Timer extends CountDownTimer{
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public Timer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+
+            Intent intent = new Intent();
+            intent.setClass(Welcome_Activity.this,Home_Activity.class);
+            startActivity(intent);
+        }
     }
 }
