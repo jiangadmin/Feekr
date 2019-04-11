@@ -5,9 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
-import com.bumptech.glide.Glide;
 import com.tl.film.R;
 
 /**
@@ -54,6 +53,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
                 }
             }
         });
+
     }
 
     @Override
@@ -62,12 +62,17 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView img;
+        ImageButton img;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
+            //item可以获得焦点，需要设置这个属性。
+            img.setFocusable(true);
         }
+
+
     }
 
     interface ItemClick {

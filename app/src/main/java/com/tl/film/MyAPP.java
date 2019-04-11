@@ -48,7 +48,7 @@ public class MyAPP extends Application {
             sHandler = new ApplicationHandler(getApplicationContext());
         }
 
-        LogUtil.e(TAG, "BLE MAC:" + getBtAddressByReflection());
+//        LogUtil.e(TAG, "BLE MAC:" + getBtAddressByReflection());
 
     }
 

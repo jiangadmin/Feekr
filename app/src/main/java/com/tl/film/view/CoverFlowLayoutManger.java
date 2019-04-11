@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
-import recycler.coverflow.RecyclerCoverFlow;
-
 /**
  * Cover Flow布局类
  * <p>通过重写LayoutManger布局方法{@link #onLayoutChildren(RecyclerView.Recycler, RecyclerView.State)}
@@ -26,49 +24,79 @@ import recycler.coverflow.RecyclerCoverFlow;
 
 public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
 
-    /**滑动总偏移量*/
+    /**
+     * 滑动总偏移量
+     */
     private int mOffsetAll = 0;
 
-    /**Item宽*/
+    /**
+     * Item宽
+     */
     private int mDecoratedChildWidth = 0;
 
-    /**Item高*/
+    /**
+     * Item高
+     */
     private int mDecoratedChildHeight = 0;
 
-    /**Item间隔与item宽的比例*/
+    /**
+     * Item间隔与item宽的比例
+     */
     private float mIntervalRatio = 0.5f;
 
-    /**起始ItemX坐标*/
+    /**
+     * 起始ItemX坐标
+     */
     private int mStartX = 0;
 
-    /**起始Item Y坐标*/
+    /**
+     * 起始Item Y坐标
+     */
     private int mStartY = 0;
 
-    /**保存所有的Item的上下左右的偏移量信息*/
+    /**
+     * 保存所有的Item的上下左右的偏移量信息
+     */
     private SparseArray<Rect> mAllItemFrames = new SparseArray<>();
 
-    /**记录Item是否出现过屏幕且还没有回收。true表示出现过屏幕上，并且还没被回收*/
+    /**
+     * 记录Item是否出现过屏幕且还没有回收。true表示出现过屏幕上，并且还没被回收
+     */
     private SparseBooleanArray mHasAttachedItems = new SparseBooleanArray();
 
-    /**RecyclerView的Item回收器*/
+    /**
+     * RecyclerView的Item回收器
+     */
     private RecyclerView.Recycler mRecycle;
 
-    /**RecyclerView的状态器*/
+    /**
+     * RecyclerView的状态器
+     */
     private RecyclerView.State mState;
 
-    /**滚动动画*/
+    /**
+     * 滚动动画
+     */
     private ValueAnimator mAnimation;
 
-    /**正显示在中间的Item*/
+    /**
+     * 正显示在中间的Item
+     */
     private int mSelectPosition = 0;
 
-    /**前一个正显示在中间的Item*/
+    /**
+     * 前一个正显示在中间的Item
+     */
     private int mLastSelectPosition = 0;
 
-    /**滑动的方向：左*/
+    /**
+     * 滑动的方向：左
+     */
     private static int SCROLL_LEFT = 1;
 
-    /**滑动的方向：右*/
+    /**
+     * 滑动的方向：右
+     */
     private static int SCROLL_RIGHT = 2;
 
     /**
@@ -76,7 +104,9 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
      */
     private OnSelected mSelectedListener;
 
-    /**是否为平面滚动，Item之间没有叠加，也没有缩放*/
+    /**
+     * 是否为平面滚动，Item之间没有叠加，也没有缩放
+     */
     private boolean mIsFlatFlow = false;
 
     public CoverFlowLayoutManger(boolean isFlat) {
@@ -110,7 +140,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
         mDecoratedChildWidth = getDecoratedMeasuredWidth(scrap);
         mDecoratedChildHeight = getDecoratedMeasuredHeight(scrap);
         mStartX = Math.round((getHorizontalSpace() - mDecoratedChildWidth) * 1.0f / 2);
-        mStartY = Math.round((getVerticalSpace() - mDecoratedChildHeight) *1.0f / 2);
+        mStartY = Math.round((getVerticalSpace() - mDecoratedChildHeight) * 1.0f / 2);
 
         float offset = mStartX;
         for (int i = 0; i < getItemCount(); i++) { //存储所有item具体位置
@@ -144,7 +174,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
         int travel = dx;
         if (dx + mOffsetAll < 0) {
             travel = -mOffsetAll;
-        } else if (dx + mOffsetAll > getMaxOffset()){
+        } else if (dx + mOffsetAll > getMaxOffset()) {
             travel = (int) (getMaxOffset() - mOffsetAll);
         }
         mOffsetAll += travel; //累计偏移量
@@ -194,6 +224,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
 
     /**
      * 布局Item位置
+     *
      * @param child 要布局的Item
      * @param frame 位置信息
      */
@@ -212,7 +243,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
     @Override
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
-        switch (state){
+        switch (state) {
             case RecyclerView.SCROLL_STATE_IDLE:
                 //滚动停止时
                 fixOffsetWhenFinishScroll();
@@ -286,6 +317,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
 
     /**
      * 计算Item缩放系数
+     *
      * @param x Item的偏移量
      * @return 缩放系数
      */
@@ -298,6 +330,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
 
     /**
      * 计算Item半透值
+     *
      * @param x Item的偏移量
      * @return 缩放系数
      */
@@ -310,6 +343,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
 
     /**
      * 计算Item所在的位置偏移
+     *
      * @param position 要计算Item位置
      */
     private int calculateOffsetForPosition(int position) {
@@ -323,17 +357,18 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
         int scrollN = (int) (mOffsetAll * 1.0f / getIntervalDistance());
         float moreDx = (mOffsetAll % getIntervalDistance());
         if (moreDx > (getIntervalDistance() * 0.5)) {
-            scrollN ++;
+            scrollN++;
         }
         int finalOffset = (int) (scrollN * getIntervalDistance());
         startScroll(mOffsetAll, finalOffset);
-        mSelectPosition = Math.round (finalOffset * 1.0f / getIntervalDistance());
+        mSelectPosition = Math.round(finalOffset * 1.0f / getIntervalDistance());
     }
 
     /**
      * 滚动到指定X轴位置
+     *
      * @param from X轴方向起始点的偏移量
-     * @param to X轴方向终点的偏移量
+     * @param to   X轴方向终点的偏移量
      */
     private void startScroll(int from, int to) {
         if (mAnimation != null && mAnimation.isRunning()) {
@@ -385,7 +420,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
      * 计算当前选中位置，并回调
      */
     private void onSelectedCallBack() {
-        mSelectPosition = Math.round (mOffsetAll / getIntervalDistance());
+        mSelectPosition = Math.round(mOffsetAll / getIntervalDistance());
         if (mSelectedListener != null && mSelectPosition != mLastSelectPosition) {
             mSelectedListener.onItemSelected(mSelectPosition);
         }
@@ -440,6 +475,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
 
     /**
      * 设置选中监听
+     *
      * @param l 监听接口
      */
     public void setOnSelectedListener(OnSelected l) {
@@ -459,6 +495,7 @@ public class CoverFlowLayoutManger extends RecyclerView.LayoutManager {
     public interface OnSelected {
         /**
          * 监听选中回调
+         *
          * @param position 显示在中间的Item的位置
          */
         void onItemSelected(int position);

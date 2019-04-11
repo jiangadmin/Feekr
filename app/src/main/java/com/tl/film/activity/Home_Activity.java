@@ -33,7 +33,7 @@ public class Home_Activity extends Base_Activity {
         mList.setOnItemSelectedListener(new CoverFlowLayoutManger.OnSelected() {
             @Override
             public void onItemSelected(int position) {
-                Toast.makeText(Home_Activity.this, (position + 1) + "/" + mList.getLayoutManager().getItemCount(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Home_Activity.this, (position + 1) + "/" + mList.getLayoutManager().getItemCount(), Toast.LENGTH_SHORT).show();
             }
         });
 
