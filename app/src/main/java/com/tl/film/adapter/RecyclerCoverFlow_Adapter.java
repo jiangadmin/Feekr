@@ -41,16 +41,13 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
 //        Glide.with(mContext).load(mColors[position % mColors.length]).into(holder.img);
         holder.img.setBackgroundColor(0xffffffff);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.itemView.setOnClickListener(v -> {
 //                Toast.makeText(mContext, "点击了："+position, Toast.LENGTH_SHORT).show();
-                if (clickCb != null) {
-                    clickCb.clickItem(position);
-                }
+            if (clickCb != null) {
+                clickCb.clickItem(position);
             }
         });
 
