@@ -22,11 +22,11 @@ public class Welcome_Activity extends Base_Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        new Timer(3000,3000).start();
+        new Timer(3000, 3000).start();
 
     }
 
-    class Timer extends CountDownTimer{
+    class Timer extends CountDownTimer {
         /**
          * @param millisInFuture    The number of millis in the future from the call
          *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
@@ -47,8 +47,9 @@ public class Welcome_Activity extends Base_Activity {
         public void onFinish() {
 
             Intent intent = new Intent();
-            intent.setClass(Welcome_Activity.this,Home_Activity.class);
+            intent.setClass(Welcome_Activity.this, Home_Activity.class);
             startActivity(intent);
+            finish();
         }
     }
 }

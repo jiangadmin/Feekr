@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.tl.film.R;
 
 /**
@@ -16,7 +18,16 @@ import com.tl.film.R;
 public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCoverFlow_Adapter.ViewHolder> {
 
     private Context mContext;
-    private int[] mColors = {R.drawable.movie, R.drawable.movie, R.drawable.movie, R.drawable.movie,
+    private int[] mColors = {
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
+            R.drawable.movie, R.drawable.movie,
             R.drawable.movie, R.drawable.movie};
 
     private ItemClick clickCb;
@@ -42,14 +53,16 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-//        Glide.with(mContext).load(mColors[position % mColors.length]).into(holder.img);
-        holder.img.setBackgroundColor(0xffffffff);
+
+//        Glide.with(mContext).load(mColors[position]).into(holder.img);
+        holder.img.setImageResource(mColors[position]);
         holder.itemView.setOnClickListener(v -> {
-//                Toast.makeText(mContext, "点击了："+position, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "点击了：" + position, Toast.LENGTH_SHORT).show();
             if (clickCb != null) {
                 clickCb.clickItem(position);
             }
         });
+        holder.img.setTag(position);
 
     }
 
@@ -59,16 +72,15 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageButton img;
-
+        ImageView img;
 
         public ViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             //item可以获得焦点，需要设置这个属性。
-            img.setFocusable(true);
+//            itemView.setFocusable(true);
+//            itemView.setFocusableInTouchMode(true);
         }
-
 
     }
 

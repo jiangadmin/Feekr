@@ -51,7 +51,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".activity.Home_Activity"
             android:screenOrientation="landscape" />
