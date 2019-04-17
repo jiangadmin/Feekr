@@ -8,14 +8,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.text.TextUtils;
-import android.widget.Toast;
 
+import com.tl.film.model.Const;
+import com.tl.film.model.Save_Key;
+import com.tl.film.servlet.Bind_Servlet;
+import com.tl.film.servlet.Get_MyIP_Servlet;
 import com.tl.film.utils.LogUtil;
+import com.tl.film.utils.SaveUtils;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -28,6 +34,8 @@ import java.util.List;
 public class MyAPP extends Application {
     private static final String TAG = "MyAPP";
 
+    private static Context context;
+
     // MI.
     private static final String APP_ID = "2882303761517970521";
     private static final String APP_KEY = "5251797038521";
@@ -36,9 +44,14 @@ public class MyAPP extends Application {
 
     public static final boolean LogShow = true;
 
+    public static Context getContext() {
+        return context;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        context = this;
         // 注册push服务，注册成功后会向DemoMessageReceiver发送广播
         if (shouldInit()) {
             MiPushClient.registerPush(this, APP_ID, APP_KEY);
@@ -48,8 +61,58 @@ public class MyAPP extends Application {
             sHandler = new ApplicationHandler(getApplicationContext());
         }
 
-//        LogUtil.e(TAG, "BLE MAC:" + getBtAddressByReflection());
+        new Get_MyIP_Servlet().execute();
 
+        if (TextUtils.isEmpty(Const.TLID)) {
+            if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
+                Const.TLID = SaveUtils.getString(Save_Key.S_TLID);
+            }
+        }
+
+        LogUtil.e(TAG, "" + Const.TLID);
+        LogUtil.e(TAG, "" + SaveUtils.getString(Save_Key.S_TLID));
+
+        if (TextUtils.isEmpty(Const.TLID) && TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
+            LogUtil.e(TAG,"绑定设备");
+            new Bind_Servlet().execute(getMacAddress());
+        } else {
+            LogUtil.e(TAG, "" + Const.TLID);
+            LogUtil.e(TAG, "" + SaveUtils.getString(Save_Key.S_TLID));
+        }
+
+    }
+
+    /**
+     * 获取网络的MAC地址
+     *
+     * @return
+     */
+    public static String getMacAddress() {
+
+        String macAddress;
+        StringBuffer buf = new StringBuffer();
+        NetworkInterface networkInterface;
+        try {
+            networkInterface = NetworkInterface.getByName("eth1");
+            if (networkInterface == null) {
+                networkInterface = NetworkInterface.getByName("wlan0");
+            }
+            if (networkInterface == null) {
+                return "02:00:00:00:00:02";
+            }
+            byte[] addr = networkInterface.getHardwareAddress();
+            for (byte b : addr) {
+                buf.append(String.format("%02X:", b));
+            }
+            if (buf.length() > 0) {
+                buf.deleteCharAt(buf.length() - 1);
+            }
+            macAddress = buf.toString();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            return "02:00:00:00:00:02";
+        }
+        return macAddress;
     }
 
 
@@ -118,8 +181,24 @@ public class MyAPP extends Application {
             String s = (String) msg.obj;
 
             if (!TextUtils.isEmpty(s)) {
-                LogUtil.e(TAG,s);
+                LogUtil.e(TAG, s);
             }
+        }
+    }
+
+
+    /**
+     * 当前IP
+     *
+     * @return
+     */
+    public static String getIp() {
+        String ip = SaveUtils.getString(Save_Key.S_IP);
+
+        if (TextUtils.isEmpty(ip)) {
+            return "127.0.0.1";
+        } else {
+            return ip;
         }
     }
 }

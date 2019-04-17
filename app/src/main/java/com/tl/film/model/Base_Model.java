@@ -9,4 +9,28 @@ package com.tl.film.model;
  */
 public class Base_Model {
 
+    /**
+     * code : 034004
+     * message : 终端已绑定，请勿重复绑定！
+     * data :
+     */
+
+    private int code;
+    private String message;
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

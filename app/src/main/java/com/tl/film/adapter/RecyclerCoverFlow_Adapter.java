@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tl.film.R;
+import com.tl.film.model.FirstFilms_Model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by chenxiaoping on 2017/3/28.
@@ -18,17 +22,12 @@ import com.tl.film.R;
 public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCoverFlow_Adapter.ViewHolder> {
 
     private Context mContext;
-    private int[] mColors = {
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie,
-            R.drawable.movie, R.drawable.movie};
+
+    List<FirstFilms_Model.DataBean>  dataBeans = new ArrayList<>();
+
+    public void setDataBeans(List<FirstFilms_Model.DataBean> dataBeans) {
+        this.dataBeans = dataBeans;
+    }
 
     private ItemClick clickCb;
 
@@ -54,8 +53,8 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-//        Glide.with(mContext).load(mColors[position]).into(holder.img);
-        holder.img.setImageResource(mColors[position]);
+        FirstFilms_Model.DataBean bean = dataBeans.get(position);
+        Glide.with(mContext).load(bean.getBgImage()).into(holder.img);
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(mContext, "点击了：" + position, Toast.LENGTH_SHORT).show();
             if (clickCb != null) {
@@ -68,7 +67,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     @Override
     public int getItemCount() {
-        return mColors.length;
+        return dataBeans.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
