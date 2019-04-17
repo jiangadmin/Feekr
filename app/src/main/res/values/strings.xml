@@ -1,17 +1,17 @@
 <resources>
     <string name="app_name">Film</string>
     <string name="browse_title"><![CDATA[Videos by Your Company]]></string>
-    <string name="related_movies">Related Videos</string>
+    <string name="related_movies">相关视频</string>
     <string name="grid_view">Grid View</string>
-    <string name="error_fragment">Error Fragment</string>
-    <string name="personal_settings">Personal Settings</string>
+    <string name="error_fragment">错误片段</string>
+    <string name="personal_settings">个人设置</string>
     <string name="watch_trailer_1">Watch trailer</string>
     <string name="watch_trailer_2">FREE</string>
     <string name="rent_1">Rent By Day</string>
     <string name="rent_2">From $1.99</string>
     <string name="buy_1">Buy and Own</string>
     <string name="buy_2">AT $9.99</string>
-    <string name="movie">Movie</string>
+    <string name="movie">电影</string>
 
     <!-- Error messages -->
     <string name="error_fragment_message">An error occurred</string>
@@ -33,11 +33,11 @@
     <string name="resume_push">恢复推送</string>
     <string name="start_time">开始时间</string>
     <string name="end_time">结束时间</string>
-    <string name="register_success">Register push success.</string>
-    <string name="register_fail">Register push fail.</string>
-    <string name="recv_passthrough_message"> Receive a passthrough message. Content is \"%1$s\"</string>
+    <string name="register_success">注册推送成功。</string>
+    <string name="register_fail">注册推送失败.</string>
+    <string name="recv_passthrough_message"> 接收传递消息。内容是 \"%1$s\"</string>
     <string name="click_notification_message"> Clicked a notification message. Content is \"%1$s\"</string>
-    <string name="arrive_notification_message"> Arrived a notification message. Content is \"%1$s\"</string>
+    <string name="arrive_notification_message"> 收到通知消息。内容是 \"%1$s\"</string>
     <string name="set_alias_success"> Set alias \"%1$s\" success.</string>
     <string name="set_alias_fail"> Set alias fail for %1$s.</string>
     <string name="unset_alias_success"> Unset alias \"%1$s\" success.</string>

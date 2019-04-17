@@ -44,7 +44,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
 
                 <category android:name="android.intent.category.LAUNCHER" />
 
@@ -53,6 +53,7 @@
 
         <activity
             android:name=".activity.Home_Activity"
+            android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
 
         <activity

@@ -21,7 +21,7 @@ public class Get_MyIP_Servlet extends AsyncTask<String, Integer, Get_MyIP_Servle
 
     @Override
     protected MyIp_Entity doInBackground(String... strings) {
-        String res = HttpUtil.request(HttpUtil.GET, "https://api.myip.com", null);
+        String res = HttpUtil.doGet("https://api.myip.com", null);
 
         MyIp_Entity entity = null;
         if (!TextUtils.isEmpty(res)) {

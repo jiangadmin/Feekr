@@ -1,292 +1,184 @@
 package com.tl.film.utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by jiangmac
  * on 15/12/23.
  * Email: www.fangmu@qq.com
  * Phone：186 6120 1018
- * Purpose:HTTP工具类
- * update：细分发送方式 全部使用despost
+ * Purpose:TODO HTTP 工具类
+ * update：
  */
 public class HttpUtil {
     private static final String TAG = "HttpUtil";
-
-    private static final int TIMEOUT_IN_MILLIONS = 15 * 1000;
-
-    public static final String GET = "GET";
-    public static final String POST = "POST";
-    public static final String PUT = "PUT";
-    public static final String DEL = "DELETE";
+    private static final int TIMEOUT_IN_MILLIONS = 20 * 1000;
 
     /**
-     * 网络请求
+     * Get 请求
      *
-     * @param type 请求类型
-     * @param url  请求地址
-     * @param o    请求数据
-     * @return
+     * @param params 请求数据
+     * @return 返回des加密后数据
      */
+    public static String doGet(String urls, Map<String, String> params) {
+        String paramsStr = "";
+        if (params != null)
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                if (TextUtils.isEmpty(entry.getValue())) {
+                    continue;
+                }
+                paramsStr += (entry.getKey() + "=" + entry.getValue() + "&");
+            }
 
-    public static String request(String type, String url, Object o) {
-
-        //定义stringbuffer  方便后面读取网页返回字节流信息时的字符串拼接
-        StringBuffer stringBuffer = new StringBuffer();
-
-        //创建url_connection
-        URLConnection http_url_connection;
-        HttpURLConnection urlConn = null;
+        HttpsURLConnection conn = null;
+        InputStream is = null;
+        ByteArrayOutputStream baos = null;
         try {
 
-            //get 请求需要的请求头
-            switch (type) {
-                case GET:
-                    StringBuffer params = new StringBuffer();
-                    if (o != null && o instanceof Map) {
-                        for (Map.Entry<String, String> entry : ((Map<String, String>) o).entrySet()) {
-                            if (TextUtils.isEmpty(entry.getValue())) {
-                                continue;
-                            }
-                            params.append(entry.getKey() + "=" + entry.getValue() + "&");
-                        }
-                        url += "?" + params.toString();
-                    }
-                    http_url_connection = (new URL(url)).openConnection();
-                    urlConn = (HttpURLConnection) http_url_connection;
-                    LogUtil.e(TAG, type + "请求");
-                    urlConn.setRequestMethod("GET");
-                    urlConn.setRequestProperty("accept", "*/*");
-                    urlConn.setRequestProperty("connection", "Keep-Alive");
-                    urlConn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-                    break;
-                case POST:
-                    http_url_connection = (new URL(url)).openConnection();
-                    urlConn = (HttpURLConnection) http_url_connection;
-                    LogUtil.e(TAG, type + "请求");
+            URL url = new URL(urls + "?" + paramsStr);
 
-                    urlConn.setDoInput(true);
-                    urlConn.setDoOutput(true);
+            conn = (HttpsURLConnection) url.openConnection();
+            conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
+            conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            LogUtil.e(TAG, "网页结果：" + conn.getResponseCode());
+            if (conn.getResponseCode() == 200) {
+                is = conn.getInputStream();
+                baos = new ByteArrayOutputStream();
+                int len = -1;
+                byte[] buf = new byte[128];
 
-                    // 设置通用的请求属性
-                    urlConn.setRequestMethod("POST");
-                    urlConn.setRequestProperty("Content-Type", "text/html;charset=UTF-8");
-                    urlConn.setRequestProperty("accept", "*/*");
-                    urlConn.setRequestProperty("Server", "Apache-Coyote/1.1");
-//                    urlConn.setRequestProperty("connection", "Keep-Alive");
-//                    urlConn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-                    break;
-                case PUT:
-                    http_url_connection = (new URL(url)).openConnection();
-                    urlConn = (HttpURLConnection) http_url_connection;
-                    LogUtil.e(TAG, type + "请求");
-                    urlConn.setDoInput(true);
-                    urlConn.setDoOutput(true);
-                    urlConn.setRequestMethod("PUT");
-                    urlConn.setRequestProperty("Accept", "*/*");
-                    urlConn.setRequestProperty("Connection", "keep-alive");
-                    urlConn.setRequestProperty("Proxy-Connection", "keep-alive");
-                    urlConn.setRequestProperty("Charset", "UTF-8");
-                    break;
-                case DEL:
-                    http_url_connection = (new URL(url)).openConnection();
-                    urlConn = (HttpURLConnection) http_url_connection;
-                    LogUtil.e(TAG, type + "请求");
-
-                    urlConn.setDoInput(true);
-                    urlConn.setDoOutput(true);
-
-                    urlConn.setRequestProperty("Content-Type", "application/json");
-                    urlConn.setRequestProperty("Accept", "application/json");
-                    urlConn.setRequestProperty("Charset", "UTF-8");
-                    break;
-            }
-
-            //超时时间
-            urlConn.setReadTimeout(TIMEOUT_IN_MILLIONS);
-            urlConn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
-
-            urlConn.setRequestMethod(type);//设置请求方式。可以是delete put post get
-            urlConn.setUseCaches(false);
-
-
-            if (o instanceof Map) {
-
-                StringBuilder builder = new StringBuilder();
-                for (Map.Entry<String, Object> para : ((Map<String, Object>) o).entrySet()) {
-                    if (para.getValue() == null || para.getValue().equals("")) {
-                        continue;
-                    }
-                    try {
-                        builder.append(para.getKey()).append("=").append(URLEncoder.encode(String.valueOf(para.getValue()), "UTF-8")).append("&");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                while ((len = is.read(buf)) != -1) {
+                    baos.write(buf, 0, len);
                 }
+                baos.flush();
 
+                return baos.toString();
 
-                LogUtil.e(TAG, "HTTP内容:" + builder.toString());
-                if (type == GET) {
-
-                } else {
-                    // 获取URLConnection对象对应的输出流
-                    PrintWriter out = new PrintWriter(urlConn.getOutputStream());
-                    out.print(builder);
-                    // flush输出流的缓冲
-                    out.flush();
-
-                }
-
-            }
-
-            InputStreamReader input_stream_reader;
-            BufferedReader buffered_reader;
-
-            LogUtil.e(TAG, "HTTP码：" + urlConn.getResponseCode());
-
-            if (urlConn.getResponseCode() == 200) {
-
-                if (type == GET) {
-                    InputStream is;
-                    ByteArrayOutputStream baos;
-
-                    is = urlConn.getInputStream();
-                    baos = new ByteArrayOutputStream();
-                    int len = -1;
-                    byte[] buf = new byte[128];
-
-                    while ((len = is.read(buf)) != -1) {
-                        baos.write(buf, 0, len);
-                    }
-                    baos.flush();
-
-                    return baos.toString();
-
-                } else {
-                    input_stream_reader = new InputStreamReader(urlConn.getInputStream(), StandardCharsets.UTF_8);
-                    buffered_reader = new BufferedReader(input_stream_reader);
-                    stringBuffer = new StringBuffer();
-                    String line;
-                    while ((line = buffered_reader.readLine()) != null) {
-                        stringBuffer.append(line);
-                    }
-                    input_stream_reader.close();
-                    buffered_reader.close();
-                }
             } else {
-
-                return null;
+                LogUtil.e(TAG, " responseCode is not 200 ... is" + conn.getResponseCode() + conn.getResponseMessage());
+                throw new RuntimeException(" responseCode is not 200 ... ");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (is != null)
+                    is.close();
+            } catch (IOException e) {
+                LogUtil.e(TAG, e.getMessage());
+            }
+
+            try {
+                if (baos != null)
+                    baos.close();
+            } catch (IOException e) {
+                LogUtil.e(TAG, e.getMessage());
+            }
+
         }
-
-        String res = stringBuffer.toString();
-
-        return res;
+        return null;
     }
 
     /**
-     * @param uploadUrl      上传路径参数
-     * @param uploadFilePath 文件路径
-     * @category 上传文件至Server的方法
-     * @author ylbf_dev
+     * post 请求 DES加密发送
+     *
+     * @param url   请求地址
+     * @param param 请求内容
+     * @return 返回DES加密数据
      */
-    public static String uploadFile(String uploadUrl, String uploadFilePath) {
 
-        //定义stringbuffer  方便后面读取网页返回字节流信息时的字符串拼接
-        StringBuffer stringBuffer = new StringBuffer();
-
-        String end = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "******";
-        try {
-            URL url = new URL(uploadUrl);
-            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-
-            urlConn.setDoInput(true);
-            urlConn.setDoOutput(true);
-            urlConn.setUseCaches(false);
-            urlConn.setRequestMethod("POST");
-
-            urlConn.setRequestProperty("Connection", "Keep-Alive");
-            urlConn.setRequestProperty("Charset", "UTF-8");
-            urlConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-            DataOutputStream dos = new DataOutputStream(urlConn.getOutputStream());
-            dos.writeBytes(twoHyphens + boundary + end);
-            dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"test.jpg\"" + end);
-//          dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\""
-//                  + uploadFilePath.substring(uploadFilePath.lastIndexOf("/") + 1) + "\"" + end);
-            dos.writeBytes(end);
-            // 文件通过输入流读到Java代码中-++++++++++++++++++++++++++++++`````````````````````````
-            FileInputStream fis = null;
+    public static String doPost(String url, Map<String, String> param) {
+        StringBuilder paramStr = new StringBuilder();
+        for (Map.Entry<String, String> para : param.entrySet()) {
             try {
-                fis = new FileInputStream(uploadFilePath);
-                byte[] buffer = new byte[8192]; // 8k
-                int count = 0;
-                while ((count = fis.read(buffer)) != -1) {
-                    dos.write(buffer, 0, count);
-
-                }
-            } finally {
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (Exception e) {
-                        LogUtil.e(TAG, e.getMessage());
-                    }
-                }
+                paramStr.append(para.getKey()).append("=").append(URLEncoder.encode(para.getValue(), "UTF-8")).append("&");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            dos.writeBytes(end);
-            dos.writeBytes(twoHyphens + boundary + twoHyphens + end);
-            dos.flush();
+        }
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        // 发送请求参数
+        Log.e(TAG, "http发送 " + url + "?" + paramStr.toString());
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            //超时时间
+            conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
+            conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+            out.print(paramStr);
+            // flush输出流的缓冲
+            out.flush();
 
-            InputStreamReader input_stream_reader = new InputStreamReader(urlConn.getInputStream(), "utf-8");
-            BufferedReader buffered_reader = new BufferedReader(input_stream_reader);
-            stringBuffer = new StringBuffer();
-            String line;
-            while ((line = buffered_reader.readLine()) != null) {
-                stringBuffer.append(line);
+            try {
+                // 定义BufferedReader输入流来读取URL的响应
+                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result += line;
+                }
+            } catch (FileNotFoundException e) {
+                result = null;
             }
-            line = null;
-            input_stream_reader.close();
-            input_stream_reader = null;
-            buffered_reader.close();
-            buffered_reader = null;
-            //  http_url_connection.disconnect();
-
-            // 读取服务器返回结果
-//            InputStream is = urlConn.getInputStream();
-//            InputStreamReader isr = new InputStreamReader(is, "utf-8");
-//            BufferedReader br = new BufferedReader(isr);
-//            String result = br.readLine();
-            dos.close();
-//            is.close();
-
-            LogUtil.e(TAG, stringBuffer.toString());
-            return stringBuffer.toString();
-
-        } catch (Exception e) {
-            LogUtil.e(TAG, e.getMessage());
+        } catch (SocketTimeoutException e) {
+            LogUtil.e(TAG, "发送请求超时！");
             e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
+        // 使用finally块来关闭输出流、输入流
+        finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (result != null) {
+
+            return result;
+        } else {
             return null;
         }
     }
+
 }

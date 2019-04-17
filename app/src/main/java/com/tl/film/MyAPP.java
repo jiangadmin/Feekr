@@ -57,6 +57,7 @@ public class MyAPP extends Application {
             MiPushClient.registerPush(this, APP_ID, APP_KEY);
         }
 
+        SaveUtils.setString(Save_Key.S_TLID, "8FEBC4ADB5CCD5235FD2CA97DA89F2C8");
         if (sHandler == null) {
             sHandler = new ApplicationHandler(getApplicationContext());
         }
