@@ -2,12 +2,9 @@ package com.tl.film.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tl.film.R;
@@ -23,6 +20,7 @@ import com.tl.film.utils.SaveUtils;
 import com.tl.film.view.CarouselLayoutManager;
 import com.tl.film.view.CarouselZoomPostLayoutListener;
 import com.tl.film.view.CenterScrollListener;
+import com.tl.film.view.TvRecyclerView;
 
 /**
  * @author jiangyao
@@ -34,7 +32,7 @@ import com.tl.film.view.CenterScrollListener;
 public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Adapter.ItemClick, View.OnClickListener {
     private static final String TAG = "Home_Activity";
 
-    RecyclerView recyclerView;
+    TvRecyclerView recyclerView;
     RecyclerCoverFlow_Adapter adapter;
 
     ImageView bg;
@@ -55,6 +53,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         }
     }
+
 
     private void initview() {
 
@@ -97,7 +96,13 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         layoutManager.setItemPrefetchEnabled(true);
 
         //触摸切换
-        layoutManager.addOnItemSelectionListener(adapterPosition -> LogUtil.e(TAG,adapterPosition));
+        layoutManager.addOnItemSelectionListener(adapterPosition -> {
+            LogUtil.e(TAG, adapterPosition);
+//            View view = recyclerView.getChildAt(adapterPosition);
+//            view.setFocusable(true);
+//            view.setFocusableInTouchMode(true);
+//            view.requestFocus();
+        });
 
     }
 
@@ -124,7 +129,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 QRCode_Activity.start(this);
                 break;
             case R.id.home_lunbo:
-                Open_Ktcp_Utils.openWithHomePageUri(this,"tenvideo2://?action=29&round_play_id=11");
+                Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=11");
                 break;
         }
     }

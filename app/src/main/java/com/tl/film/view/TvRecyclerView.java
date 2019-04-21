@@ -1,7 +1,5 @@
 package com.tl.film.view;
 
-import android.support.v7.widget.RecyclerView;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -13,12 +11,17 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
+import android.view.TextureView;
 import android.view.View;
+
+import com.tl.film.utils.LogUtil;
 
 public class TvRecyclerView extends RecyclerView {
     private static final String TAG = "TvRecyclerView";
+    private static long lastClickTime = 0L;
     private int mPosition;
+    private int cPosition = 0;
+
 
     public TvRecyclerView(Context context) {
         this(context, null);
@@ -58,7 +61,6 @@ public class TvRecyclerView extends RecyclerView {
          */
         setItemAnimator(null);
     }
-
 
 
     @Override
@@ -220,62 +222,78 @@ public class TvRecyclerView extends RecyclerView {
         return 0;
     }
 
+    /**
+     * @param po
+     */
+    public void setFou(int po) {
+
+    }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+
+        if(event.getRepeatCount() > 0){
+            return true;
+        }
+        int itemCount = getAdapter().getItemCount();
         boolean result = super.dispatchKeyEvent(event);
         View focusView = this.getFocusedChild();
-
         if (focusView == null) {
             return result;
         } else {
+
+            View currentView;
             if (event.getAction() == KeyEvent.ACTION_UP) {
                 return true;
             } else {
+
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
-                        View rightView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
-                        if (rightView != null) {
-                            rightView.requestFocus();
+
+                        if(isFastDoubleClick()){
+                            return true;
+                        }
+
+                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
+
+                        Log.i(TAG, "rightView is null:" + (currentView == null));
+                        if (currentView != null) {
+                            cPosition = getLastVisiblePosition() + 1;
+                            if (cPosition > (itemCount - 1)) {
+                                cPosition = 0;
+                            }
+
+                            currentView.requestFocus();
+                            smoothScrollToPosition(cPosition);
+
                             return true;
                         } else {
+                            focusView.requestFocus();
+                            smoothScrollToPosition(cPosition);
                             return false;
                         }
                     case KeyEvent.KEYCODE_DPAD_LEFT:
-                        View leftView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
-                        Log.i(TAG, "leftView is null:" + (leftView == null));
-                        if (leftView != null) {
-                            leftView.requestFocus();
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    case KeyEvent.KEYCODE_DPAD_DOWN:
-                        if (isVisBottom(this)) {
-                            this.smoothScrollToPosition(getLastVisiblePosition());
-                            return result;
-                        }
-                        View downView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_DOWN);
-                        Log.i(TAG, " downView is null:" + (downView == null));
-                        if (downView != null) {
-                            downView.requestFocus();
-                            int downOffset = downView.getTop() + downView.getHeight() / 2 - getHeight() / 2;
-                            this.smoothScrollBy(0, downOffset);
-                            return true;
-                        } else {
-                            return true;
-                        }
-                    case KeyEvent.KEYCODE_DPAD_UP:
-                        View upView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_UP);
-                        Log.i(TAG, "upView is null:" + (upView == null));
-                        if (upView != null) {
-                            upView.requestFocus();
-                            int upOffset = getHeight() / 2 - (upView.getBottom() - upView.getHeight() / 2);
-                            this.smoothScrollBy(0, -upOffset);
-                            return true;
-                        } else {
 
-                            return result;//返回false,否则第一行按上键回不到导航栏
+                        if(isFastDoubleClick()){
+                            return true;
+                        }
+                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
+
+
+                        Log.i(TAG, "leftView is null:" + (currentView == null));
+                        if (currentView != null) {
+                            cPosition = getLastVisiblePosition() - 1;
+                            if (cPosition < 0) {
+                                cPosition = itemCount - 1;
+                            }
+                            currentView.requestFocus();
+                            smoothScrollToPosition(cPosition);
+
+                            return true;
+                        } else {
+                            focusView.requestFocus();
+                            smoothScrollToPosition(cPosition);
+                            return false;
                         }
                 }
             }
@@ -283,6 +301,12 @@ public class TvRecyclerView extends RecyclerView {
         return result;
     }
 
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        LogUtil.e(TAG, "按键弹起");
+        return super.onKeyUp(keyCode, event);
+    }
 
     //防止Activity时,RecyclerView崩溃
     @Override
@@ -484,5 +508,15 @@ public class TvRecyclerView extends RecyclerView {
         }
     }
 
+
+    public static boolean isFastDoubleClick() {
+        long time = System.currentTimeMillis();
+        long timeD = time - lastClickTime;
+        if ( 0 < timeD && timeD < 500) {
+            return true;
+        }
+        lastClickTime = time;
+        return false;
+    }
 
 }
