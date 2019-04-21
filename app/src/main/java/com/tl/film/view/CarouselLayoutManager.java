@@ -12,6 +12,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,14 +41,14 @@ import java.util.List;
  * <br />
  */
 @SuppressWarnings({"ClassWithTooManyMethods", "OverlyComplexClass", "unused", "WeakerAccess"})
-public class CarouselLayoutManager extends RecyclerView.LayoutManager implements RecyclerView.SmoothScroller.ScrollVectorProvider {
+public class CarouselLayoutManager extends LayoutManager implements RecyclerView.SmoothScroller.ScrollVectorProvider {
     private static final String TAG = "CarouselLayoutManager";
 
     public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
     public static final int VERTICAL = OrientationHelper.VERTICAL;
 
     public static final int INVALID_POSITION = -1;
-    public static final int MAX_VISIBLE_ITEMS = 11;
+    public static final int MAX_VISIBLE_ITEMS = 4;
 
     private static final boolean CIRCLE_LAYOUT = false;
 
@@ -139,6 +140,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
+
     /**
      * @return current layout orientation
      * @see #VERTICAL
@@ -171,6 +173,8 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     public void addOnItemSelectionListener(@NonNull final OnCenterItemSelectionListener onCenterItemSelectionListener) {
         mOnCenterItemSelectionListeners.add(onCenterItemSelectionListener);
     }
+
+
 
     /**
      * @param onCenterItemSelectionListener listener that was previously added by {@link #addOnItemSelectionListener(OnCenterItemSelectionListener)}
@@ -314,6 +318,8 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         }
         return resultScroll;
     }
+
+
 
     @Override
     public void onMeasure(final RecyclerView.Recycler recycler, final RecyclerView.State state, final int widthSpec, final int heightSpec) {
@@ -470,10 +476,6 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
             int bottom_1 = Math.round(bottom + transformation.mTranslationY);
             view.layout(left_1, top_1, right_1, bottom_1);
 
-            LogUtil.e(TAG,i);
-            LogUtil.e(TAG, start + "/" + top + "/" + end + "/" + bottom);
-            LogUtil.e(TAG, left_1 + "/" + top_1 + "/" + right_1 + "/" + bottom_1);
-            LogUtil.e(TAG, transformation.mScaleX + "/" + transformation.mScaleY);
 
             view.setScaleX(transformation.mScaleX);
             view.setScaleY(transformation.mScaleY);
@@ -529,7 +531,6 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
             // after center item
             for (int i = layoutCount - 1; i >= countLayoutHalf + 1; --i) {
                 final int position = Math.round(absCurrentScrollPosition - i + layoutCount) % mItemsCount;
-                LogUtil.e(TAG,"I="+i+",position="+position+",centerItem - absCurrentScrollPosition + layoutCount - i="+(centerItem - absCurrentScrollPosition + layoutCount - i));
                 mLayoutHelper.setLayoutOrder(i - 1, position, centerItem - absCurrentScrollPosition + layoutCount - i);
             }
             mLayoutHelper.setLayoutOrder(layoutCount - 1, centerItem, centerItem - absCurrentScrollPosition);
@@ -899,4 +900,5 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
             }
         };
     }
+
 }
