@@ -12,8 +12,11 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.tl.film.utils.LogUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ import java.util.List;
  */
 @SuppressWarnings({"ClassWithTooManyMethods", "OverlyComplexClass", "unused", "WeakerAccess"})
 public class CarouselLayoutManager extends RecyclerView.LayoutManager implements RecyclerView.SmoothScroller.ScrollVectorProvider {
+    private static final String TAG = "CarouselLayoutManager";
 
     public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
     public static final int VERTICAL = OrientationHelper.VERTICAL;
@@ -68,7 +72,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     private CarouselSavedState mPendingCarouselSavedState;
 
     /**
-     * @param orientation should be {@link #VERTICAL} or {@link #HORIZONTAL}
+     * @param orientation 填入 {@link #VERTICAL 纵向} / {@link #HORIZONTAL 横向}
      */
     @SuppressWarnings("unused")
     public CarouselLayoutManager(final int orientation) {
@@ -76,10 +80,10 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     /**
-     * If circleLayout is true then all items will be in cycle. Scroll will be infinite on both sides.
+     * 如果CircleLayout为真，则所有项目都将处于循环中。卷轴两边都是无限的。
      *
-     * @param orientation  should be {@link #VERTICAL} or {@link #HORIZONTAL}
-     * @param circleLayout true for enabling circleLayout
+     * @param orientation  {@link #VERTICAL 纵向} 或者 {@link #HORIZONTAL 横向}
+     * @param circleLayout 是否循环
      */
     @SuppressWarnings("unused")
     public CarouselLayoutManager(final int orientation, final boolean circleLayout) {
@@ -155,7 +159,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     /**
-     * @return current layout center item
+     * @return 当前布局中心
      */
     public int getCenterItemPosition() {
         return mCenterItemPosition;
@@ -353,6 +357,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
 
             mDecoratedChildWidth = decoratedChildWidth;
             mDecoratedChildHeight = decoratedChildHeight;
+
             mDecoratedChildSizeInvalid = false;
         }
 
@@ -405,12 +410,9 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
 
         if (mCenterItemPosition != centerItem) {
             mCenterItemPosition = centerItem;
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    selectItemCenterPosition(centerItem);
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(() ->
+                    selectItemCenterPosition(centerItem)
+            );
         }
     }
 
@@ -462,8 +464,16 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         if (null == transformation) {
             view.layout(start, top, end, bottom);
         } else {
-            view.layout(Math.round(start + transformation.mTranslationX), Math.round(top + transformation.mTranslationY),
-                    Math.round(end + transformation.mTranslationX), Math.round(bottom + transformation.mTranslationY));
+            int left_1 = Math.round(start + transformation.mTranslationX);
+            int top_1 = Math.round(top + transformation.mTranslationY);
+            int right_1 = Math.round(end + transformation.mTranslationX);
+            int bottom_1 = Math.round(bottom + transformation.mTranslationY);
+            view.layout(left_1, top_1, right_1, bottom_1);
+
+            LogUtil.e(TAG,i);
+            LogUtil.e(TAG, start + "/" + top + "/" + end + "/" + bottom);
+            LogUtil.e(TAG, left_1 + "/" + top_1 + "/" + right_1 + "/" + bottom_1);
+            LogUtil.e(TAG, transformation.mScaleX + "/" + transformation.mScaleY);
 
             view.setScaleX(transformation.mScaleX);
             view.setScaleY(transformation.mScaleY);
@@ -519,6 +529,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
             // after center item
             for (int i = layoutCount - 1; i >= countLayoutHalf + 1; --i) {
                 final int position = Math.round(absCurrentScrollPosition - i + layoutCount) % mItemsCount;
+                LogUtil.e(TAG,"I="+i+",position="+position+",centerItem - absCurrentScrollPosition + layoutCount - i="+(centerItem - absCurrentScrollPosition + layoutCount - i));
                 mLayoutHelper.setLayoutOrder(i - 1, position, centerItem - absCurrentScrollPosition + layoutCount - i);
             }
             mLayoutHelper.setLayoutOrder(layoutCount - 1, centerItem, centerItem - absCurrentScrollPosition);

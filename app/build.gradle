@@ -35,4 +35,10 @@ dependencies {
     implementation files('libs/thirdagent-2.0.1-190311.jar')
     implementation 'com.squareup.okhttp3:okhttp:3.14.1'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    implementation 'com.azoft.carousellayoutmanager:carousel:1.2.4'
+
+    implementation 'com.github.shenyuanqing.zxing:zxing-simplify:1.0.5'
+
+
 }

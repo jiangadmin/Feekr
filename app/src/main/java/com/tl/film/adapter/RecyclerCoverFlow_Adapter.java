@@ -6,13 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
 import com.tl.film.model.FirstFilms_Model;
-import com.tl.film.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +23,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     private Context mContext;
 
-    int color[] = {0xff000000, 0xff112233, 0xff223344, 0xff334455, 0xff445566, 0xff556677, 0xff667788, 0xff778899};
-    List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
+    private List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
 
     public void setDataBeans(List<FirstFilms_Model.DataBean> dataBeans) {
         this.dataBeans = dataBeans;
@@ -35,17 +31,9 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     private ItemClick clickCb;
 
-    public RecyclerCoverFlow_Adapter(Context c) {
-        mContext = c;
-    }
-
     public RecyclerCoverFlow_Adapter(Context c, ItemClick cb) {
         mContext = c;
         clickCb = cb;
-    }
-
-    public void setOnClickLstn(ItemClick cb) {
-        this.clickCb = cb;
     }
 
     @Override
@@ -59,21 +47,22 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
         FirstFilms_Model.DataBean bean = dataBeans.get(position);
         holder.img.setTag(position);
-        holder.img.setBackgroundColor(0xff778899);
+
         Picasso.with(mContext).load(bean.getBgImage()).into(holder.img);
-        holder.itemView.setOnClickListener(v -> {
-            Toast.makeText(mContext, "点击了：" + position, Toast.LENGTH_SHORT).show();
+        holder.img.setOnClickListener(v -> {
             if (clickCb != null) {
-                clickCb.clickItem(position);
+                clickCb.clickItem(bean);
             }
         });
+    }
 
-
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     @Override
     public int getItemCount() {
-//        LogUtil.e(TAG, "总量：" + dataBeans.size());
         return dataBeans.size();
     }
 
@@ -84,13 +73,13 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
             super(itemView);
             img = itemView.findViewById(R.id.img);
             //item可以获得焦点，需要设置这个属性。
-            itemView.setFocusable(true);
-            itemView.setFocusableInTouchMode(true);
+            img.setFocusable(true);
+            img.setFocusableInTouchMode(true);
         }
 
     }
 
-    interface ItemClick {
-        void clickItem(int pos);
+    public interface ItemClick {
+        void clickItem(FirstFilms_Model.DataBean bean);
     }
 }
