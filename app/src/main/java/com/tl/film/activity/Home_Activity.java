@@ -68,14 +68,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         bg = findViewById(R.id.bg);
         recyclerView = findViewById(R.id.recycler_view);
 
-//        CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
-//        layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
-//        adapter = new RecyclerCoverFlow_Adapter(this);
-//
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.addOnScrollListener(new CenterScrollListener());
     }
 
     /**
@@ -97,11 +89,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         //触摸切换
         layoutManager.addOnItemSelectionListener(adapterPosition -> {
-            LogUtil.e(TAG, adapterPosition);
-//            View view = recyclerView.getChildAt(adapterPosition);
-//            view.setFocusable(true);
-//            view.setFocusableInTouchMode(true);
-//            view.requestFocus();
+
         });
 
     }
@@ -129,7 +117,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 QRCode_Activity.start(this);
                 break;
             case R.id.home_lunbo:
-                Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=11");
+                Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");
                 break;
         }
     }

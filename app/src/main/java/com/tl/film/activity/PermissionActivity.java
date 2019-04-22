@@ -27,7 +27,6 @@ public class PermissionActivity extends Activity {
                 }
             }
         }
-
     }
 
     @Override

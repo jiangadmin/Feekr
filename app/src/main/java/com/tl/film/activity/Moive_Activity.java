@@ -71,9 +71,14 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.moive_play:
-                Open_Ktcp_Utils.openWithHomePageUri(this,bean.getTxJumpPath());
+                if (bean.getTxPayStatus() == 8) {
+                    Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
+                } else {
+                    QRCode_Activity.start(this);
+                }
+
                 break;
         }
     }
