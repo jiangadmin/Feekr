@@ -4,10 +4,22 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.tl.film"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+
+        ndk {
+            //选择要添加的对应 cpu 类型的 .so 库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "9a31dde7bacec4872009d698", //JPush 上注册的包名对应的 Appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
     }
     buildTypes {
         release {
@@ -33,8 +45,6 @@ dependencies {
     implementation 'com.android.support:leanback-v17:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.github.bumptech.glide:glide:3.8.0'
-    //小米推送
-    implementation files('libs/MiPush_SDK_Client_3_6_15.jar')
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.azoft.carousellayoutmanager:carousel:1.2.4'
@@ -48,4 +58,6 @@ dependencies {
     implementation 'com.github.shenyuanqing.zxing:zxing-simplify:1.0.5'
 
 
+    implementation 'cn.jiguang.sdk:jpush:3.2.0'  // 此处以JPush 3.2.0 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:2.0.0'  // 此处以JCore 2.0.0 版本为例。
 }

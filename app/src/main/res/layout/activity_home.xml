@@ -41,7 +41,6 @@
 
         </com.tl.film.view.TvRecyclerView>
 
-
     </LinearLayout>
 
     <RelativeLayout

@@ -40,7 +40,6 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
 
         String res = HttpUtil.doPost(Const.URL + "fapp/terminalController/bind.do", map);
 
-
         LogUtil.e(TAG, res);
         Tlid_Model model;
         if (TextUtils.isEmpty(res)) {

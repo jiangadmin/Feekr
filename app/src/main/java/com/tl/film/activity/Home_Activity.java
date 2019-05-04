@@ -1,7 +1,12 @@
 package com.tl.film.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +19,7 @@ import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.FirstFilms_Servlet;
+import com.tl.film.utils.ExampleUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
 import com.tl.film.utils.SaveUtils;
@@ -45,6 +51,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         setContentView(R.layout.activity_home);
 
         initview();
+
+        registerMessageReceiver();  // used for receive msg
 
         new FirstFilms_Servlet(this).execute();
         new DefTheme_Servlet(this).execute();
@@ -119,6 +127,41 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             case R.id.home_lunbo:
                 Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");
                 break;
+        }
+    }
+
+    //for receive customer msg from jpush server
+    private MessageReceiver mMessageReceiver;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
+
+    public void registerMessageReceiver() {
+        mMessageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
+    }
+
+    public class MessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+                    String messge = intent.getStringExtra(KEY_MESSAGE);
+                    String extras = intent.getStringExtra(KEY_EXTRAS);
+                    StringBuilder showMsg = new StringBuilder();
+                    showMsg.append(KEY_MESSAGE + " : " + messge + "\n");
+                    if (!ExampleUtil.isEmpty(extras)) {
+                        showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
+                    }
+                    LogUtil.e(TAG,showMsg.toString());
+                }
+            } catch (Exception e){
+            }
         }
     }
 }

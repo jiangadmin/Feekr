@@ -482,6 +482,12 @@ public class CarouselLayoutManager extends LayoutManager implements RecyclerView
         }
     }
 
+    @Nullable
+    @Override
+    public View onInterceptFocusSearch(@NonNull View focused, int direction) {
+        return super.onInterceptFocusSearch(focused, direction);
+    }
+
     /**
      * @return current scroll position of center item. this value can be in any range if it is cycle layout.
      * if this is not, that then it is in [0, {@link #mItemsCount - 1}]
