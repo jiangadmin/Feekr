@@ -61,9 +61,9 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
     @Override
     protected void onPostExecute(Tlid_Model model) {
         super.onPostExecute(model);
-        switch (model.getCode()){
+        switch (model.getCode()) {
             case 1000:
-                if (model.getData()!=null&&!TextUtils.isEmpty(model.getData().getTlid())) {
+                if (model.getData() != null && !TextUtils.isEmpty(model.getData().getTlid())) {
                     Const.TLID = model.getData().getTlid();
                     SaveUtils.setString(Save_Key.S_TLID, Const.TLID);
                 }

@@ -13,12 +13,17 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.jpush.android.api.JPushInterface;
 
 public class ExampleUtil {
+    private static final String TAG = "ExampleUtil";
     public static final String PREFS_NAME = "JPUSH_EXAMPLE";
     public static final String PREFS_DAYS = "JPUSH_EXAMPLE_DAYS";
     public static final String PREFS_START_TIME = "PREFS_START_TIME";
@@ -34,16 +39,19 @@ public class ExampleUtil {
             return true;
         return false;
     }
+
     /**
      * 只能以 “+” 或者 数字开头；后面的内容只能包含 “-” 和 数字。
-     * */
+     */
     private final static String MOBILE_NUMBER_CHARS = "^[+0-9][-0-9]{1,}$";
+
     public static boolean isValidMobileNumber(String s) {
-        if(TextUtils.isEmpty(s)) return true;
+        if (TextUtils.isEmpty(s)) return true;
         Pattern p = Pattern.compile(MOBILE_NUMBER_CHARS);
         Matcher m = p.matcher(s);
         return m.matches();
     }
+
     // 校验Tag Alias 只能是数字,英文字母和中文
     public static boolean isValidTagAndAlias(String s) {
         Pattern p = Pattern.compile("^[\u4E00-\u9FA50-9a-zA-Z_!@#$&*+=.|]+$");
@@ -71,63 +79,97 @@ public class ExampleUtil {
         }
         return appKey;
     }
-    
+
     // 取得版本号
     public static String GetVersion(Context context) {
-		try {
-			PackageInfo manager = context.getPackageManager().getPackageInfo(
-					context.getPackageName(), 0);
-			return manager.versionName;
-		} catch (NameNotFoundException e) {
-			return "Unknown";
-		}
-	}
-
-    public static void showToast(final String toast, final Context context)
-    {
-    	new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				Looper.prepare();
-				Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
-				Looper.loop();
-			}
-		}).start();
+        try {
+            PackageInfo manager = context.getPackageManager().getPackageInfo(
+                    context.getPackageName(), 0);
+            return manager.versionName;
+        } catch (NameNotFoundException e) {
+            return "Unknown";
+        }
     }
-    
+
+    public static void showToast(final String toast, final Context context) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Looper.prepare();
+                Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        }).start();
+    }
+
     public static boolean isConnected(Context context) {
         ConnectivityManager conn = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = conn.getActiveNetworkInfo();
         return (info != null && info.isConnected());
     }
-    
-	public static String getImei(Context context, String imei) {
+
+    public static String getImei(Context context, String imei) {
         String ret = null;
-		try {
-			TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        try {
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             ret = telephonyManager.getDeviceId();
-		} catch (Exception e) {
-			LogUtil.e(ExampleUtil.class.getSimpleName(), e.getMessage());
-		}
-		if (isReadableASCII(ret)){
+        } catch (Exception e) {
+            LogUtil.e(ExampleUtil.class.getSimpleName(), e.getMessage());
+        }
+        if (isReadableASCII(ret)) {
             return ret;
         } else {
             return imei;
         }
-	}
+    }
 
-    private static boolean isReadableASCII(CharSequence string){
+    private static boolean isReadableASCII(CharSequence string) {
         if (TextUtils.isEmpty(string)) return false;
         try {
             Pattern p = Pattern.compile("[\\x20-\\x7E]+");
             return p.matcher(string).matches();
-        } catch (Throwable e){
+        } catch (Throwable e) {
             return true;
         }
     }
 
     public static String getDeviceId(Context context) {
         return JPushInterface.getUdid(context);
+    }
+
+
+    // 打印所有的 intent extra 数据
+    public static String printBundle(Bundle bundle) {
+        StringBuilder sb = new StringBuilder();
+        for (String key : bundle.keySet()) {
+            if (key.equals(JPushInterface.EXTRA_NOTIFICATION_ID)) {
+                sb.append("\nkey:" + key + ", value:" + bundle.getInt(key));
+            } else if (key.equals(JPushInterface.EXTRA_CONNECTION_CHANGE)) {
+                sb.append("\nkey:" + key + ", value:" + bundle.getBoolean(key));
+            } else if (key.equals(JPushInterface.EXTRA_EXTRA)) {
+                if (TextUtils.isEmpty(bundle.getString(JPushInterface.EXTRA_EXTRA))) {
+                    LogUtil.i(TAG, "This message has no Extra data");
+                    continue;
+                }
+
+                try {
+                    JSONObject json = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
+                    Iterator<String> it = json.keys();
+
+                    while (it.hasNext()) {
+                        String myKey = it.next();
+                        sb.append("\nkey:" + key + ", value: [" +
+                                myKey + " - " + json.optString(myKey) + "]");
+                    }
+                } catch (JSONException e) {
+                    LogUtil.e(TAG, "Get message extra JSON error!");
+                }
+
+            } else {
+                sb.append("\nkey:" + key + ", value:" + bundle.get(key));
+            }
+        }
+        return sb.toString();
     }
 }

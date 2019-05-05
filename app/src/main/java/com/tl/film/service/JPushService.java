@@ -10,4 +10,5 @@ import cn.jpush.android.service.JCommonService;
  * TODO:
  */
 public class JPushService extends JCommonService {
+
 }

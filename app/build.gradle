@@ -57,7 +57,7 @@ dependencies {
 
     implementation 'com.github.shenyuanqing.zxing:zxing-simplify:1.0.5'
 
-
+    implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'cn.jiguang.sdk:jpush:3.2.0'  // 此处以JPush 3.2.0 版本为例。
     implementation 'cn.jiguang.sdk:jcore:2.0.0'  // 此处以JCore 2.0.0 版本为例。
 }
