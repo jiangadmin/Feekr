@@ -17,8 +17,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 /**
  * @author jiangyao
@@ -43,8 +45,9 @@ public class MyAPP extends Application {
         super.onCreate();
         context = this;
 
-        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
-        JPushInterface.init(this);     		// 初始化 JPush
+        JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);            // 初始化 JPush
+
 
         new Get_MyIP_Servlet().execute();
 
@@ -54,8 +57,6 @@ public class MyAPP extends Application {
             }
         }
 //        SaveUtils.setString(Save_Key.S_TLID, "8FEBC4ADB5CCD5235FD2CA97DA89F2C8");
-        LogUtil.e(TAG, "" + Const.TLID);
-        LogUtil.e(TAG, "" + SaveUtils.getString(Save_Key.S_TLID));
 
         if (TextUtils.isEmpty(Const.TLID) && TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
             LogUtil.e(TAG, "绑定设备");
@@ -63,8 +64,8 @@ public class MyAPP extends Application {
         } else {
             LogUtil.e(TAG, "" + Const.TLID);
             LogUtil.e(TAG, "" + SaveUtils.getString(Save_Key.S_TLID));
-        }
 
+        }
     }
 
     /**

@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tl.film.model.Save_Key;
 import com.tl.film.utils.ExampleUtil;
 import com.tl.film.utils.LogUtil;
+import com.tl.film.utils.SaveUtils;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -16,33 +18,36 @@ public class Jpush_Receiver extends BroadcastReceiver {
 
     private NotificationManager nm;
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
         if (null == nm) {
             nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
         Bundle bundle = intent.getExtras();
-        LogUtil.d(TAG, "onReceive - " + intent.getAction() + ", extras: " + ExampleUtil.printBundle(bundle));
 
-        if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
-            LogUtil.d(TAG, "JPush 用户注册成功");
+        switch (intent.getAction()) {
+            case JPushInterface.ACTION_REGISTRATION_ID:
+                LogUtil.e(TAG, "JPush 用户注册成功");
+                break;
+            case JPushInterface.ACTION_CONNECTION_CHANGE:
+                LogUtil.e(TAG, "JPush 服务的连接状态发生变化");
 
-        } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
-            LogUtil.d(TAG, "接受到推送下来的自定义消息" + bundle.get(JPushInterface.EXTRA_MESSAGE));
-
-        } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
-            LogUtil.d(TAG, "接受到推送下来的通知");
-
-//            receivingNotification(context,bundle);
-
-        } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
-            LogUtil.d(TAG, "用户点击打开了通知");
-
-//            openNotification(context,bundle);
-
-        } else {
-            LogUtil.d(TAG, "Unhandled intent - " + intent.getAction());
+                JPushInterface.setAlias(context, 0, SaveUtils.getString(Save_Key.S_TLID));
+                break;
+            case JPushInterface.ACTION_MESSAGE_RECEIVED:
+                LogUtil.e(TAG, "接受到推送下来的自定义消息" + bundle.get(JPushInterface.EXTRA_MESSAGE));
+                break;
+            case JPushInterface.ACTION_NOTIFICATION_RECEIVED:
+                LogUtil.d(TAG, "接受到推送下来的通知");
+                break;
+            case JPushInterface.ACTION_NOTIFICATION_OPENED:
+                LogUtil.e(TAG, "用户点击打开了通知");
+                break;
+            default:
+                LogUtil.e(TAG, "onReceive - " + intent.getAction() + ", extras: " + ExampleUtil.printBundle(bundle));
+                break;
         }
+
     }
+
 }
