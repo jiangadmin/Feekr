@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.utils.ExampleUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -36,6 +39,9 @@ public class Jpush_Receiver extends BroadcastReceiver {
                 break;
             case JPushInterface.ACTION_MESSAGE_RECEIVED:
                 LogUtil.e(TAG, "接受到推送下来的自定义消息" + bundle.get(JPushInterface.EXTRA_MESSAGE));
+                EventBus_Model model = new EventBus_Model();
+                model.setCommand_1(bundle.get(JPushInterface.EXTRA_MESSAGE).toString());
+                EventBus.getDefault().post(model);
                 break;
             case JPushInterface.ACTION_NOTIFICATION_RECEIVED:
                 LogUtil.d(TAG, "接受到推送下来的通知");

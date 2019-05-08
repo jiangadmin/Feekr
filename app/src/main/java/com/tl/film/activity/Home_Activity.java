@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.tl.film.R;
 import com.tl.film.adapter.RecyclerCoverFlow_Adapter;
+import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
@@ -122,7 +123,9 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             case R.id.home_shoufa:
                 break;
             case R.id.home_quanwan:
-                QRCode_Activity.start(this);
+
+                new QRCode_Dialog(this).show();
+//                QRCode_Activity.start(this);
                 break;
             case R.id.home_lunbo:
                 Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");
