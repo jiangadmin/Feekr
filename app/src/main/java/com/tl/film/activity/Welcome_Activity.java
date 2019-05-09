@@ -1,5 +1,6 @@
 package com.tl.film.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,6 +17,12 @@ import com.tl.film.R;
  */
 public class Welcome_Activity extends Base_Activity {
     private static final String TAG = "Welcome_Activity";
+
+    public static void start(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, Welcome_Activity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,9 +53,6 @@ public class Welcome_Activity extends Base_Activity {
         @Override
         public void onFinish() {
 
-            Intent intent = new Intent();
-            intent.setClass(Welcome_Activity.this, Home_Activity.class);
-            startActivity(intent);
             finish();
         }
     }

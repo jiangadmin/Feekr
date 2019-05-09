@@ -53,14 +53,17 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         initview();
 
+        Welcome_Activity.start(this);
+
         registerMessageReceiver();  // used for receive msg
 
         new FirstFilms_Servlet(this).execute();
         new DefTheme_Servlet(this).execute();
         if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
             LogUtil.e(TAG, "首发影院");
-
         }
+
+
     }
 
 

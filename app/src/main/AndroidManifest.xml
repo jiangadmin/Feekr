@@ -43,6 +43,14 @@
             android:name="com.tl.film.activity.Welcome_Activity"
             android:screenOrientation="landscape">
 
+
+        </activity>
+
+        <activity
+            android:name=".activity.Home_Activity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,11 +60,6 @@
 
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".activity.Home_Activity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape" />
 
         <activity
             android:name=".activity.Moive_Activity"
@@ -94,7 +97,8 @@
 
         <!-- Since JCore2.0.0 Required SDK核心功能-->
         <!-- 这个Service要继承JCommonService -->
-        <service android:name=".service.JPushService"
+        <service
+            android:name=".service.JPushService"
             android:process=":pushcore">
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />
@@ -110,7 +114,7 @@
         <receiver
             android:name=".receiver.Jpush_Message_Receiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
                 <category android:name="com.tl.film" />
