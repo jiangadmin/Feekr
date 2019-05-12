@@ -4,22 +4,33 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
+import com.tl.film.BuildConfig;
+import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.adapter.RecyclerCoverFlow_Adapter;
+import com.tl.film.dialog.Loading;
 import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
+import com.tl.film.model.Update_Model;
 import com.tl.film.servlet.DefTheme_Servlet;
+import com.tl.film.servlet.DownUtil;
 import com.tl.film.servlet.FirstFilms_Servlet;
+import com.tl.film.servlet.Update_Servlet;
 import com.tl.film.utils.ExampleUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
@@ -28,6 +39,10 @@ import com.tl.film.view.CarouselLayoutManager;
 import com.tl.film.view.CarouselZoomPostLayoutListener;
 import com.tl.film.view.CenterScrollListener;
 import com.tl.film.view.TvRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * @author jiangyao
@@ -49,23 +64,49 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
         setContentView(R.layout.activity_home);
 
         initview();
 
-        Welcome_Activity.start(this);
-
         registerMessageReceiver();  // used for receive msg
-
+        Welcome_Activity.start(this);
+        //列表
         new FirstFilms_Servlet(this).execute();
-        new DefTheme_Servlet(this).execute();
+        //主题
+        new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        //检查更新
+        new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
             LogUtil.e(TAG, "首发影院");
         }
 
-
     }
 
+    @Override
+    protected void onResume() {
+        MyAPP.activity = this;
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        MyAPP.activity = this;
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+        MyAPP.activity = this;
+        super.onDestroy();
+    }
 
     private void initview() {
 
@@ -82,16 +123,42 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     }
 
+
+    boolean showToast = true;
+    long[] mHits = new long[7];
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (event.getAction()) {
+            case KeyEvent.KEYCODE_MENU:
+                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
+                mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+                if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
+//                    LogUtil.e(TAG, "Password:" + SaveUtils.getString(Save_Key.Password));
+//                    if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.Password))) {
+//                        Setting_Activity.start(this);
+//                    } else {
+//                        new PwdDialog(this, R.style.MyDialog).show();
+//                    }
+                } else {
+                    showToast = true;
+                }
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     /**
      * 首发影院返回
      *
-     * @param firstFilms_model
+     * @param model
      */
-    public void CallBack_FirstFilms(FirstFilms_Model firstFilms_model) {
+    @Subscribe
+    public void CallBack_FirstFilms(FirstFilms_Model model) {
         CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
         layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
         adapter = new RecyclerCoverFlow_Adapter(this, this);
-        adapter.setDataBeans(firstFilms_model.getData());
+        adapter.setDataBeans(model.getData());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
@@ -111,13 +178,57 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
      *
      * @param model
      */
+    @Subscribe
     public void CallBack_Theme(DefTheme_Model model) {
-        Glide.with(this).load(model.getData().getBgUrl()).into(bg);
+        switch (model.getCode()) {
+            case 1000:
+                //背景
+                if (!TextUtils.isEmpty(model.getData().getBgUrl())) {
+                    Picasso.with(this).load(model.getData().getBgUrl()).error(R.mipmap.bg).placeholder(R.mipmap.bg).into(bg);
+                }
+                break;
+        }
+
     }
 
     @Override
     public void clickItem(FirstFilms_Model.DataBean bean) {
         Moive_Activity.start(this, bean);
+    }
+
+    /**
+     * 检查更新
+     *
+     * @param model
+     */
+    @Subscribe
+    public void onMessage(Update_Model model) {
+        switch (model.getCode()) {
+            case 1000:
+                if (model.getData().getBuild() > BuildConfig.VERSION_CODE) {
+                    Loading.show(this, "更新中");
+                    new DownUtil().downLoad(model.getData().getDownloadUrl(), "Film_" + model.getData().getBuild() + ".apk", true);
+                }
+                break;
+            default:
+                Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+
+    /**
+     * 启动安装
+     *
+     * @param path
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Install(String path) {
+        Loading.dismiss();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setDataAndType(Uri.parse("file://" + path), "application/vnd.android.package-archive");//设置intent的data和Type属性，uri是你安装文件的路径，这里时打开安装程序。
+        startActivity(intent);
     }
 
     @Override
@@ -127,7 +238,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 break;
             case R.id.home_quanwan:
 
-                new QRCode_Dialog(this).show();
+                new QRCode_Dialog(this, "二维码").show();
 //                QRCode_Activity.start(this);
                 break;
             case R.id.home_lunbo:
@@ -164,9 +275,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                     if (!ExampleUtil.isEmpty(extras)) {
                         showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
                     }
-                    LogUtil.e(TAG,showMsg.toString());
+                    LogUtil.e(TAG, showMsg.toString());
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
+
             }
         }
     }

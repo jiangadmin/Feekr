@@ -1,20 +1,22 @@
 package com.tl.film.servlet;
 
-import android.os.AsyncTask;
-import android.text.TextUtils;
+        import android.os.AsyncTask;
+        import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.tl.film.activity.Home_Activity;
-import com.tl.film.model.Const;
-import com.tl.film.model.DefTheme_Model;
-import com.tl.film.model.Save_Key;
-import com.tl.film.utils.HttpParamUtils;
-import com.tl.film.utils.HttpUtil;
-import com.tl.film.utils.LogUtil;
-import com.tl.film.utils.SaveUtils;
+        import com.google.gson.Gson;
+        import com.tl.film.activity.Home_Activity;
+        import com.tl.film.model.Const;
+        import com.tl.film.model.DefTheme_Model;
+        import com.tl.film.model.Save_Key;
+        import com.tl.film.utils.HttpParamUtils;
+        import com.tl.film.utils.HttpUtil;
+        import com.tl.film.utils.LogUtil;
+        import com.tl.film.utils.SaveUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+        import org.greenrobot.eventbus.EventBus;
+
+        import java.util.HashMap;
+        import java.util.Map;
 
 /**
  * @author jiangyao
@@ -40,6 +42,8 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
 
         String res = HttpUtil.doPost(Const.URL + "fapp/themeController/findDefTheme.do", map);
 
+        LogUtil.e(TAG, res);
+
         DefTheme_Model model;
         if (TextUtils.isEmpty(res)) {
             model = new DefTheme_Model();
@@ -54,7 +58,6 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
             }
         }
 
-
         return model;
     }
 
@@ -62,11 +65,6 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
     @Override
     protected void onPostExecute(DefTheme_Model model) {
         super.onPostExecute(model);
-        switch (model.getCode()) {
-            case 1000:
-                activity.CallBack_Theme(model);
-                break;
-        }
-
+        EventBus.getDefault().post(model);
     }
 }

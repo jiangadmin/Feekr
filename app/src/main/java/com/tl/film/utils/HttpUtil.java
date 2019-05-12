@@ -3,6 +3,8 @@ package com.tl.film.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tl.film.model.Const;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -109,9 +111,13 @@ public class HttpUtil {
      */
 
     public static String doPost(String url, Map<String, String> param) {
+
+        if (!url.contains("http")) {
+            url = Const.URL + url;
+        }
         StringBuilder paramStr = new StringBuilder();
         for (Map.Entry<String, String> para : param.entrySet()) {
-            if (TextUtils.isEmpty(para.getValue())){
+            if (TextUtils.isEmpty(para.getValue())) {
                 continue;
             }
             try {

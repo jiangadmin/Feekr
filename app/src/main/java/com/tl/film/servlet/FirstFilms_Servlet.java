@@ -5,13 +5,14 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tl.film.activity.Home_Activity;
-import com.tl.film.model.Const;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.utils.HttpParamUtils;
 import com.tl.film.utils.HttpUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class FirstFilms_Servlet extends AsyncTask<String, Integer, FirstFilms_Mo
 
         map = HttpParamUtils.getRequestParams(map);
 
-        String res = HttpUtil.doPost(Const.URL + "cms/channelsController/findFirstFilms.do", map);
+        String res = HttpUtil.doPost("cms/channelsController/findFirstFilms.do", map);
         LogUtil.e(TAG, res);
 
         FirstFilms_Model model;
@@ -63,11 +64,6 @@ public class FirstFilms_Servlet extends AsyncTask<String, Integer, FirstFilms_Mo
     @Override
     protected void onPostExecute(FirstFilms_Model model) {
         super.onPostExecute(model);
-        switch (model.getCode()){
-            case 1000:
-                activity.CallBack_FirstFilms(model);
-                break;
-        }
-
+        EventBus.getDefault().post(model);
     }
 }

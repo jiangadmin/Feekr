@@ -10,13 +10,14 @@ package com.tl.film.model;
 public class Base_Model {
 
     /**
-     * code : 034004
-     * message : 终端已绑定，请勿重复绑定！
-     * data :
+     * code : 0015
+     * message : 请求数据不存在！
+     * data : null
      */
 
     private int code;
     private String message;
+
 
     public int getCode() {
         return code;
@@ -33,4 +34,6 @@ public class Base_Model {
     public void setMessage(String message) {
         this.message = message;
     }
+
+
 }

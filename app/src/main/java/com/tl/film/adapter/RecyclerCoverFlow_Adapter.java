@@ -63,7 +63,11 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     @Override
     public int getItemCount() {
-        return dataBeans.size();
+        if (dataBeans!=null) {
+            return dataBeans.size();
+        }else{
+            return 0;
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

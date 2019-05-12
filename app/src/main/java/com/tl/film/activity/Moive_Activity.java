@@ -11,8 +11,16 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
+import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.FirstFilms_Model;
+import com.tl.film.model.Perpay_Model;
+import com.tl.film.servlet.Get_PerPay_Servlet;
 import com.tl.film.utils.Open_Ktcp_Utils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.net.URLDecoder;
 
 /**
  * @author jiangyao
@@ -42,6 +50,9 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moive);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         initview();
 
@@ -70,15 +81,34 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     }
 
     @Override
+    protected void onDestroy() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.moive_play:
+                //免费
                 if (bean.getTxPayStatus() == 8) {
                     Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
                 } else {
-                    QRCode_Activity.start(this);
+                    new Get_PerPay_Servlet(this).execute(bean.getTxCoverId(), String.valueOf(bean.getId()));
                 }
+                break;
+        }
+    }
 
+    @Subscribe
+    public void onMessage(Perpay_Model model) {
+        switch (model.getCode()) {
+            case 1000:
+                new QRCode_Dialog(this, URLDecoder.decode(model.getData())).show();
+                break;
+            default:
                 break;
         }
     }

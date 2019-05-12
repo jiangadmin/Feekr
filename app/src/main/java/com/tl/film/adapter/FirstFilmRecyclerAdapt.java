@@ -26,23 +26,25 @@ public class FirstFilmRecyclerAdapt extends RecyclerView.Adapter<FirstFilmRecycl
     private List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
 
     private int currentPosition;
+
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
-        void onItemLongClick(View view,int position);
+
+        void onItemLongClick(View view, int position);
     }
 
-    public interface OnItemSelectListener{
-        void onItemSelect(View view,int position);
+    public interface OnItemSelectListener {
+        void onItemSelect(View view, int position);
     }
 
     private OnItemClickListener mListener;
     private OnItemSelectListener mSelectListener;
 
-    public void setOnItemSelectListener(OnItemSelectListener listener){
+    public void setOnItemSelectListener(OnItemSelectListener listener) {
         mSelectListener = listener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
 
@@ -70,7 +72,7 @@ public class FirstFilmRecyclerAdapt extends RecyclerView.Adapter<FirstFilmRecycl
         FirstFilms_Model.DataBean bean = dataBeans.get(position);
         holder.img.setTag(position);
 
-        Picasso.with(mContext).load(bean.getBgImage()).into(holder.img);
+        Picasso.with(mContext).load(bean.getBgImage()).error(R.mipmap.item_bg).placeholder(R.mipmap.item_bg).into(holder.img);
         holder.img.setOnClickListener(v -> {
             if (clickCb != null) {
                 clickCb.clickItem(bean);
@@ -80,27 +82,24 @@ public class FirstFilmRecyclerAdapt extends RecyclerView.Adapter<FirstFilmRecycl
 
         holder.itemView.setFocusable(true);
         holder.itemView.setTag(position);
-        holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                LogUtil.e(TAG,  "hasfocus:" + position + "--" + hasFocus);
-                if(hasFocus){
-                    currentPosition = (int)holder.itemView.getTag();
-                    mSelectListener.onItemSelect(holder.itemView,currentPosition);
-                }
+        holder.itemView.setOnFocusChangeListener((v, hasFocus) -> {
+            LogUtil.e(TAG, "hasfocus:" + position + "--" + hasFocus);
+            if (hasFocus) {
+                currentPosition = (int) holder.itemView.getTag();
+                mSelectListener.onItemSelect(holder.itemView, currentPosition);
             }
         });
-        if(mListener!=null){
+        if (mListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onItemClick(v,holder.getLayoutPosition());
+                    mListener.onItemClick(v, holder.getLayoutPosition());
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    mListener.onItemLongClick(v,holder.getLayoutPosition());
+                    mListener.onItemLongClick(v, holder.getLayoutPosition());
                     return true;
                 }
             });

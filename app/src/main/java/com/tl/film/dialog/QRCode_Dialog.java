@@ -1,7 +1,7 @@
 package com.tl.film.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
@@ -11,8 +11,10 @@ import android.widget.Toast;
 
 import com.tl.film.MyAPP;
 import com.tl.film.R;
+import com.tl.film.activity.Moive_Activity;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.utils.ImageUtils;
+import com.tl.film.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -20,11 +22,19 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.Calendar;
 
 public class QRCode_Dialog extends Dialog {
+    private static final String TAG = "QRCode_Dialog";
 
-    public QRCode_Dialog(@NonNull Context context) {
-        super(context);
+    private static String string = null;
+
+    private static Moive_Activity moive_activity;
+
+    public QRCode_Dialog(@NonNull Activity activity, String string) {
+        super(activity, R.style.MyDialogStyleBottom);
+        QRCode_Dialog.string = string;
+        if (activity instanceof Moive_Activity) {
+            QRCode_Dialog.moive_activity = (Moive_Activity) activity;
+        }
     }
-
 
     ImageView qr;
 
@@ -42,7 +52,8 @@ public class QRCode_Dialog extends Dialog {
         qr = findViewById(R.id.qr);
         message_0 = findViewById(R.id.message_0);
         message_1 = findViewById(R.id.message_1);
-        qr.setImageBitmap(ImageUtils.getQRcode("二维码数据"));
+        LogUtil.e(TAG, string);
+        qr.setImageBitmap(ImageUtils.getQRcode(string));
     }
 
     @Subscribe
@@ -64,7 +75,6 @@ public class QRCode_Dialog extends Dialog {
         }
         super.dismiss();
     }
-
 
     private long lastClickTime = 0;
 
