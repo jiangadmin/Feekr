@@ -86,4 +86,11 @@
 
         </RelativeLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/welcome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/welcome" />
+
 </RelativeLayout>

@@ -41,13 +41,6 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.tl.film.activity.Welcome_Activity"
-            android:screenOrientation="landscape">
-
-
-        </activity>
-
-        <activity
             android:name=".activity.Home_Activity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape">

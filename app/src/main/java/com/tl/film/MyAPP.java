@@ -55,28 +55,11 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
         super.onCreate();
         context = this;
 
+        new Get_MyIP_Servlet().execute();
+
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);            // 初始化 JPush
 
-
-        new Get_MyIP_Servlet().execute();
-
-        if (TextUtils.isEmpty(Const.TLID)) {
-            if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
-                Const.TLID = SaveUtils.getString(Save_Key.S_TLID);
-            }
-        }
-//        SaveUtils.setString(Save_Key.S_TLID, "8FEBC4ADB5CCD5235FD2CA97DA89F2C8");
-//        SaveUtils.setString(Save_Key.S_TLID, null);
-
-        if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
-            LogUtil.e(TAG, "绑定设备");
-            new Bind_Servlet().execute(getMacAddress());
-        } else {
-            LogUtil.e(TAG, "" + Const.TLID);
-            LogUtil.e(TAG, "" + SaveUtils.getString(Save_Key.S_TLID));
-
-        }
     }
 
     /**
@@ -111,38 +94,6 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
         }
         return macAddress;
     }
-
-
-    public static String getBtAddressByReflection() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Field field = null;
-        try {
-            field = BluetoothAdapter.class.getDeclaredField("mService");
-            field.setAccessible(true);
-            Object bluetoothManagerService = field.get(bluetoothAdapter);
-            if (bluetoothManagerService == null) {
-                return null;
-            }
-            Method method = bluetoothManagerService.getClass().getMethod("getAddress");
-            if (method != null) {
-                Object obj = method.invoke(bluetoothManagerService);
-                if (obj != null) {
-                    return obj.toString();
-                }
-            }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
 
     /**
      * 当前IP
@@ -180,7 +131,6 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
         loginData.put("vuid", Const.ktcp_vuid);
         loginData.put("vtoken", Const.ktcp_vtoken);
         loginData.put("accessToken", Const.ktcp_accessToken);
-
 
         //大票换小票接口
         TvTicketTool.getVirtualTVSKey(this, false, Long.parseLong(Const.ktcp_vuid), Const.ktcp_vtoken, Const.ktcp_accessToken, new TvTencentSdk.OnTVSKeyListener() {

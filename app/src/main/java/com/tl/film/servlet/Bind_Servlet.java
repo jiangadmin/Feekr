@@ -7,12 +7,15 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tl.film.MyAPP;
 import com.tl.film.model.Const;
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Tlid_Model;
 import com.tl.film.utils.HttpParamUtils;
 import com.tl.film.utils.HttpUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +57,6 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
             }
         }
 
-
         return model;
     }
 
@@ -66,6 +68,11 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
                 if (model.getData() != null && !TextUtils.isEmpty(model.getData().getTlid())) {
                     Const.TLID = model.getData().getTlid();
                     SaveUtils.setString(Save_Key.S_TLID, Const.TLID);
+
+                    EventBus_Model model1 = new EventBus_Model();
+                    model1.setCommand_1("主页初始化");
+                    EventBus.getDefault().post(model1);
+
                 }
                 break;
         }

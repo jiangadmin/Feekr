@@ -18,7 +18,6 @@ public class Base_Model {
     private int code;
     private String message;
 
-
     public int getCode() {
         return code;
     }
@@ -28,6 +27,12 @@ public class Base_Model {
     }
 
     public String getMessage() {
+        switch (code) {
+            case -1:
+                return "连接服务器失败";
+            case -2:
+                return "数据解析失败";
+        }
         return message;
     }
 

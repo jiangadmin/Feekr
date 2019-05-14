@@ -65,6 +65,9 @@ public class QRCode_Dialog extends Dialog {
             case "交易成功":
                 message_0.setText("交易已完成");
                 break;
+            case "关闭二维码":
+                dismiss();
+                break;
         }
     }
 

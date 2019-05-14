@@ -1,8 +1,8 @@
 package com.tl.film.model;
 
 public class EventBus_Model {
-    private String command_1;
-    private String command_2;
+    private String command_1;   //一级指令
+    private String command_2;   //二级指令
 
     public String getCommand_1() {
         return command_1;

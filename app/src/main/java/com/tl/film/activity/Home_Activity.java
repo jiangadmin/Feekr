@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -24,9 +25,11 @@ import com.tl.film.adapter.RecyclerCoverFlow_Adapter;
 import com.tl.film.dialog.Loading;
 import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.DefTheme_Model;
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Update_Model;
+import com.tl.film.servlet.Bind_Servlet;
 import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.DownUtil;
 import com.tl.film.servlet.FirstFilms_Servlet;
@@ -73,18 +76,18 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         initview();
 
         registerMessageReceiver();  // used for receive msg
-        Welcome_Activity.start(this);
-        //列表
-        new FirstFilms_Servlet(this).execute();
-        //主题
-        new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        //检查更新
-        new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
-            LogUtil.e(TAG, "首发影院");
+        new Timer(3000, 3000).start();
+
+        if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
+            LogUtil.e(TAG, "绑定设备");
+            new Bind_Servlet().execute(MyAPP.getMacAddress());
+        } else {
+            EventBus_Model model = new EventBus_Model();
+            model.setCommand_1("主页初始化");
+            EventBus.getDefault().post(model);
+
         }
-
     }
 
     @Override
@@ -97,6 +100,18 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     protected void onStop() {
         MyAPP.activity = this;
         super.onStop();
+    }
+
+    @Subscribe
+    public void initevent(EventBus_Model model) {
+        if (model.getCommand_1().equals("主页初始化")) {
+            //列表
+            new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            //主题
+            new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            //检查更新
+            new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     @Override
@@ -280,6 +295,31 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             } catch (Exception e) {
 
             }
+        }
+    }
+
+
+    class Timer extends CountDownTimer {
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public Timer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+
+            findViewById(R.id.welcome).setVisibility(View.GONE);
         }
     }
 }
