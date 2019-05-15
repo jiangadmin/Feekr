@@ -13,6 +13,7 @@ import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.activity.Moive_Activity;
 import com.tl.film.model.EventBus_Model;
+import com.tl.film.servlet.Get_PerPay_Servlet;
 import com.tl.film.utils.ImageUtils;
 import com.tl.film.utils.LogUtil;
 
@@ -90,7 +91,7 @@ public class QRCode_Dialog extends Dialog {
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
                     lastClickTime = currentTime;
-                    Toast.makeText(MyAPP.getContext(), "按键有效", Toast.LENGTH_SHORT).show();
+                    new Get_PerPay_Servlet().execute(Moive_Activity.bean.getTxCoverId(), String.valueOf(Moive_Activity.bean.getId()));
                     return false;
                 } else {
                     Toast.makeText(MyAPP.getContext(), "稍安勿躁", Toast.LENGTH_SHORT).show();

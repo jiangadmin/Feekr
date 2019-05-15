@@ -1,6 +1,5 @@
 package com.tl.film.servlet;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
@@ -19,12 +18,6 @@ import java.util.Map;
 
 public class Get_PerPay_Servlet extends AsyncTask<String, Integer, Perpay_Model> {
     private static final String TAG = "Get_PerPay_Servlet";
-
-    Activity activity;
-
-    public Get_PerPay_Servlet(Activity activity) {
-        this.activity = activity;
-    }
 
     @Override
     protected Perpay_Model doInBackground(String... strings) {

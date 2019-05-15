@@ -10,8 +10,8 @@ import android.os.Environment;
  * TODO: 常量
  */
 public class Const {
-        public static String URL = "http://mp.tenglv.net/";
-//    public static String URL = "http://192.168.31.116:9092/tlh_api/";
+//        public static String URL = "http://mp.tenglv.net/";
+    public static String URL = "http://tlh.free.idcfengye.com/";
     public static String TLID = null;
     public static String FilePath = Environment.getExternalStorageDirectory().getPath() + "/Film/Download/";
 

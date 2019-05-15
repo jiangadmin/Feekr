@@ -253,7 +253,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 break;
             case R.id.home_quanwan:
 
-                new QRCode_Dialog(this, "二维码").show();
 //                QRCode_Activity.start(this);
                 break;
             case R.id.home_lunbo:

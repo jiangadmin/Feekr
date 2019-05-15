@@ -15,6 +15,7 @@ import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Perpay_Model;
 import com.tl.film.servlet.Get_PerPay_Servlet;
+import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,7 +33,7 @@ import java.net.URLDecoder;
 public class Moive_Activity extends Base_Activity implements View.OnClickListener {
     private static final String TAG = "Moive_Activity";
 
-    private static FirstFilms_Model.DataBean bean;
+    public static FirstFilms_Model.DataBean bean;
 
     public static void start(Context context, FirstFilms_Model.DataBean bean) {
         Intent intent = new Intent();
@@ -96,7 +97,7 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
                 if (bean.getTxPayStatus() == 8) {
                     Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
                 } else {
-                    new Get_PerPay_Servlet(this).execute(bean.getTxCoverId(), String.valueOf(bean.getId()));
+                    new Get_PerPay_Servlet().execute(bean.getTxCoverId(), String.valueOf(bean.getId()));
                 }
                 break;
         }
@@ -104,10 +105,15 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
 
     @Subscribe
     public void onMessage(Perpay_Model model) {
+
         switch (model.getCode()) {
             case 1000:
-                new QRCode_Dialog(this, URLDecoder.decode(model.getData())).show();
+                QRCode_Dialog qrCode_dialog = new QRCode_Dialog(this,URLDecoder.decode(model.getData()));
+                if (!qrCode_dialog.isShowing()){
+                    qrCode_dialog.show();
+                }
                 break;
+
             default:
                 break;
         }
