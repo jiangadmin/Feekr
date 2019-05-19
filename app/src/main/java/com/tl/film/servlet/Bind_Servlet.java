@@ -41,7 +41,7 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
         map.put("build", "1");
         map = HttpParamUtils.getRequestParams(map);
 
-        String res = HttpUtil.doPost(Const.URL + "fapp/terminalController/bind.do", map);
+        String res = HttpUtil.doPost("fapp/terminalController/bind.do", map);
 
         LogUtil.e(TAG, res);
         Tlid_Model model;

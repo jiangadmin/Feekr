@@ -17,13 +17,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.tl.film.BuildConfig;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.adapter.RecyclerCoverFlow_Adapter;
 import com.tl.film.dialog.Loading;
-import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
@@ -76,6 +76,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         initview();
 
         registerMessageReceiver();  // used for receive msg
+
+        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.FirstFilms_Model))) {
+            CallBack_FirstFilms(new Gson().fromJson(SaveUtils.getString(Save_Key.FirstFilms_Model), FirstFilms_Model.class));
+        }
 
         new Timer(3000, 3000).start();
 
@@ -170,21 +174,29 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
      */
     @Subscribe
     public void CallBack_FirstFilms(FirstFilms_Model model) {
-        CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
-        layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
-        adapter = new RecyclerCoverFlow_Adapter(this, this);
-        adapter.setDataBeans(model.getData());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addOnScrollListener(new CenterScrollListener());
 
-        layoutManager.setItemPrefetchEnabled(true);
+        switch (model.getCode()) {
+            case 1000:
+                CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
+                layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
+                adapter = new RecyclerCoverFlow_Adapter(this, this);
+                adapter.setDataBeans(model.getData());
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.addOnScrollListener(new CenterScrollListener());
 
-        //触摸切换
-        layoutManager.addOnItemSelectionListener(adapterPosition -> {
+                layoutManager.setItemPrefetchEnabled(true);
 
-        });
+                //触摸切换
+                layoutManager.addOnItemSelectionListener(adapterPosition -> {
+
+                });
+
+                SaveUtils.setString(Save_Key.FirstFilms_Model, new Gson().toJson(model));
+                break;
+        }
+
 
     }
 

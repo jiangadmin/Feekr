@@ -12,6 +12,7 @@ import com.ktcp.video.thirdagent.JsonUtils;
 import com.ktcp.video.thirdagent.KtcpContants;
 import com.ktcp.video.thirdagent.KtcpPaySDKCallback;
 import com.ktcp.video.thirdagent.KtcpPaySdkProxy;
+import com.ktcp.video.thirdagent.ThirdAuthService;
 import com.tl.film.model.Const;
 import com.tl.film.model.Save_Key;
 import com.tl.film.servlet.Bind_Servlet;
@@ -119,6 +120,7 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
      */
     @Override
     public void doLogin(String channel, String extra) {
+        LogUtil.e(TAG,extra);
 
         final HashMap<String, Object> loginData = new HashMap<>();
         // FIXME:  获取帐号   需要腾讯处理的错误码和提示请沟通好通知处理

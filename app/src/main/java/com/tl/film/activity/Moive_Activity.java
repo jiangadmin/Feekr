@@ -113,6 +113,9 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
                     qrCode_dialog.show();
                 }
                 break;
+            case 37003:
+                Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
+                break;
 
             default:
                 break;
