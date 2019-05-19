@@ -238,11 +238,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 }
                 break;
             default:
-                Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
-
 
     /**
      * 启动安装

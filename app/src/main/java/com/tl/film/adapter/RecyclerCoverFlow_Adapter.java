@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
@@ -63,15 +64,16 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     @Override
     public int getItemCount() {
-        if (dataBeans!=null) {
+        if (dataBeans != null) {
             return dataBeans.size();
-        }else{
+        } else {
             return 0;
         }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView img;
+
 
         public ViewHolder(View itemView) {
             super(itemView);

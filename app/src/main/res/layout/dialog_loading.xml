@@ -20,7 +20,7 @@
             style="@style/AVLoadingIndicatorView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:indicatorColor="@color/white"
+            app:indicatorColor="@color/black"
             app:indicatorName="BallSpinFadeLoaderIndicator" />
 
         <TextView
@@ -30,10 +30,9 @@
             android:layout_marginTop="15dp"
             android:gravity="center_horizontal"
             android:text="请稍后···"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="16sp" />
 
     </LinearLayout>
-
 
 </LinearLayout>

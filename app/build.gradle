@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('D:\\GitHub_Project\\Feekr_Xgimi_2\\Jiang.jks')
+            storePassword 'jiangadmin'
+            keyAlias = 'jiang'
+            keyPassword 'jiangadmin'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.tl.film"
@@ -22,6 +30,10 @@ android {
         ]
     }
     buildTypes {
+        debug{
+            signingConfig signingConfigs.debug
+
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -2,7 +2,6 @@ package com.tl.film;
 
 import android.app.Activity;
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -12,20 +11,16 @@ import com.ktcp.video.thirdagent.JsonUtils;
 import com.ktcp.video.thirdagent.KtcpContants;
 import com.ktcp.video.thirdagent.KtcpPaySDKCallback;
 import com.ktcp.video.thirdagent.KtcpPaySdkProxy;
-import com.ktcp.video.thirdagent.ThirdAuthService;
 import com.tl.film.model.Const;
 import com.tl.film.model.Save_Key;
-import com.tl.film.servlet.Bind_Servlet;
 import com.tl.film.servlet.Get_MyIP_Servlet;
+import com.tl.film.servlet.Get_Vuid_Servlet;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.HashMap;
@@ -60,6 +55,9 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);            // 初始化 JPush
+
+        //添加监听
+        KtcpPaySdkProxy.getInstance().setPaySDKCallback(this);
 
     }
 
@@ -113,47 +111,66 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
     private int status = -1;//接口状态码
     private String msg;//接口提示信息
-
+    private String guid = "";
     /**
      * @param channel 三方厂商对应的渠道号
      * @param extra   包含guid,QUA，TVPlatform等字段的json字符串
      */
     @Override
     public void doLogin(String channel, String extra) {
-        LogUtil.e(TAG,extra);
-
-        final HashMap<String, Object> loginData = new HashMap<>();
-        // FIXME:  获取帐号   需要腾讯处理的错误码和提示请沟通好通知处理
-        // status 成功返回 0 失败返回对应错误码 厂商业务错误 fixme  腾旅 902xxx 例如902001登录失败
-        // msg  错误提示
-        // data json数据
-
-        //vuid登录示例
-        loginData.put("loginType", "vu");//登录类型 vu ,qq,wx,ph
-        loginData.put("vuid", Const.ktcp_vuid);
-        loginData.put("vtoken", Const.ktcp_vtoken);
-        loginData.put("accessToken", Const.ktcp_accessToken);
-
-        //大票换小票接口
-        TvTicketTool.getVirtualTVSKey(this, false, Long.parseLong(Const.ktcp_vuid), Const.ktcp_vtoken, Const.ktcp_accessToken, new TvTencentSdk.OnTVSKeyListener() {
-            @Override
-            public void OnTVSKeySuccess(String vusession, int expiredTime) {
-                LogUtil.e(TAG, "vusession=" + vusession + ",expiredTime=" + expiredTime);
-                status = 0;
-                msg = "login success";
-                loginData.put("vusession", vusession);
-                //通过onLoginResponse 将数据回传给腾讯
-                KtcpPaySdkProxy.getInstance().onLoginResponse(status, msg, JsonUtils.addJsonValue(loginData));
+        LogUtil.e(TAG, "获取vuid开始"+extra);
+        //解析guid
+        if (extra != null && extra.length() > 0) {
+            try {
+                JSONObject jsonObject = new JSONObject(extra);
+                guid = jsonObject.getString("guid");
+            } catch (Exception e) {
+                LogUtil.e(TAG, "解析guid报错" + e.getMessage());
             }
+        }
+        LogUtil.e(TAG, "guid = " + guid);
 
-            @Override
-            public void OnTVSKeyFaile(int failedCode, String failedMsg) {
-                LogUtil.e(TAG, "failedCode=" + failedCode + ",msg=" + failedMsg);
-                status = failedCode;
-                msg = failedMsg;
-                KtcpPaySdkProxy.getInstance().onLoginResponse(status, msg, JsonUtils.addJsonValue(loginData));
-            }
-        });
+        if (Const.ktcp_open_type == 1 &&
+                (Const.ktcp_vuid != null && Const.ktcp_vuid != "") &&
+                (Const.ktcp_vtoken != null && Const.ktcp_vtoken != "") &&
+                (Const.ktcp_accessToken != null && Const.ktcp_accessToken != "")) {
+
+            Const.ktcp_open_type = 0;       //标示位复位
+            // FIXME:  获取帐号   需要腾讯处理的错误码和提示请沟通好通知处理
+            // status 成功返回 0 失败返回对应错误码 厂商业务错误 fixme  腾旅 902xxx 例如902001登录失败
+            // msg  错误提示
+            // data json数据
+            final HashMap<String, Object> loginData = new HashMap<>();
+            loginData.put("loginType", "vu");//登录类型 vu ,qq,wx,ph
+            loginData.put("vuid", Const.ktcp_vuid);
+            loginData.put("vtoken", Const.ktcp_vtoken);
+            loginData.put("accessToken", Const.ktcp_accessToken);
+
+            //大票换小票接口
+            TvTicketTool.getVirtualTVSKey(this, false, Long.parseLong(Const.ktcp_vuid), Const.ktcp_vtoken, Const.ktcp_accessToken, new TvTencentSdk.OnTVSKeyListener() {
+                @Override
+                public void OnTVSKeySuccess(String vusession, int expiredTime) {
+                    LogUtil.e(TAG, "vusession=" + vusession + ",expiredTime=" + expiredTime);
+                    status = 0;
+                    msg = "login success";
+                    loginData.put("vusession", vusession);
+                    //通过onLoginResponse 将数据回传给腾讯
+                    KtcpPaySdkProxy.getInstance().onLoginResponse(status, msg, JsonUtils.addJsonValue(loginData));
+                }
+
+                @Override
+                public void OnTVSKeyFaile(int failedCode, String failedMsg) {
+                    LogUtil.e(TAG, "failedCode=" + failedCode + ",msg=" + failedMsg);
+                    status = failedCode;
+                    msg = failedMsg;
+                    KtcpPaySdkProxy.getInstance().onLoginResponse(status, msg, JsonUtils.addJsonValue(loginData));
+                }
+            });
+        } else {
+
+            //調用TencentVuidLoginEventServlet，在TencentVuidLoginEventServlet 獲取到vuid后直接調用TvTicketTool.getVirtualTVSKey
+            new Get_Vuid_Servlet().execute();
+        }
     }
 
     /**
@@ -165,7 +182,7 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
      */
     @Override
     public void doOrder(String vuserId, String productId, String extra) {
-
+        LogUtil.e(TAG, "extra:" + extra);
         // status 成功返回0 失败返回对应错误码 厂商业务错误 fixme  腾旅 902xxx 例如902101订购失败
         // msg  错误提示
         // data json数据 { "vuid":"","extra":{"orderId":""}}

@@ -42,7 +42,7 @@ public class ThirdPartyReceiver extends BroadcastReceiver implements IThirdParty
         this.context = context;
         //新增代码用来处理三方付费的回调只在一处调用
         if (KtcpPaySdkProxy.getInstance().getAgentVersion().compareTo("2.0.0") >= 0) {
-            Log.i(TAG, "deal KtcpPaySDK use KtcpPaySDKCallback");
+            LogUtil.e(TAG, "deal KtcpPaySDK use KtcpPaySDKCallback");
             return;
         }
 
@@ -52,7 +52,7 @@ public class ThirdPartyReceiver extends BroadcastReceiver implements IThirdParty
         if (ThirdPartyAgent.ACTION_SERVER_AGGENT.equals(intent.getAction())) {
             String channel = intent.getStringExtra("channel");
             String data = intent.getStringExtra("data");
-            Log.i(TAG, "channel=" + channel + ",data=" + data);
+            LogUtil.e(TAG, "channel=" + channel + ",data=" + data);
 
             JSONObject dataObj = JsonUtils.getJsonObj(data);
 

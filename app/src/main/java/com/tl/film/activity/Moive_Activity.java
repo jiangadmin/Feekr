@@ -15,7 +15,6 @@ import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Perpay_Model;
 import com.tl.film.servlet.Get_PerPay_Servlet;
-import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,6 +33,8 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     private static final String TAG = "Moive_Activity";
 
     public static FirstFilms_Model.DataBean bean;
+
+    QRCode_Dialog qrCode_dialog;
 
     public static void start(Context context, FirstFilms_Model.DataBean bean) {
         Intent intent = new Intent();
@@ -69,13 +70,15 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
         type = findViewById(R.id.moive_type);
         spot = findViewById(R.id.moive_spot);
 
-        name.setText(bean.getTitle());
-        Picasso.with(this).load(bean.getBgImage()).into(img);
-        time.setText(String.format("%s（%s 分钟）", bean.getBrief(), bean.getDuratior()));
-        director.setText(bean.getDirectors());
-        type.setText(bean.getBrief());
-        tostar.setText(bean.getActors());
-        spot.setText(bean.getProfile());
+        if (bean != null) {
+            name.setText(bean.getTitle());
+            Picasso.with(this).load(bean.getBgImage()).into(img);
+            time.setText(String.format("%s（%s 分钟）", bean.getBrief(), bean.getDuratior()));
+            director.setText(bean.getDirectors());
+            type.setText(bean.getBrief());
+            tostar.setText(bean.getActors());
+            spot.setText(bean.getProfile());
+        }
 
         play.setOnClickListener(this);
 
@@ -108,8 +111,10 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
 
         switch (model.getCode()) {
             case 1000:
-                QRCode_Dialog qrCode_dialog = new QRCode_Dialog(this,URLDecoder.decode(model.getData()));
-                if (!qrCode_dialog.isShowing()){
+                if (qrCode_dialog == null) {
+                    qrCode_dialog = new QRCode_Dialog(this, URLDecoder.decode(model.getData()));
+                }
+                if (!qrCode_dialog.isShowing()) {
                     qrCode_dialog.show();
                 }
                 break;
