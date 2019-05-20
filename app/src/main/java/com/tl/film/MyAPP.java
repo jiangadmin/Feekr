@@ -112,13 +112,14 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
     private int status = -1;//接口状态码
     private String msg;//接口提示信息
     private String guid = "";
+
     /**
      * @param channel 三方厂商对应的渠道号
      * @param extra   包含guid,QUA，TVPlatform等字段的json字符串
      */
     @Override
     public void doLogin(String channel, String extra) {
-        LogUtil.e(TAG, "获取vuid开始"+extra);
+        LogUtil.e(TAG, "获取vuid开始" + extra);
         //解析guid
         if (extra != null && extra.length() > 0) {
             try {
@@ -169,7 +170,7 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
         } else {
 
             //調用TencentVuidLoginEventServlet，在TencentVuidLoginEventServlet 獲取到vuid后直接調用TvTicketTool.getVirtualTVSKey
-            new Get_Vuid_Servlet().execute();
+            new Get_Vuid_Servlet().execute(guid);
         }
     }
 

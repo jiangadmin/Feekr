@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.ktcp.video.thirdagent.JsonUtils;
