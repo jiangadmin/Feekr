@@ -90,8 +90,15 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             EventBus_Model model = new EventBus_Model();
             model.setCommand_1("主页初始化");
             EventBus.getDefault().post(model);
-
         }
+
+
+         //创建一个意图对象
+         Intent intent = new Intent();
+         //指定发送广播的频道
+         intent.setAction("com.tencent.qqlivetv.login.req");
+         //发送
+          sendBroadcast(intent);
     }
 
     @Override
