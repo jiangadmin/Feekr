@@ -38,7 +38,7 @@ public class Get_Vuid_Servlet extends AsyncTask<String, Integer, Vuid_Model> {
         map.put("guid", strings[0]);
         map = HttpParamUtils.getRequestParams(map);
 
-        String res = HttpUtil.doPost(Const.URL + "fapp/themeController/findDefTheme.do", map);
+        String res = HttpUtil.doPost(Const.URL + "tencent/vuid/vuidAcctController/doLogin.do", map);
 
         LogUtil.e(TAG, res);
 
@@ -64,29 +64,24 @@ public class Get_Vuid_Servlet extends AsyncTask<String, Integer, Vuid_Model> {
     protected void onPostExecute(Vuid_Model model) {
         super.onPostExecute(model);
 
-        Const.IsGetVip = true;
+        //如果正确返回则执行腾讯大票换小票接口
         if (model.getCode() == 1000 && MyAPP.getContext() != null) {
 
-            final HashMap<String, Object> loginData = new HashMap<>();
+            //解析vuid数据
+            HashMap<String, Object> loginData = new HashMap<>();
             loginData.put("loginType", "vu");//登录类型 vu ,qq,wx,ph
             loginData.put("vuid", model.getData().getVuid());
             loginData.put("vtoken", model.getData().getVtoken());
             loginData.put("accessToken", model.getData().getAccessToken());
-
-            Const.ktcp_vuid = String.valueOf(model.getData().getVuid());
-            Const.ktcp_vtoken = model.getData().getVtoken();
-            Const.ktcp_accessToken = model.getData().getAccessToken();
 
             //大票换小票接口
             TvTicketTool.getVirtualTVSKey(MyAPP.getContext(), false, model.getData().getVuid(), model.getData().getVtoken(), model.getData().getAccessToken(), new TvTencentSdk.OnTVSKeyListener() {
                 @Override
                 public void OnTVSKeySuccess(String vusession, int expiredTime) {
                     LogUtil.e(TAG, "vusession=" + vusession + ",expiredTime=" + expiredTime);
-                    int status = 0;
-                    String msg = "login success";
                     loginData.put("vusession", vusession);
                     //通过onLoginResponse 将数据回传给腾讯
-                    KtcpPaySdkProxy.getInstance().onLoginResponse(status, msg, JsonUtils.addJsonValue(loginData));
+                    KtcpPaySdkProxy.getInstance().onLoginResponse(0, "login success", JsonUtils.addJsonValue(loginData));
                 }
 
                 @Override
