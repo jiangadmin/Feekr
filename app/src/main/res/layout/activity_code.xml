@@ -1,15 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_gradient_start"
+    android:background="@mipmap/bg"
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
-        android:background="@color/white"
-        android:id="@+id/qr"
-        android:layout_width="300dp"
-        android:layout_height="300dp" />
+    <LinearLayout
+        android:id="@+id/view_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignRight="@+id/view"
+        android:layout_alignParentLeft="true"
+        android:gravity="center"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/qr"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:background="@color/white" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/view_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/view"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingStart="50dp">
+
+        <TextView
+            android:id="@+id/info_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="信息一" />
+
+        <TextView
+            android:id="@+id/info_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="信息一" />
+
+        <TextView
+            android:id="@+id/info_3"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="信息一" />
+
+        <TextView
+            android:id="@+id/info_4"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="信息一" />
+
+        <TextView
+            android:id="@+id/info_5"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="信息一" />
+
+        <TextView
+            android:id="@+id/info_6"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="信息一" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

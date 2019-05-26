@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -92,13 +91,12 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             EventBus.getDefault().post(model);
         }
 
-
-         //创建一个意图对象
-         Intent intent = new Intent();
-         //指定发送广播的频道
-         intent.setAction("com.tencent.qqlivetv.login.req");
-         //发送
-          sendBroadcast(intent);
+        //创建一个意图对象
+        Intent intent = new Intent();
+        //指定发送广播的频道
+        intent.setAction("com.tencent.qqlivetv.login.req");
+        //发送
+        sendBroadcast(intent);
     }
 
     @Override
@@ -149,7 +147,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     }
 
-
     boolean showToast = true;
     long[] mHits = new long[7];
 
@@ -157,9 +154,11 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (event.getAction()) {
             case KeyEvent.KEYCODE_MENU:
+
                 System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
                 mHits[mHits.length - 1] = SystemClock.uptimeMillis();
                 if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
+
 //                    LogUtil.e(TAG, "Password:" + SaveUtils.getString(Save_Key.Password));
 //                    if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.Password))) {
 //                        Setting_Activity.start(this);
@@ -203,7 +202,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 SaveUtils.setString(Save_Key.FirstFilms_Model, new Gson().toJson(model));
                 break;
         }
-
 
     }
 
@@ -270,8 +268,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             case R.id.home_shoufa:
                 break;
             case R.id.home_quanwan:
-
-//                QRCode_Activity.start(this);
+//                Info_Activity.start(this);
+                QRCode_Activity.start(this);
                 break;
             case R.id.home_lunbo:
                 Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");

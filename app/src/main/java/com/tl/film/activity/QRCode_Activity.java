@@ -2,10 +2,17 @@ package com.tl.film.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.tl.film.R;
 import com.tl.film.utils.ImageUtils;
 
@@ -24,6 +31,7 @@ public class QRCode_Activity extends Base_Activity {
         intent.setClass(context, QRCode_Activity.class);
         context.startActivity(intent);
     }
+
 
     ImageView qr;
 
