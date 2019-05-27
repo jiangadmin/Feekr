@@ -97,13 +97,17 @@
         </activity>
 
         <activity
+            android:name=".activity.Register_Activity"
+            android:screenOrientation="landscape" />
+
+        <activity
             android:name=".activity.Moive_Activity"
             android:screenOrientation="landscape" />
 
         <activity
-            android:theme="@style/translucent"
             android:name=".activity.QRCode_Activity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:theme="@style/translucent" />
 
         <activity
             android:name=".activity.Info_Activity"

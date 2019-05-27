@@ -10,7 +10,7 @@ package com.tl.film.model;
 public class Tlid_Model extends Base_Model {
 
     /**
-     * data : {"tlid":"123asdfa123qeawrwaeradwfssa"}
+     * data : {"merchantCode":"","tlid":"d3ae3dd146b04e769ca3f51730881eee","merchantId":0,"merchantName":""}
      */
 
     private DataBean data;
@@ -25,10 +25,24 @@ public class Tlid_Model extends Base_Model {
 
     public static class DataBean {
         /**
-         * tlid : 123asdfa123qeawrwaeradwfssa
+         * merchantCode :
+         * tlid : d3ae3dd146b04e769ca3f51730881eee
+         * merchantId : 0
+         * merchantName :
          */
 
+        private String merchantCode;
         private String tlid;
+        private int merchantId;
+        private String merchantName;
+
+        public String getMerchantCode() {
+            return merchantCode;
+        }
+
+        public void setMerchantCode(String merchantCode) {
+            this.merchantCode = merchantCode;
+        }
 
         public String getTlid() {
             return tlid;
@@ -36,6 +50,22 @@ public class Tlid_Model extends Base_Model {
 
         public void setTlid(String tlid) {
             this.tlid = tlid;
+        }
+
+        public int getMerchantId() {
+            return merchantId;
+        }
+
+        public void setMerchantId(int merchantId) {
+            this.merchantId = merchantId;
+        }
+
+        public String getMerchantName() {
+            return merchantName;
+        }
+
+        public void setMerchantName(String merchantName) {
+            this.merchantName = merchantName;
         }
     }
 }

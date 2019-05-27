@@ -5,6 +5,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tl.film.BuildConfig;
 import com.tl.film.MyAPP;
 import com.tl.film.model.Const;
 import com.tl.film.model.EventBus_Model;
@@ -37,8 +38,8 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
         map.put("ip", MyAPP.getIp());
         map.put("mac", strings[0]);
         map.put("mainBoard", Build.BOARD);
-        map.put("ver", "1.0.0");
-        map.put("build", "1");
+        map.put("ver", BuildConfig.VERSION_NAME);
+        map.put("build", String.valueOf(BuildConfig.VERSION_CODE));
         map = HttpParamUtils.getRequestParams(map);
 
         String res = HttpUtil.doPost("fapp/terminalController/bind.do", map);
@@ -65,6 +66,7 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
         super.onPostExecute(model);
         switch (model.getCode()) {
             case 1000:
+                SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(model));
                 if (model.getData() != null && !TextUtils.isEmpty(model.getData().getTlid())) {
                     Const.TLID = model.getData().getTlid();
                     SaveUtils.setString(Save_Key.S_TLID, Const.TLID);
@@ -74,6 +76,11 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
                     EventBus.getDefault().post(model1);
 
                 }
+                break;
+            default:
+                EventBus_Model model1 = new EventBus_Model();
+                model1.setCommand_1("渠道注册");
+                EventBus.getDefault().post(model1);
                 break;
         }
 

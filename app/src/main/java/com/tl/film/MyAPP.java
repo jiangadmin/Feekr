@@ -5,13 +5,10 @@ import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.TvTicketTool.TvTicketTool;
-import com.ktcp.video.ktsdk.TvTencentSdk;
 import com.ktcp.video.thirdagent.JsonUtils;
 import com.ktcp.video.thirdagent.KtcpContants;
 import com.ktcp.video.thirdagent.KtcpPaySDKCallback;
 import com.ktcp.video.thirdagent.KtcpPaySdkProxy;
-import com.tl.film.model.Const;
 import com.tl.film.model.Save_Key;
 import com.tl.film.servlet.Get_MyIP_Servlet;
 import com.tl.film.servlet.Get_Vuid_Servlet;
@@ -52,7 +49,7 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
     public void onCreate() {
         super.onCreate();
         context = this;
-
+        SaveUtils.setString(Save_Key.S_TLID, null);
         new Get_MyIP_Servlet().execute();
 
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
@@ -204,21 +201,22 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
     /**
      * 腾讯APK APP退出事件
+     *
      * @param eventId
      * @param params
      */
-    public void onTencentExitEvent(int eventId, String params){
-        LogUtil.i(TAG, "onTencentExitEvent="+params);
+    public void onTencentExitEvent(int eventId, String params) {
+        LogUtil.i(TAG, "onTencentExitEvent=" + params);
         try {
-            if(params !=null && params.length()>0){
+            if (params != null && params.length() > 0) {
                 //创建回调参数
                 Map<String, String> map = new HashMap<>();
 
                 JSONObject extraObj = JsonUtils.getJsonObj(params);
-                map.put("eventId",String.valueOf(eventId));
-                map.put("vuid",extraObj.getString("vuid"));
-                map.put("tlid",SaveUtils.getString(Save_Key.S_TLID));
-                map.put("msg",extraObj.getString("msg"));
+                map.put("eventId", String.valueOf(eventId));
+                map.put("vuid", extraObj.getString("vuid"));
+                map.put("tlid", SaveUtils.getString(Save_Key.S_TLID));
+                map.put("msg", extraObj.getString("msg"));
                 new VIPCallBack_Servlet().execute(map);
             }
         } catch (Exception e) {
@@ -228,11 +226,12 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
     /**
      * 腾讯APK 账户登出（暂不处理）
+     *
      * @param eventId
      * @param params
      */
-    public void onTencentLogoutEvent(int eventId, String params){
-        LogUtil.i(TAG, "onTencentLogoutEvent="+params);
+    public void onTencentLogoutEvent(int eventId, String params) {
+        LogUtil.i(TAG, "onTencentLogoutEvent=" + params);
         try {
 
         } catch (Exception e) {
@@ -242,24 +241,25 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
     /**
      * 腾讯APK 登录登录接口回调事件
+     *
      * @param eventId
      * @param params
      */
-    public void onTencentLoginEvent(int eventId, String params){
-        LogUtil.i(TAG, "onTencentLoginEvent="+params);
+    public void onTencentLoginEvent(int eventId, String params) {
+        LogUtil.i(TAG, "onTencentLoginEvent=" + params);
         try {
-            if(params !=null && params.length()>0){
+            if (params != null && params.length() > 0) {
                 //创建回调参数
                 Map<String, String> map = new HashMap<>();
 
                 //解析腾讯登录回调结果
                 JSONObject extraObj = JsonUtils.getJsonObj(params);
-                map.put("eventId",String.valueOf(eventId));
-                map.put("vuid",extraObj.getString("vuid"));
-                map.put("tlid",SaveUtils.getString(Save_Key.S_TLID));
-                map.put("code",extraObj.getString("code"));
-                map.put("msg",extraObj.getString("msg"));
-                map.put("vuSession",extraObj.getString("vuSession"));
+                map.put("eventId", String.valueOf(eventId));
+                map.put("vuid", extraObj.getString("vuid"));
+                map.put("tlid", SaveUtils.getString(Save_Key.S_TLID));
+                map.put("code", extraObj.getString("code"));
+                map.put("msg", extraObj.getString("msg"));
+                map.put("vuSession", extraObj.getString("vuSession"));
                 new VIPCallBack_Servlet().execute(map);
             }
         } catch (Exception e) {

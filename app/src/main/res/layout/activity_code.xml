@@ -46,47 +46,49 @@
             android:id="@+id/info_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="信息一" />
+            android:text="TLID" />
 
         <TextView
             android:id="@+id/info_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="信息一" />
+            android:text="版本：" />
 
         <TextView
             android:id="@+id/info_3"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="信息一" />
+            android:text="构建版本：" />
 
         <TextView
             android:id="@+id/info_4"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="信息一" />
+            android:text="渠道商：" />
 
         <TextView
             android:id="@+id/info_5"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="信息一" />
+            android:text="渠道号：" />
 
         <TextView
             android:id="@+id/info_6"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="信息一" />
+            android:text="酒店：" />
 
+        <TextView
+            android:id="@+id/info_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="备注：" />
 
     </LinearLayout>
 

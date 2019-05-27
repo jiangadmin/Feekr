@@ -82,7 +82,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         new Timer(3000, 3000).start();
 
-        if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_TLID))) {
+        if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
             LogUtil.e(TAG, "绑定设备");
             new Bind_Servlet().execute(MyAPP.getMacAddress());
         } else {
@@ -113,13 +113,18 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     @Subscribe
     public void initevent(EventBus_Model model) {
-        if (model.getCommand_1().equals("主页初始化")) {
-            //列表
-            new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            //主题
-            new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            //检查更新
-            new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        switch (model.getCommand_1()){
+            case "主页初始化":
+                //列表
+                new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                //主题
+                new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                //检查更新
+                new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                break;
+            case "渠道注册":
+                Register_Activity.start(this);
+                break;
         }
     }
 
