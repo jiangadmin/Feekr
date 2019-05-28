@@ -25,7 +25,7 @@
 
     <ImageView
         android:id="@+id/view"
-        android:layout_width="1dp"
+        android:layout_width="0.2dp"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:layout_marginTop="30dp"
@@ -38,6 +38,7 @@
         android:layout_height="match_parent"
         android:layout_alignLeft="@+id/view"
         android:layout_alignParentRight="true"
+        android:alpha="0.5"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingStart="50dp">
@@ -46,49 +47,63 @@
             android:id="@+id/info_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TLID" />
+            android:text="TLID"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="版本：" />
+            android:text="版本："
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="构建版本：" />
+            android:text="构建版本："
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="渠道商：" />
+            android:text="渠道商："
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="渠道号：" />
+            android:text="渠道号："
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info_6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="酒店：" />
+            android:text="酒店："
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info_7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="备注：" />
+            android:text="备注："
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

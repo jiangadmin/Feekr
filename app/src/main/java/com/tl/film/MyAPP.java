@@ -49,7 +49,7 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
     public void onCreate() {
         super.onCreate();
         context = this;
-        SaveUtils.setString(Save_Key.S_TLID, null);
+
         new Get_MyIP_Servlet().execute();
 
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志

@@ -36,7 +36,7 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
         Map<String, String> map = new HashMap<>();
         map.put("mde", Build.MODEL);
         map.put("ip", MyAPP.getIp());
-        map.put("mac", strings[0]);
+        map.put("mac", MyAPP.getMacAddress());
         map.put("mainBoard", Build.BOARD);
         map.put("ver", BuildConfig.VERSION_NAME);
         map.put("build", String.valueOf(BuildConfig.VERSION_CODE));
@@ -72,7 +72,11 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
                     SaveUtils.setString(Save_Key.S_TLID, Const.TLID);
 
                     EventBus_Model model1 = new EventBus_Model();
-                    model1.setCommand_1("主页初始化");
+                    if (TextUtils.isEmpty(model.getData().getMerchantCode())){
+                        model1.setCommand_1("渠道注册");
+                    }else {
+                        model1.setCommand_1("主页初始化");
+                    }
                     EventBus.getDefault().post(model1);
 
                 }

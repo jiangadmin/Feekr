@@ -27,6 +27,7 @@ import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
+import com.tl.film.model.Tlid_Model;
 import com.tl.film.model.Update_Model;
 import com.tl.film.servlet.Bind_Servlet;
 import com.tl.film.servlet.DefTheme_Servlet;
@@ -59,7 +60,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     TvRecyclerView recyclerView;
     RecyclerCoverFlow_Adapter adapter;
 
-    ImageView bg;
+    ImageView bg, logo, qrcode;
 
     View shofa, quanwang, lunbo;
 
@@ -84,7 +85,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
             LogUtil.e(TAG, "绑定设备");
-            new Bind_Servlet().execute(MyAPP.getMacAddress());
+            new Bind_Servlet().execute();
         } else {
             EventBus_Model model = new EventBus_Model();
             model.setCommand_1("主页初始化");
@@ -113,7 +114,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     @Subscribe
     public void initevent(EventBus_Model model) {
-        switch (model.getCommand_1()){
+        switch (model.getCommand_1()) {
             case "主页初始化":
                 //列表
                 new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -148,22 +149,33 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         lunbo.setOnClickListener(this);
 
         bg = findViewById(R.id.bg);
+        logo = findViewById(R.id.logo);
+        qrcode = findViewById(R.id.qrcode);
         recyclerView = findViewById(R.id.recycler_view);
 
+
+        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
+            Tlid_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
+
+            if (TextUtils.isEmpty(model.getData().getMerchantCode())) {
+                Register_Activity.start(this);
+            }
+        }
     }
 
     boolean showToast = true;
     long[] mHits = new long[7];
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean dispatchKeyEvent(KeyEvent event) {
         switch (event.getAction()) {
             case KeyEvent.KEYCODE_MENU:
-
+                LogUtil.e(TAG, "菜单键");
                 System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
                 mHits[mHits.length - 1] = SystemClock.uptimeMillis();
                 if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
 
+                    Register_Activity.start(this);
 //                    LogUtil.e(TAG, "Password:" + SaveUtils.getString(Save_Key.Password));
 //                    if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.Password))) {
 //                        Setting_Activity.start(this);
@@ -175,7 +187,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 }
                 return true;
         }
-        return super.onKeyDown(keyCode, event);
+
+        return super.dispatchKeyEvent(event);
     }
 
     /**
@@ -222,6 +235,14 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 //背景
                 if (!TextUtils.isEmpty(model.getData().getBgUrl())) {
                     Picasso.with(this).load(model.getData().getBgUrl()).error(R.mipmap.bg).placeholder(R.mipmap.bg).into(bg);
+                }
+                //logo
+                if (!TextUtils.isEmpty(model.getData().getLogo())) {
+                    Picasso.with(this).load(model.getData().getLogo()).into(logo);
+                }
+                //二维码
+                if (!TextUtils.isEmpty(model.getData().getCpScan())) {
+                    Picasso.with(this).load(model.getData().getCpScan()).into(qrcode);
                 }
                 break;
         }
