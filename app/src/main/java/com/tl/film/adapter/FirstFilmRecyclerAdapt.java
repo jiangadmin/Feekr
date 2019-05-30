@@ -90,18 +90,10 @@ public class FirstFilmRecyclerAdapt extends RecyclerView.Adapter<FirstFilmRecycl
             }
         });
         if (mListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onItemClick(v, holder.getLayoutPosition());
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mListener.onItemLongClick(v, holder.getLayoutPosition());
-                    return true;
-                }
+            holder.itemView.setOnClickListener(v -> mListener.onItemClick(v, holder.getLayoutPosition()));
+            holder.itemView.setOnLongClickListener(v -> {
+                mListener.onItemLongClick(v, holder.getLayoutPosition());
+                return true;
             });
         }
     }

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
@@ -49,6 +49,8 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
         FirstFilms_Model.DataBean bean = dataBeans.get(position);
         holder.img.setTag(position);
 
+        holder.shoufei.setVisibility(bean.getTxPayStatus() == 8 ? View.GONE : View.VISIBLE);
+
         Picasso.with(mContext).load(bean.getBgImage()).into(holder.img);
         holder.img.setOnClickListener(v -> {
             if (clickCb != null) {
@@ -73,11 +75,12 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView img;
-
+        RelativeLayout shoufei;
 
         public ViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
+            shoufei = itemView.findViewById(R.id.shoufei);
             //item可以获得焦点，需要设置这个属性。
             img.setFocusable(true);
             img.setFocusableInTouchMode(true);

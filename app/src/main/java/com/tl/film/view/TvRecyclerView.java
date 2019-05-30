@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
-import android.view.TextureView;
 import android.view.View;
 
 import com.tl.film.utils.LogUtil;
@@ -21,7 +20,6 @@ public class TvRecyclerView extends RecyclerView {
     private static long lastClickTime = 0L;
     private int mPosition;
     private int cPosition = 0;
-
 
     public TvRecyclerView(Context context) {
         this(context, null);
@@ -118,11 +116,9 @@ public class TvRecyclerView extends RecyclerView {
         final int dx;
         if (canScrollHorizontal) {
             if (ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL) {
-                dx = offScreenRight != 0 ? offScreenRight
-                        : Math.max(offScreenLeft, childRight - parentRight);
+                dx = offScreenRight != 0 ? offScreenRight : Math.max(offScreenLeft, childRight - parentRight);
             } else {
-                dx = offScreenLeft != 0 ? offScreenLeft
-                        : Math.min(childLeft - parentLeft, offScreenRight);
+                dx = offScreenLeft != 0 ? offScreenLeft : Math.min(childLeft - parentLeft, offScreenRight);
             }
         } else {
             dx = 0;
@@ -222,17 +218,9 @@ public class TvRecyclerView extends RecyclerView {
         return 0;
     }
 
-    /**
-     * @param po
-     */
-    public void setFou(int po) {
-
-    }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-
-        if(event.getRepeatCount() > 0){
+        if (event.getRepeatCount() > 0) {
             return true;
         }
         int itemCount = getAdapter().getItemCount();
@@ -241,16 +229,21 @@ public class TvRecyclerView extends RecyclerView {
         if (focusView == null) {
             return result;
         } else {
-
             View currentView;
+
             if (event.getAction() == KeyEvent.ACTION_UP) {
                 return true;
             } else {
 
                 switch (event.getKeyCode()) {
+                    //返回键 关闭应用
+                    case KeyEvent.KEYCODE_BACK:
+                        System.exit(0);
+                        break;
+                    //方向右键
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
 
-                        if(isFastDoubleClick()){
+                        if (isFastDoubleClick()) {
                             return true;
                         }
 
@@ -272,13 +265,14 @@ public class TvRecyclerView extends RecyclerView {
                             smoothScrollToPosition(cPosition);
                             return false;
                         }
+
+                        //方向右键
                     case KeyEvent.KEYCODE_DPAD_LEFT:
 
-                        if(isFastDoubleClick()){
+                        if (isFastDoubleClick()) {
                             return true;
                         }
                         currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
-
 
                         Log.i(TAG, "leftView is null:" + (currentView == null));
                         if (currentView != null) {
@@ -298,15 +292,10 @@ public class TvRecyclerView extends RecyclerView {
                 }
             }
         }
+        LogUtil.e(TAG, String.valueOf(result));
         return result;
     }
 
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        LogUtil.e(TAG, "按键弹起");
-        return super.onKeyUp(keyCode, event);
-    }
 
     //防止Activity时,RecyclerView崩溃
     @Override
@@ -508,11 +497,15 @@ public class TvRecyclerView extends RecyclerView {
         }
     }
 
-
+    /**
+     * 延时操作
+     *
+     * @return
+     */
     public static boolean isFastDoubleClick() {
         long time = System.currentTimeMillis();
         long timeD = time - lastClickTime;
-        if ( 0 < timeD && timeD < 500) {
+        if (0 < timeD && timeD < 500) {
             return true;
         }
         lastClickTime = time;
