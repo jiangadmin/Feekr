@@ -340,6 +340,12 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     }
 
 
+    @Override
+    public void onBackPressed() {
+        LogUtil.e(TAG, "返回");
+        super.onBackPressed();
+    }
+
     class Timer extends CountDownTimer {
         /**
          * @param millisInFuture    The number of millis in the future from the call

@@ -11,7 +11,8 @@ import android.os.Environment;
  */
 public class Const {
     //        public static String URL = "http://tencent.qicp.vip/";
-    public static String URL = "http://tlh.free.idcfengye.com/";
+//    public static String URL = "http://tlh.free.idcfengye.com/";
+    public static String URL = "http://api.tenglv.net/";
     public static String TLID = null;
     public static String FilePath = Environment.getExternalStorageDirectory().getPath() + "/Film/Download/";
 
