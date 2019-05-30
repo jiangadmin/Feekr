@@ -97,6 +97,7 @@
         </activity>
 
         <activity
+           android:launchMode="singleTask"
             android:name=".activity.Register_Activity"
             android:screenOrientation="landscape" />
 

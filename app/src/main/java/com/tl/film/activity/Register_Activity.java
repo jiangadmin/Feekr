@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.TextView;
 
+import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.model.Base_Model;
 import com.tl.film.servlet.Bind_Servlet;
@@ -41,7 +42,10 @@ public class Register_Activity extends Base_Activity {
     }
 
     @Override
-    public void onBackPressed() { }
+    public void onBackPressed() {
+        MyAPP.activity.finish();
+        finish();
+    }
 
     @Override
     protected void onDestroy() {
