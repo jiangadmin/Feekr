@@ -168,7 +168,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        switch (event.getAction()) {
+        switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_MENU:
                 LogUtil.e(TAG, "菜单键");
                 System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
@@ -176,12 +176,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
 
                     Register_Activity.start(this);
-//                    LogUtil.e(TAG, "Password:" + SaveUtils.getString(Save_Key.Password));
-//                    if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.Password))) {
-//                        Setting_Activity.start(this);
-//                    } else {
-//                        new PwdDialog(this, R.style.MyDialog).show();
-//                    }
+
                 } else {
                     showToast = true;
                 }

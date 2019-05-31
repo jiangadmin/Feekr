@@ -21,7 +21,6 @@ public class TvRecyclerView extends RecyclerView {
     private int mPosition;
     private int cPosition = 0;
 
-
     public TvRecyclerView(Context context) {
         this(context, null);
     }
@@ -117,11 +116,9 @@ public class TvRecyclerView extends RecyclerView {
         final int dx;
         if (canScrollHorizontal) {
             if (ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL) {
-                dx = offScreenRight != 0 ? offScreenRight
-                        : Math.max(offScreenLeft, childRight - parentRight);
+                dx = offScreenRight != 0 ? offScreenRight : Math.max(offScreenLeft, childRight - parentRight);
             } else {
-                dx = offScreenLeft != 0 ? offScreenLeft
-                        : Math.min(childLeft - parentLeft, offScreenRight);
+                dx = offScreenLeft != 0 ? offScreenLeft : Math.min(childLeft - parentLeft, offScreenRight);
             }
         } else {
             dx = 0;
@@ -221,94 +218,84 @@ public class TvRecyclerView extends RecyclerView {
         return 0;
     }
 
-    /**
-     * @param po
-     */
-    public void setFou(int po) {
-
-    }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-//        if (event.getRepeatCount() > 0) {
-//            return true;
-//        }
+        if (event.getRepeatCount() > 0) {
+            return true;
+        }
         int itemCount = getAdapter().getItemCount();
         boolean result = super.dispatchKeyEvent(event);
         View focusView = this.getFocusedChild();
-        if (focusView == null && event.getAction() != KeyEvent.KEYCODE_BACK) {
-
+        if (focusView == null) {
             return result;
         } else {
-
             View currentView;
 
-            switch (event.getAction()) {
-                //返回键
-                case KeyEvent.KEYCODE_BACK:
-                    return false;
-                //向上
-                case KeyEvent.ACTION_UP:
-                    return true;
+            if (event.getAction() == KeyEvent.ACTION_UP) {
+                return true;
+            } else {
 
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                switch (event.getKeyCode()) {
+                    //返回键 关闭应用
+                    case KeyEvent.KEYCODE_BACK:
+                        System.exit(0);
+                        break;
+                    //方向右键
+                    case KeyEvent.KEYCODE_DPAD_RIGHT:
 
-                    if (isFastDoubleClick()) {
-                        return true;
-                    }
-
-                    currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
-
-                    Log.i(TAG, "rightView is null:" + (currentView == null));
-                    if (currentView != null) {
-                        cPosition = getLastVisiblePosition() + 1;
-                        if (cPosition > (itemCount - 1)) {
-                            cPosition = 0;
+                        if (isFastDoubleClick()) {
+                            return true;
                         }
 
-                        currentView.requestFocus();
-                        smoothScrollToPosition(cPosition);
+                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
 
-                        return true;
-                    } else {
-                        focusView.requestFocus();
-                        smoothScrollToPosition(cPosition);
-                        return false;
-                    }
-                case KeyEvent.KEYCODE_DPAD_LEFT:
+                        Log.i(TAG, "rightView is null:" + (currentView == null));
+                        if (currentView != null) {
+                            cPosition = getLastVisiblePosition() + 1;
+                            if (cPosition > (itemCount - 1)) {
+                                cPosition = 0;
+                            }
 
-                    if (isFastDoubleClick()) {
-                        return true;
-                    }
-                    currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
+                            currentView.requestFocus();
+                            smoothScrollToPosition(cPosition);
 
-
-                    Log.i(TAG, "leftView is null:" + (currentView == null));
-                    if (currentView != null) {
-                        cPosition = getLastVisiblePosition() - 1;
-                        if (cPosition < 0) {
-                            cPosition = itemCount - 1;
+                            return true;
+                        } else {
+                            focusView.requestFocus();
+                            smoothScrollToPosition(cPosition);
+                            return false;
                         }
-                        currentView.requestFocus();
-                        smoothScrollToPosition(cPosition);
 
-                        return true;
-                    } else {
-                        focusView.requestFocus();
-                        smoothScrollToPosition(cPosition);
-                        return false;
-                    }
+                        //方向右键
+                    case KeyEvent.KEYCODE_DPAD_LEFT:
+
+                        if (isFastDoubleClick()) {
+                            return true;
+                        }
+                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
+
+                        Log.i(TAG, "leftView is null:" + (currentView == null));
+                        if (currentView != null) {
+                            cPosition = getLastVisiblePosition() - 1;
+                            if (cPosition < 0) {
+                                cPosition = itemCount - 1;
+                            }
+                            currentView.requestFocus();
+                            smoothScrollToPosition(cPosition);
+
+                            return true;
+                        } else {
+                            focusView.requestFocus();
+                            smoothScrollToPosition(cPosition);
+                            return false;
+                        }
+                }
             }
         }
+        LogUtil.e(TAG, String.valueOf(result));
         return result;
     }
 
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        LogUtil.e(TAG, "按键弹起");
-        return super.onKeyUp(keyCode, event);
-    }
 
     //防止Activity时,RecyclerView崩溃
     @Override
@@ -510,7 +497,11 @@ public class TvRecyclerView extends RecyclerView {
         }
     }
 
-
+    /**
+     * 延时操作
+     *
+     * @return
+     */
     public static boolean isFastDoubleClick() {
         long time = System.currentTimeMillis();
         long timeD = time - lastClickTime;
