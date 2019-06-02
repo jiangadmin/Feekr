@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tl.film.MyAPP;
 import com.tl.film.R;
@@ -28,7 +29,7 @@ public class Register_Activity extends Base_Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
         setContentView(R.layout.activity_register);
@@ -37,6 +38,8 @@ public class Register_Activity extends Base_Activity {
             String tlsh = ((TextView) findViewById(R.id.tlsh)).getText().toString();
             if (!TextUtils.isEmpty(tlsh) && tlsh.length() == 6) {
                 new Register_Servlet().execute(tlsh);
+            } else {
+                Toast.makeText(this, "商户号输入错误", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -49,15 +52,16 @@ public class Register_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
-        if (EventBus.getDefault().isRegistered(this)){
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
         super.onDestroy();
     }
 
     @Subscribe
-    public void onMessage(Base_Model model){
-        switch (model.getCode()){
+    public void onMessage(Base_Model model) {
+        Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
+        switch (model.getCode()) {
             case 1000:
             case 13406:
                 new Bind_Servlet().execute();

@@ -24,8 +24,7 @@ public class Open_Ktcp_Utils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setPackage("com.ktcp.tvvideo");//设置视频包名，要先确认包名
         PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> activities = packageManager
-                .queryIntentActivities(intent, 0);
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
         boolean isIntentSafe = activities.size() > 0;
         if (isIntentSafe) {
             context.startActivity(intent);

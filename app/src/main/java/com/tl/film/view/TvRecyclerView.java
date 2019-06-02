@@ -8,12 +8,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
-
-import com.tl.film.utils.LogUtil;
 
 public class TvRecyclerView extends RecyclerView {
     private static final String TAG = "TvRecyclerView";
@@ -39,7 +35,9 @@ public class TvRecyclerView extends RecyclerView {
     }
 
     private void initView() {
+        //父View和子View间处理焦点关系
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
+
         setHasFixedSize(true);
         setWillNotDraw(true);
         setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -218,83 +216,83 @@ public class TvRecyclerView extends RecyclerView {
         return 0;
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getRepeatCount() > 0) {
-            return true;
-        }
-        int itemCount = getAdapter().getItemCount();
-        boolean result = super.dispatchKeyEvent(event);
-        View focusView = this.getFocusedChild();
-        if (focusView == null) {
-            return result;
-        } else {
-            View currentView;
-
-            if (event.getAction() == KeyEvent.ACTION_UP) {
-                return true;
-            } else {
-
-                switch (event.getKeyCode()) {
-                    //返回键 关闭应用
-                    case KeyEvent.KEYCODE_BACK:
-                        System.exit(0);
-                        break;
-                    //方向右键
-                    case KeyEvent.KEYCODE_DPAD_RIGHT:
-
-                        if (isFastDoubleClick()) {
-                            return true;
-                        }
-
-                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
-
-                        Log.i(TAG, "rightView is null:" + (currentView == null));
-                        if (currentView != null) {
-                            cPosition = getLastVisiblePosition() + 1;
-                            if (cPosition > (itemCount - 1)) {
-                                cPosition = 0;
-                            }
-
-                            currentView.requestFocus();
-                            smoothScrollToPosition(cPosition);
-
-                            return true;
-                        } else {
-                            focusView.requestFocus();
-                            smoothScrollToPosition(cPosition);
-                            return false;
-                        }
-
-                        //方向右键
-                    case KeyEvent.KEYCODE_DPAD_LEFT:
-
-                        if (isFastDoubleClick()) {
-                            return true;
-                        }
-                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
-
-                        Log.i(TAG, "leftView is null:" + (currentView == null));
-                        if (currentView != null) {
-                            cPosition = getLastVisiblePosition() - 1;
-                            if (cPosition < 0) {
-                                cPosition = itemCount - 1;
-                            }
-                            currentView.requestFocus();
-                            smoothScrollToPosition(cPosition);
-
-                            return true;
-                        } else {
-                            focusView.requestFocus();
-                            smoothScrollToPosition(cPosition);
-                            return false;
-                        }
-                }
-            }
-        }
-        LogUtil.e(TAG, String.valueOf(result));
-        return result;
-    }
+//    @Override
+//    public boolean dispatchKeyEvent(KeyEvent event) {
+//        if (event.getRepeatCount() > 0) {
+//            return true;
+//        }
+//        int itemCount = getAdapter().getItemCount();
+//        boolean result = super.dispatchKeyEvent(event);
+//        View focusView = this.getFocusedChild();
+//        if (focusView == null) {
+//            return result;
+//        } else {
+//            View currentView;
+//
+//            if (event.getAction() == KeyEvent.ACTION_UP) {
+//                return true;
+//            } else {
+//
+//                switch (event.getKeyCode()) {
+//                    //返回键 关闭应用
+//                    case KeyEvent.KEYCODE_BACK:
+//                        System.exit(0);
+//                        break;
+//                    //方向右键
+//                    case KeyEvent.KEYCODE_DPAD_RIGHT:
+//
+//                        if (isFastDoubleClick()) {
+//                            return true;
+//                        }
+//
+//                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
+//
+//                        Log.i(TAG, "rightView is null:" + (currentView == null));
+//                        if (currentView != null) {
+//                            cPosition = getLastVisiblePosition() + 1;
+//                            if (cPosition > (itemCount - 1)) {
+//                                cPosition = 0;
+//                            }
+//
+//                            currentView.requestFocus();
+//                            smoothScrollToPosition(cPosition);
+//
+//                            return true;
+//                        } else {
+//                            focusView.requestFocus();
+//                            smoothScrollToPosition(cPosition);
+//                            return false;
+//                        }
+//
+//                        //方向左键
+//                    case KeyEvent.KEYCODE_DPAD_LEFT:
+//
+//                        if (isFastDoubleClick()) {
+//                            return true;
+//                        }
+//                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
+//
+//                        Log.i(TAG, "leftView is null:" + (currentView == null));
+//                        if (currentView != null) {
+//                            cPosition = getLastVisiblePosition() - 1;
+//                            if (cPosition < 0) {
+//                                cPosition = itemCount - 1;
+//                            }
+//                            currentView.requestFocus();
+//                            smoothScrollToPosition(cPosition);
+//
+//                            return true;
+//                        } else {
+//                            focusView.requestFocus();
+//                            smoothScrollToPosition(cPosition);
+//                            return false;
+//                        }
+//                }
+//            }
+//        }
+//        LogUtil.e(TAG, String.valueOf(result));
+//        return result;
+//    }
 
 
     //防止Activity时,RecyclerView崩溃

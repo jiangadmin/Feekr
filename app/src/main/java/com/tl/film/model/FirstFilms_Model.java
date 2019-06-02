@@ -71,6 +71,15 @@ public class FirstFilms_Model extends Base_Model {
         private int txPayStatus;
         private String updateAuthor;
         private String updateTime;
+        private boolean focusable;
+
+        public boolean isFocusable() {
+            return focusable;
+        }
+
+        public void setFocusable(boolean focusable) {
+            this.focusable = focusable;
+        }
 
         public String getActors() {
             return actors;
