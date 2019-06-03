@@ -72,7 +72,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     ImageView bg, logo, qrcode;
 
-    View  quanwang, lunbo;
+    View quanwang, lunbo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,8 +84,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         setContentView(R.layout.activity_home);
 
         initview();
-
-
 
         registerMessageReceiver();  // used for receive msg
 
@@ -252,6 +250,12 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     @Override
     public void clickItem(FirstFilms_Model.DataBean bean) {
+        //判断网络
+        if (!Tools.isNetworkConnected()) {
+            NetDialog.showW();
+            return;
+        }
+
         if (install()) {
             Moive_Activity.start(this, bean);
         }
