@@ -9,6 +9,7 @@ import com.ktcp.video.thirdagent.JsonUtils;
 import com.ktcp.video.thirdagent.KtcpContants;
 import com.ktcp.video.thirdagent.KtcpPaySDKCallback;
 import com.ktcp.video.thirdagent.KtcpPaySdkProxy;
+import com.tl.film.activity.Register_Activity;
 import com.tl.film.model.Save_Key;
 import com.tl.film.servlet.Get_MyIP_Servlet;
 import com.tl.film.servlet.Get_Vuid_Servlet;
@@ -36,6 +37,8 @@ import cn.jpush.android.api.JPushInterface;
 public class MyAPP extends Application implements KtcpPaySDKCallback {
     private static final String TAG = "MyAPP";
     public static Activity activity;
+
+    public static Register_Activity register_activity;
 
     private static Context context;
 

@@ -52,10 +52,23 @@ public class Register_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
+        MyAPP.register_activity = null;
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        MyAPP.register_activity = this;
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        MyAPP.register_activity = null;
+        super.onStop();
     }
 
     @Subscribe

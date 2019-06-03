@@ -63,7 +63,7 @@ public class FirstFilms_Model extends Base_Model {
         private int isDelete;
         private String payPage;
         private String profile;
-        private int score;
+        private float score;
         private String subTitle;
         private String title;
         private String txCoverId;
@@ -177,11 +177,11 @@ public class FirstFilms_Model extends Base_Model {
             this.profile = profile;
         }
 
-        public int getScore() {
+        public float getScore() {
             return score;
         }
 
-        public void setScore(int score) {
+        public void setScore(float score) {
             this.score = score;
         }
 

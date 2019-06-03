@@ -29,6 +29,12 @@ public class File_Utils {
         try {
             InputStream mInputStream = context.getAssets().open(fileName);
             File file = new File(path);
+
+            //判断文件夹是否被创建
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+
             if (!file.exists()) {
                 file.mkdir();
             }

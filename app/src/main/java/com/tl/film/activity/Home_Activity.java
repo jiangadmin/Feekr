@@ -26,6 +26,7 @@ import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.adapter.RecyclerCoverFlow_Adapter;
 import com.tl.film.dialog.Loading;
+import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.Const;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
@@ -43,6 +44,7 @@ import com.tl.film.utils.File_Utils;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
 import com.tl.film.utils.SaveUtils;
+import com.tl.film.utils.Tools;
 import com.tl.film.view.CarouselLayoutManager;
 import com.tl.film.view.CarouselZoomPostLayoutListener;
 import com.tl.film.view.CenterScrollListener;
@@ -70,7 +72,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     ImageView bg, logo, qrcode;
 
-    View shofa, quanwang, lunbo;
+    View  quanwang, lunbo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +84,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         setContentView(R.layout.activity_home);
 
         initview();
+
+
 
         registerMessageReceiver();  // used for receive msg
 
@@ -105,8 +109,14 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     @Override
     protected void onResume() {
-        MyAPP.activity = this;
         super.onResume();
+
+        MyAPP.activity = this;
+
+        //判断网络
+        if (!Tools.isNetworkConnected())
+            NetDialog.showW();
+
     }
 
     @Override
@@ -127,7 +137,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 break;
             case "渠道注册":
-                Register_Activity.start(this);
+                if (MyAPP.register_activity == null)
+                    Register_Activity.start(this);
                 break;
         }
     }
@@ -143,11 +154,9 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     private void initview() {
 
-        shofa = findViewById(R.id.home_shoufa);
         quanwang = findViewById(R.id.home_quanwan);
         lunbo = findViewById(R.id.home_lunbo);
 
-        shofa.setOnClickListener(this);
         quanwang.setOnClickListener(this);
         lunbo.setOnClickListener(this);
 
@@ -160,7 +169,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             Tlid_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
 
             if (TextUtils.isEmpty(model.getData().getMerchantCode())) {
-                Register_Activity.start(this);
+                if (MyAPP.register_activity == null)
+                    Register_Activity.start(this);
             }
         }
     }
@@ -175,8 +185,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
             mHits[mHits.length - 1] = SystemClock.uptimeMillis();
             if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
-
-                Register_Activity.start(this);
+                if (MyAPP.register_activity == null)
+                    Register_Activity.start(this);
 
             } else {
                 showToast = true;
@@ -285,10 +295,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.home_shoufa:
-                break;
             case R.id.home_quanwan:
-//                Info_Activity.start(this);
                 QRCode_Activity.start(this);
                 break;
             case R.id.home_lunbo:
@@ -365,6 +372,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             builder.setTitle("未检测到云视听应用");
             builder.setMessage("为了更好的观影体验，本应用需要安装 云视听 应用");
             builder.setNegativeButton("安装", (dialog, which) -> {
+
                 File_Utils.openApk(File_Utils.copyAssetsFile(this, "tv_video_16188.apk", Const.FilePath), this);
                 dialog.dismiss();
             });

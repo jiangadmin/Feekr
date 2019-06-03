@@ -16,24 +16,14 @@
     <RelativeLayout
         android:elevation="5dp"
         android:id="@+id/shoufei"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="60dp"
+        android:layout_height="60dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_sanjiao" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="7dp"
-            android:rotation="-45"
-            android:text="收费"
-            android:textColor="@color/white" />
+            android:src="@drawable/ic_ziyuan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
-
 
 </RelativeLayout>
