@@ -72,11 +72,11 @@ public class TvRecyclerView extends RecyclerView {
     @Override
     public boolean isInTouchMode() {
         // 解决4.4版本抢焦点的问题
-        if (Build.VERSION.SDK_INT == 19) {
-            return !(hasFocus() && !super.isInTouchMode());
-        } else {
+//        if (Build.VERSION.SDK_INT == 19) {
+//            return !(hasFocus() && !super.isInTouchMode());
+//        } else {
             return super.isInTouchMode();
-        }
+//        }
     }
 
     @Override
