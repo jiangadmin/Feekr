@@ -2,7 +2,6 @@ package com.tl.film.view;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -73,9 +72,9 @@ public class TvRecyclerView extends RecyclerView {
     public boolean isInTouchMode() {
         // 解决4.4版本抢焦点的问题
 //        if (Build.VERSION.SDK_INT == 19) {
-//            return !(hasFocus() && !super.isInTouchMode());
+        return !(hasFocus() && !super.isInTouchMode());
 //        } else {
-            return super.isInTouchMode();
+//            return super.isInTouchMode();
 //        }
     }
 

@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -175,7 +174,6 @@ public class CarouselLayoutManager extends LayoutManager implements RecyclerView
     }
 
 
-
     /**
      * @param onCenterItemSelectionListener listener that was previously added by {@link #addOnItemSelectionListener(OnCenterItemSelectionListener)}
      */
@@ -318,7 +316,6 @@ public class CarouselLayoutManager extends LayoutManager implements RecyclerView
         }
         return resultScroll;
     }
-
 
 
     @Override

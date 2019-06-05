@@ -60,10 +60,11 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
         });
 
         holder.img.setOnFocusChangeListener((v, hasFocus) -> {
+            LogUtil.e(TAG, position + "--" + hasFocus);
             //只要当前有焦点的view
             if (hasFocus) {
                 //当前焦点位置
-                clickCb.focusableItem(position);
+                clickCb.focusableItem(position );
             }
         });
 
