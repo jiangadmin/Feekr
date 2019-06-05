@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
 import com.tl.film.model.FirstFilms_Model;
+import com.tl.film.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,15 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
                 clickCb.clickItem(bean);
             }
         });
+
+        holder.img.setOnFocusChangeListener((v, hasFocus) -> {
+            //只要当前有焦点的view
+            if (hasFocus) {
+                //当前焦点位置
+                clickCb.focusableItem(position);
+            }
+        });
+
     }
 
     @Override
@@ -90,5 +100,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     public interface ItemClick {
         void clickItem(FirstFilms_Model.DataBean bean);
+
+        void focusableItem(int position);
     }
 }

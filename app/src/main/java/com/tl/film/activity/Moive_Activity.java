@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
@@ -44,9 +46,9 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     }
 
     ImageView img;
-    TextView name, time, type, spot, director, tostar;
+    TextView name, time, type, profile, director, tostar, score_text;
     Button play;
-
+    RatingBar score;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,23 +63,31 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     }
 
     private void initview() {
-        img = findViewById(R.id.moive_img);
-        name = findViewById(R.id.moive_name);
-        time = findViewById(R.id.moive_time);
-        director = findViewById(R.id.moive_director);
-        tostar = findViewById(R.id.moive_tostar);
-        play = findViewById(R.id.moive_play);
-        type = findViewById(R.id.moive_type);
-        spot = findViewById(R.id.moive_spot);
+        img = findViewById(R.id.movie_img);
+        score = findViewById(R.id.movie_score);
+        score_text = findViewById(R.id.movie_score_text);
+        name = findViewById(R.id.movie_name);
+        time = findViewById(R.id.movie_time);
+        director = findViewById(R.id.movie_director);
+        tostar = findViewById(R.id.movie_actors);
+        play = findViewById(R.id.movie_play);
+        type = findViewById(R.id.movie_type);
+        profile = findViewById(R.id.movie_profile);
 
         if (bean != null) {
             name.setText(bean.getTitle());
+            if (bean.getScore() <= 10) {
+                score.setRating((float) (bean.getScore() / 2.0));
+            } else {
+                score.setRating(8.8F);
+            }
+            score_text.setText(String.valueOf(bean.getScore()));
             Picasso.with(this).load(bean.getBgImage()).into(img);
-            time.setText(String.format("%s（%s 分钟）", bean.getBrief(), bean.getDuratior()));
+            time.setText(String.format("（%s 分钟）", bean.getDuratior()));
             director.setText(bean.getDirectors());
-            type.setText(bean.getBrief());
+            type.setText(bean.getGenre());
             tostar.setText(bean.getActors());
-            spot.setText(bean.getProfile());
+            profile.setText(bean.getProfile());
         }
 
         play.setOnClickListener(this);
@@ -94,21 +104,23 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.moive_play:
-                //免费
-                if (bean.getTxPayStatus() == 8) {
-                    Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
-                } else {
-                    new Get_PerPay_Servlet().execute(bean.getTxCoverId(), String.valueOf(bean.getId()));
-                }
-                break;
+        if (v.getId() == R.id.movie_play) {
+            //免费
+            if (bean.getTxPayStatus() == 8) {
+                Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
+            } else {
+                new Get_PerPay_Servlet().execute(bean.getTxCoverId(), String.valueOf(bean.getId()));
+            }
         }
     }
 
+    /**
+     * 付费信息处理
+     *
+     * @param model 数据模型
+     */
     @Subscribe
     public void onMessage(Perpay_Model model) {
-
         switch (model.getCode()) {
             case 1000:
                 if (qrCode_dialog == null) {
@@ -123,6 +135,7 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
                 break;
 
             default:
+                Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
