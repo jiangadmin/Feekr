@@ -111,9 +111,6 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
         }
     }
 
-    private int status = -1;//接口状态码
-    private String msg;//接口提示信息
-
     /**
      * @param channel 三方厂商对应的渠道号
      * @param extra   包含guid,QUA，TVPlatform等字段的json字符串

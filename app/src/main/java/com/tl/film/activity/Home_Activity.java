@@ -305,8 +305,11 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         //                Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
         if (model.getCode() == 1000) {
             if (model.getData().getBuild() > BuildConfig.VERSION_CODE) {
-                Loading.show(this, "更新中");
-                new DownUtil().downLoad(model.getData().getDownloadUrl(), "Film_" + model.getData().getBuild() + ".apk", true);
+                String downloadUrl = model.getData().getDownloadUrl();
+                if(downloadUrl!=null && downloadUrl.toLowerCase().contains(".apk")){
+                    Loading.show(this, "更新中");
+                    new DownUtil().downLoad(downloadUrl, "Film_" + model.getData().getBuild() + ".apk", true);
+                }
             }
         }
     }

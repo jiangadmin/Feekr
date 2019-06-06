@@ -36,10 +36,10 @@ public class Register_Activity extends Base_Activity {
 
         findViewById(R.id.submit).setOnClickListener(v -> {
             String tlsh = ((TextView) findViewById(R.id.tlsh)).getText().toString();
-            if (!TextUtils.isEmpty(tlsh) && tlsh.length() == 6) {
+            if (!TextUtils.isEmpty(tlsh)) {
                 new Register_Servlet().execute(tlsh);
             } else {
-                Toast.makeText(this, "商户号输入错误", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "请输入渠道号", Toast.LENGTH_SHORT).show();
             }
         });
     }
