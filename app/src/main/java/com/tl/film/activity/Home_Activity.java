@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -87,22 +88,46 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         registerMessageReceiver();  // used for receive msg
 
-        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.FirstFilms_Model))) {
-            CallBack_FirstFilms(new Gson().fromJson(SaveUtils.getString(Save_Key.FirstFilms_Model), FirstFilms_Model.class));
-        }
+        //本地绑定数据
+        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
+            //数据解析
+            Tlid_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
+            //绑定状态判定
+            if (!TextUtils.isEmpty(model.getData().getTlid()) && !TextUtils.isEmpty(model.getData().getMerchantCode())) {
+                //判定有无存储空间
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                        //预加载本地列表资源
+                        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_FirstFilms_Model))) {
+                            onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_FirstFilms_Model), FirstFilms_Model.class));
+                        }
+                        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_DefTheme_Model))) {
+                            onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_DefTheme_Model), DefTheme_Model.class));
+                        }
+                        //同步加载网络数据
+                        EventBus_Model model1 = new EventBus_Model();
+                        model1.setCommand_1("主页初始化");
+                        onMessage(model1);
 
-        new Timer(3000, 3000).start();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setCancelable(false);
+                    builder.setTitle("当前应用不支持该设备");
+                    builder.setMessage("【错误】 当前设备无外置储存，请确认外置存储的存在");
+                    builder.setNegativeButton("朕知道了", (dialog, which) -> {
+                        dialog.dismiss();
+                        System.exit(0);
+                    });
+                    builder.show();
+                }
 
-        if (TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
-            LogUtil.e(TAG, "绑定设备");
-            new Bind_Servlet().execute();
+            } else {
+                //打开绑定视图
+                Register_Activity.start(this);
+            }
         } else {
-            EventBus_Model model = new EventBus_Model();
-            model.setCommand_1("主页初始化");
-            EventBus.getDefault().post(model);
+            //获取网络数据
+            new Bind_Servlet().execute();
         }
-        install();
-
     }
 
     @Override
@@ -124,7 +149,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     }
 
     @Subscribe
-    public void initevent(EventBus_Model model) {
+    public void onMessage(EventBus_Model model) {
         switch (model.getCommand_1()) {
             case "主页初始化":
                 //列表
@@ -133,6 +158,9 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 //检查更新
                 new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                //倒计时关闭启动图
+                new Timer(3000, 3000).start();
                 break;
             case "渠道注册":
                 if (MyAPP.register_activity == null)
@@ -201,9 +229,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
      * @param model 数据
      */
     @Subscribe
-    public void CallBack_FirstFilms(FirstFilms_Model model) {
-
+    public void onMessage(FirstFilms_Model model) {
         if (model.getCode() == 1000) {
+            SaveUtils.setString(Save_Key.S_FirstFilms_Model, new Gson().toJson(model));
+
             CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
             layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
             adapter = new RecyclerCoverFlow_Adapter(this, this);
@@ -220,9 +249,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
             });
 
-            SaveUtils.setString(Save_Key.FirstFilms_Model, new Gson().toJson(model));
         }
-
     }
 
     /**
@@ -231,8 +258,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
      * @param model 数据
      */
     @Subscribe
-    public void CallBack_Theme(DefTheme_Model model) {
+    public void onMessage(DefTheme_Model model) {
         if (model.getCode() == 1000) {//背景
+            SaveUtils.setString(Save_Key.S_DefTheme_Model, new Gson().toJson(model));
+
             if (!TextUtils.isEmpty(model.getData().getBgUrl())) {
                 Picasso.with(this).load(model.getData().getBgUrl()).error(R.mipmap.bg).placeholder(R.mipmap.bg).into(bg);
             }
@@ -276,8 +305,11 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         //                Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
         if (model.getCode() == 1000) {
             if (model.getData().getBuild() > BuildConfig.VERSION_CODE) {
-                Loading.show(this, "更新中");
-                new DownUtil().downLoad(model.getData().getDownloadUrl(), "Film_" + model.getData().getBuild() + ".apk", true);
+                String downloadUrl = model.getData().getDownloadUrl();
+                if(downloadUrl!=null && downloadUrl.toLowerCase().contains(".apk")){
+                    Loading.show(this, "更新中");
+                    new DownUtil().downLoad(downloadUrl, "Film_" + model.getData().getBuild() + ".apk", true);
+                }
             }
         }
     }

@@ -67,6 +67,7 @@ public class DownUtil {
             public void run() {
                 try {
                     // 在子线程中下载APK文件
+
                     final File file = getFileFromServer(path, fileName, pd);
                     sleep(1000);
                     // 安装APK文件
