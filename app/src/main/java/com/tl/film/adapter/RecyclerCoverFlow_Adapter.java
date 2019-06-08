@@ -14,7 +14,9 @@ import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.utils.LogUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chenxiaoping on 2017/3/28.
@@ -26,6 +28,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     private Context mContext;
 
     private List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
+    private Map<Integer,ViewHolder> ViewHolderList = new HashMap<Integer,ViewHolder>();
 
     public void setDataBeans(List<FirstFilms_Model.DataBean> dataBeans) {
         this.dataBeans = dataBeans;
@@ -46,9 +49,11 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        ViewHolderList.put(position, holder);
 
         FirstFilms_Model.DataBean bean = dataBeans.get(position);
         holder.img.setTag(position);
+        holder.itemView.setTag(position);
 
         holder.shoufei.setVisibility(bean.getTxPayStatus() == 8 ? View.GONE : View.VISIBLE);
 
@@ -82,6 +87,10 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
         } else {
             return 0;
         }
+    }
+
+    public ViewHolder getViewHolder(int position){
+        return this.ViewHolderList.get(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
