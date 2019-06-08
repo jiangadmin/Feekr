@@ -10,6 +10,9 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.tl.film.adapter.RecyclerCoverFlow_Adapter;
+import com.tl.film.utils.LogUtil;
+
 public class TvRecyclerView extends RecyclerView {
     private static final String TAG = "TvRecyclerView";
     private static long lastClickTime = 0L;
@@ -214,6 +217,52 @@ public class TvRecyclerView extends RecyclerView {
     protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
         return 0;
     }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getRepeatCount() > 0) {
+            return super.dispatchKeyEvent(event);
+        }
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            int itemCount = getAdapter().getItemCount();
+            View focusView = getFocusedChild();
+            int focusPosition = Integer.valueOf(focusView.getTag().toString());
+            int nextPosition = 0;
+            RecyclerCoverFlow_Adapter adapter;
+            ViewHolder vh;
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                case KeyEvent.KEYCODE_ENTER:
+                    return super.dispatchKeyEvent(event);
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    nextPosition = focusPosition + 1;
+                    if (nextPosition == itemCount) {
+                        nextPosition = 0;
+                    }
+                    LogUtil.e(TAG, "右键=" + nextPosition);
+                    adapter = (RecyclerCoverFlow_Adapter) this.getAdapter();
+                    vh = adapter.getViewHolder(nextPosition);
+                    if (vh != null) {
+                        vh.itemView.requestFocus();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    nextPosition = focusPosition - 1;
+                    if (nextPosition < 0) {
+                        nextPosition = itemCount + nextPosition;
+                    }
+                    LogUtil.e(TAG, "左键=" + nextPosition);
+                    adapter = (RecyclerCoverFlow_Adapter) this.getAdapter();
+                    vh = adapter.getViewHolder(nextPosition);
+                    if (vh != null) {
+                        vh.itemView.requestFocus();
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
 
 //    @Override
 //    public boolean dispatchKeyEvent(KeyEvent event) {
