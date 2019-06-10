@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -30,12 +29,10 @@ import com.tl.film.dialog.Loading;
 import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.Const;
 import com.tl.film.model.DefTheme_Model;
-import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Tlid_Model;
 import com.tl.film.model.Update_Model;
-import com.tl.film.servlet.Bind_Servlet;
 import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.DownUtil;
 import com.tl.film.servlet.FirstFilms_Servlet;
@@ -75,9 +72,16 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     View quanwang, lunbo;
 
+    public static void main(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, Home_Activity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -88,46 +92,14 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         registerMessageReceiver();  // used for receive msg
 
-        //本地绑定数据
-        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
-            //数据解析
-            Tlid_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
-            //绑定状态判定
-            if (!TextUtils.isEmpty(model.getData().getTlid()) && !TextUtils.isEmpty(model.getData().getMerchantCode())) {
-                //判定有无存储空间
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    //预加载本地列表资源
-//                        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_FirstFilms_Model))) {
-//                            onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_FirstFilms_Model), FirstFilms_Model.class));
-//                        }
-                    if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_DefTheme_Model))) {
-                        onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_DefTheme_Model), DefTheme_Model.class));
-                    }
-                    //同步加载网络数据
-                    EventBus_Model model1 = new EventBus_Model();
-                    model1.setCommand_1("主页初始化");
-                    onMessage(model1);
+        Loading.show(this, "请稍后");
 
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setCancelable(false);
-                    builder.setTitle("当前应用不支持该设备");
-                    builder.setMessage("【错误】 当前设备无外置储存，请确认外置存储的存在");
-                    builder.setNegativeButton("朕知道了", (dialog, which) -> {
-                        dialog.dismiss();
-                        System.exit(0);
-                    });
-                    builder.show();
-                }
-
-            } else {
-                //打开绑定视图
-                Register_Activity.start(this);
-            }
-        } else {
-            //获取网络数据
-            new Bind_Servlet().execute();
-        }
+        //列表
+        new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        //主题
+        new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        //检查更新
+        new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -148,26 +120,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         super.onStop();
     }
 
-    @Subscribe
-    public void onMessage(EventBus_Model model) {
-        switch (model.getCommand_1()) {
-            case "主页初始化":
-                //列表
-                new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                //主题
-                new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                //检查更新
-                new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                //倒计时关闭启动图
-                new Timer(3000, 3000).start();
-                break;
-            case "渠道注册":
-                if (MyAPP.register_activity == null)
-                    Register_Activity.start(this);
-                break;
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -230,6 +182,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
      */
     @Subscribe
     public void onMessage(FirstFilms_Model model) {
+        Loading.dismiss();
         if (model.getCode() == 1000) {
             SaveUtils.setString(Save_Key.S_FirstFilms_Model, new Gson().toJson(model));
 
@@ -381,29 +334,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         super.onBackPressed();
     }
 
-    class Timer extends CountDownTimer {
-        /**
-         * @param millisInFuture    The number of millis in the future from the call
-         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-         *                          is called.
-         * @param countDownInterval The interval along the way to receive
-         *                          {@link #onTick(long)} callbacks.
-         */
-        Timer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-        @Override
-        public void onFinish() {
-
-            findViewById(R.id.welcome).setVisibility(View.GONE);
-        }
-    }
 
     private boolean install() {
         //检测有没有云视听

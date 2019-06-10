@@ -82,4 +82,5 @@ public class Register_Activity extends Base_Activity {
                 break;
         }
     }
+
 }

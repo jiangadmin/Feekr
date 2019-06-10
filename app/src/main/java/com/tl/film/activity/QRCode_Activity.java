@@ -32,7 +32,6 @@ public class QRCode_Activity extends Base_Activity {
         context.startActivity(intent);
     }
 
-
     ImageView qr;
 
     TextView info_1, info_2, info_3, info_4, info_5, info_6, info_7;
