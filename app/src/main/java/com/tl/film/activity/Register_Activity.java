@@ -78,6 +78,7 @@ public class Register_Activity extends Base_Activity {
             case 1000:
             case 13406:
                 new Bind_Servlet().execute();
+                Home_Activity.start(this);
                 finish();
                 break;
         }

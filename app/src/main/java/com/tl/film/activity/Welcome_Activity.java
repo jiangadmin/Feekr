@@ -36,7 +36,7 @@ public class Welcome_Activity extends Base_Activity {
 
                     new Handler().postDelayed(() -> {
                         //启动主页
-                        Home_Activity.main(this); }, 3000);
+                        Home_Activity.start(this); }, 1000);
 
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);

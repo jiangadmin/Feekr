@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
 import com.tl.film.model.FirstFilms_Model;
@@ -28,7 +29,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     private Context mContext;
 
     private List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
-    private Map<Integer,ViewHolder> ViewHolderList = new HashMap();
+    private Map<Integer, ViewHolder> ViewHolderList = new HashMap();
 
     public void setDataBeans(List<FirstFilms_Model.DataBean> dataBeans) {
         this.dataBeans = dataBeans;
@@ -50,14 +51,16 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ViewHolderList.put(position, holder);
-
         FirstFilms_Model.DataBean bean = dataBeans.get(position);
-        holder.img.setTag(position);
+
         holder.itemView.setTag(position);
 
         holder.shoufei.setVisibility(bean.getTxPayStatus() == 8 ? View.GONE : View.VISIBLE);
 
         Picasso.with(mContext).load(bean.getBgImage()).into(holder.img);
+
+        holder.img.setTag(R.id.img, holder);
+
         holder.img.setOnClickListener(v -> {
             if (clickCb != null) {
                 clickCb.clickItem(bean);
@@ -69,7 +72,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
             //只要当前有焦点的view
             if (hasFocus) {
                 //当前焦点位置
-                clickCb.focusableItem(position );
+                clickCb.focusableItem(position);
             }
         });
 
@@ -89,7 +92,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
         }
     }
 
-    public ViewHolder getViewHolder(int position){
+    public ViewHolder getViewHolder(int position) {
         return this.ViewHolderList.get(position);
     }
 
@@ -109,6 +112,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     }
 
     public interface ItemClick {
+
         void clickItem(FirstFilms_Model.DataBean bean);
 
         void focusableItem(int position);

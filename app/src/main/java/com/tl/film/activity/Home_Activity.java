@@ -72,7 +72,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     View quanwang, lunbo;
 
-    public static void main(Context context) {
+    public static void start(Context context) {
         Intent intent = new Intent();
         intent.setClass(context, Home_Activity.class);
         context.startActivity(intent);
