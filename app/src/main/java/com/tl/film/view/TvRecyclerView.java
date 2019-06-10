@@ -15,10 +15,8 @@ import com.tl.film.utils.LogUtil;
 
 public class TvRecyclerView extends RecyclerView {
     private static final String TAG = "TvRecyclerView";
-    private static long lastClickTime = 0L;
     private int mPosition;
-    private int cPosition = 0;
-
+    private static long lastClickTime = 0L;
     public TvRecyclerView(Context context) {
         this(context, null);
     }
@@ -157,18 +155,6 @@ public class TvRecyclerView extends RecyclerView {
     }
 
 
-    /**
-     * 判断是垂直，还是横向.
-     */
-    private boolean isVertical() {
-        LayoutManager manager = getLayoutManager();
-        if (manager != null) {
-            LinearLayoutManager layout = (LinearLayoutManager) getLayoutManager();
-            return layout.getOrientation() == LinearLayoutManager.VERTICAL;
-
-        }
-        return false;
-    }
 
 
     /**
@@ -206,18 +192,6 @@ public class TvRecyclerView extends RecyclerView {
             return getChildAdapterPosition(getChildAt(0));
     }
 
-    public int getLastVisiblePosition() {
-        final int childCount = getChildCount();
-        if (childCount == 0)
-            return 0;
-        else
-            return getChildAdapterPosition(getChildAt(childCount - 1));
-    }
-
-    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-        return 0;
-    }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getRepeatCount() > 0) {
@@ -235,6 +209,9 @@ public class TvRecyclerView extends RecyclerView {
                 case KeyEvent.KEYCODE_ENTER:
                     return super.dispatchKeyEvent(event);
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    if (isFastDoubleClick()){
+                        return true;
+                    }
                     nextPosition = focusPosition + 1;
                     if (nextPosition == itemCount) {
                         nextPosition = 0;
@@ -247,6 +224,9 @@ public class TvRecyclerView extends RecyclerView {
                     }
                     return true;
                 case KeyEvent.KEYCODE_DPAD_LEFT:
+                    if (isFastDoubleClick()){
+                        return true;
+                    }
                     nextPosition = focusPosition - 1;
                     if (nextPosition < 0) {
                         nextPosition = itemCount + nextPosition;
@@ -264,282 +244,11 @@ public class TvRecyclerView extends RecyclerView {
     }
 
 
-//    @Override
-//    public boolean dispatchKeyEvent(KeyEvent event) {
-//        if (event.getRepeatCount() > 0) {
-//            return true;
-//        }
-//        int itemCount = getAdapter().getItemCount();
-//        boolean result = super.dispatchKeyEvent(event);
-//        View focusView = this.getFocusedChild();
-//        if (focusView == null) {
-//            return result;
-//        } else {
-//            View currentView;
-//
-//            if (event.getAction() == KeyEvent.ACTION_UP) {
-//                return true;
-//            } else {
-//
-//                switch (event.getKeyCode()) {
-//                    //返回键 关闭应用
-//                    case KeyEvent.KEYCODE_BACK:
-//                        System.exit(0);
-//                        break;
-//                    //方向右键
-//                    case KeyEvent.KEYCODE_DPAD_RIGHT:
-//
-//                        if (isFastDoubleClick()) {
-//                            return true;
-//                        }
-//
-//                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
-//
-//                        Log.i(TAG, "rightView is null:" + (currentView == null));
-//                        if (currentView != null) {
-//                            cPosition = getLastVisiblePosition() + 1;
-//                            if (cPosition > (itemCount - 1)) {
-//                                cPosition = 0;
-//                            }
-//
-//                            currentView.requestFocus();
-//                            smoothScrollToPosition(cPosition);
-//
-//                            return true;
-//                        } else {
-//                            focusView.requestFocus();
-//                            smoothScrollToPosition(cPosition);
-//                            return false;
-//                        }
-//
-//                        //方向左键
-//                    case KeyEvent.KEYCODE_DPAD_LEFT:
-//
-//                        if (isFastDoubleClick()) {
-//                            return true;
-//                        }
-//                        currentView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
-//
-//                        Log.i(TAG, "leftView is null:" + (currentView == null));
-//                        if (currentView != null) {
-//                            cPosition = getLastVisiblePosition() - 1;
-//                            if (cPosition < 0) {
-//                                cPosition = itemCount - 1;
-//                            }
-//                            currentView.requestFocus();
-//                            smoothScrollToPosition(cPosition);
-//
-//                            return true;
-//                        } else {
-//                            focusView.requestFocus();
-//                            smoothScrollToPosition(cPosition);
-//                            return false;
-//                        }
-//                }
-//            }
-//        }
-//        LogUtil.e(TAG, String.valueOf(result));
-//        return result;
-//    }
-
-
     //防止Activity时,RecyclerView崩溃
     @Override
     protected void onDetachedFromWindow() {
         if (getLayoutManager() != null) {
             super.onDetachedFromWindow();
-        }
-    }
-
-    /**
-     * 是否是最右边的item，如果是竖向，表示右边，如果是横向表示下边
-     *
-     * @param childPosition
-     * @return
-     */
-    public boolean isRightEdge(int childPosition) {
-        LayoutManager layoutManager = getLayoutManager();
-
-        if (layoutManager instanceof GridLayoutManager) {
-
-            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
-            GridLayoutManager.SpanSizeLookup spanSizeLookUp = gridLayoutManager.getSpanSizeLookup();
-
-            int totalSpanCount = gridLayoutManager.getSpanCount();
-            int totalItemCount = gridLayoutManager.getItemCount();
-            int childSpanCount = 0;
-
-            for (int i = 0; i <= childPosition; i++) {
-                childSpanCount += spanSizeLookUp.getSpanSize(i);
-            }
-            if (isVertical()) {
-                if (childSpanCount % gridLayoutManager.getSpanCount() == 0) {
-                    return true;
-                }
-            } else {
-                int lastColumnSize = totalItemCount % totalSpanCount;
-                if (lastColumnSize == 0) {
-                    lastColumnSize = totalSpanCount;
-                }
-                if (childSpanCount > totalItemCount - lastColumnSize) {
-                    return true;
-                }
-            }
-
-        } else if (layoutManager instanceof LinearLayoutManager) {
-            if (isVertical()) {
-                return true;
-            } else {
-                return childPosition == getLayoutManager().getItemCount() - 1;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * 是否是最左边的item，如果是竖向，表示左方，如果是横向，表示上边
-     *
-     * @param childPosition
-     * @return
-     */
-    public boolean isLeftEdge(int childPosition) {
-        LayoutManager layoutManager = getLayoutManager();
-        if (layoutManager instanceof GridLayoutManager) {
-            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
-            GridLayoutManager.SpanSizeLookup spanSizeLookUp = gridLayoutManager.getSpanSizeLookup();
-
-            int totalSpanCount = gridLayoutManager.getSpanCount();
-            int childSpanCount = 0;
-            for (int i = 0; i <= childPosition; i++) {
-                childSpanCount += spanSizeLookUp.getSpanSize(i);
-            }
-            if (isVertical()) {
-                if (childSpanCount % gridLayoutManager.getSpanCount() == 1) {
-                    return true;
-                }
-            } else {
-                if (childSpanCount <= totalSpanCount) {
-                    return true;
-                }
-            }
-
-        } else if (layoutManager instanceof LinearLayoutManager) {
-            if (isVertical()) {
-                return true;
-            } else {
-                return childPosition == 0;
-            }
-
-        }
-
-        return false;
-    }
-
-    /**
-     * 是否是最上边的item，以recyclerview的方向做参考
-     *
-     * @param childPosition
-     * @return
-     */
-    public boolean isTopEdge(int childPosition) {
-        LayoutManager layoutManager = getLayoutManager();
-        if (layoutManager instanceof GridLayoutManager) {
-            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
-            GridLayoutManager.SpanSizeLookup spanSizeLookUp = gridLayoutManager.getSpanSizeLookup();
-
-            int totalSpanCount = gridLayoutManager.getSpanCount();
-
-            int childSpanCount = 0;
-            for (int i = 0; i <= childPosition; i++) {
-                childSpanCount += spanSizeLookUp.getSpanSize(i);
-            }
-
-            if (isVertical()) {
-                if (childSpanCount <= totalSpanCount) {
-                    return true;
-                }
-            } else {
-                if (childSpanCount % totalSpanCount == 1) {
-                    return true;
-                }
-            }
-
-
-        } else if (layoutManager instanceof LinearLayoutManager) {
-            if (isVertical()) {
-                return childPosition == 0;
-            } else {
-                return true;
-            }
-
-        }
-
-        return false;
-    }
-
-    /**
-     * 是否是最下边的item，以recyclerview的方向做参考
-     *
-     * @param childPosition
-     * @return
-     */
-    public boolean isBottomEdge(int childPosition) {
-        LayoutManager layoutManager = getLayoutManager();
-        if (layoutManager instanceof GridLayoutManager) {
-            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
-            GridLayoutManager.SpanSizeLookup spanSizeLookUp = gridLayoutManager.getSpanSizeLookup();
-            int itemCount = gridLayoutManager.getItemCount();
-            int childSpanCount = 0;
-            int totalSpanCount = gridLayoutManager.getSpanCount();
-            for (int i = 0; i <= childPosition; i++) {
-                childSpanCount += spanSizeLookUp.getSpanSize(i);
-            }
-            if (isVertical()) {
-                //最后一行item的个数
-                int lastRowCount = itemCount % totalSpanCount;
-                if (lastRowCount == 0) {
-                    lastRowCount = gridLayoutManager.getSpanCount();
-                }
-                if (childSpanCount > itemCount - lastRowCount) {
-                    return true;
-                }
-            } else {
-                if (childSpanCount % totalSpanCount == 0) {
-                    return true;
-                }
-            }
-
-        } else if (layoutManager instanceof LinearLayoutManager) {
-            if (isVertical()) {
-                return childPosition == getLayoutManager().getItemCount() - 1;
-            } else {
-                return true;
-            }
-
-        }
-        return false;
-    }
-
-    public interface OnInterceptListener {
-        boolean onIntercept(KeyEvent event);
-    }
-
-    /**
-     * 判断是否已经滑动到底部
-     *
-     * @param recyclerView
-     * @return
-     */
-    private boolean isVisBottom(RecyclerView recyclerView) {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-        int visibleItemCount = layoutManager.getChildCount();
-        int totalItemCount = layoutManager.getItemCount();
-        if (visibleItemCount > 0 && lastVisibleItemPosition == totalItemCount - 1) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -551,7 +260,7 @@ public class TvRecyclerView extends RecyclerView {
     public static boolean isFastDoubleClick() {
         long time = System.currentTimeMillis();
         long timeD = time - lastClickTime;
-        if (0 < timeD && timeD < 500) {
+        if (0 < timeD && timeD < 200) {
             return true;
         }
         lastClickTime = time;

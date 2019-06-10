@@ -96,17 +96,17 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             if (!TextUtils.isEmpty(model.getData().getTlid()) && !TextUtils.isEmpty(model.getData().getMerchantCode())) {
                 //判定有无存储空间
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        //预加载本地列表资源
-                        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_FirstFilms_Model))) {
-                            onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_FirstFilms_Model), FirstFilms_Model.class));
-                        }
-                        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_DefTheme_Model))) {
-                            onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_DefTheme_Model), DefTheme_Model.class));
-                        }
-                        //同步加载网络数据
-                        EventBus_Model model1 = new EventBus_Model();
-                        model1.setCommand_1("主页初始化");
-                        onMessage(model1);
+                    //预加载本地列表资源
+//                        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_FirstFilms_Model))) {
+//                            onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_FirstFilms_Model), FirstFilms_Model.class));
+//                        }
+                    if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_DefTheme_Model))) {
+                        onMessage(new Gson().fromJson(SaveUtils.getString(Save_Key.S_DefTheme_Model), DefTheme_Model.class));
+                    }
+                    //同步加载网络数据
+                    EventBus_Model model1 = new EventBus_Model();
+                    model1.setCommand_1("主页初始化");
+                    onMessage(model1);
 
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -244,10 +244,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
             layoutManager.setItemPrefetchEnabled(true);
 
-            //触摸切换
-            layoutManager.addOnItemSelectionListener(adapterPosition -> {
-
-            });
+            //触摸切换 传入控件
+//            layoutManager.addOnItemSelectionListener(adapterPosition -> recyclerView.setPosition(adapterPosition));
 
         }
     }
@@ -306,7 +304,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         if (model.getCode() == 1000) {
             if (model.getData().getBuild() > BuildConfig.VERSION_CODE) {
                 String downloadUrl = model.getData().getDownloadUrl();
-                if(downloadUrl!=null && downloadUrl.toLowerCase().contains(".apk")){
+                if (downloadUrl != null && downloadUrl.toLowerCase().contains(".apk")) {
                     Loading.show(this, "更新中");
                     new DownUtil().downLoad(downloadUrl, "Film_" + model.getData().getBuild() + ".apk", true);
                 }

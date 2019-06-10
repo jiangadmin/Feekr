@@ -113,7 +113,6 @@ public class CarouselLayoutManager extends LayoutManager implements RecyclerView
      * Setup maximum visible (layout) items on each side of the center item.
      * Basically during scrolling there can be more visible items (+1 item on each side), but in idle state this is the only reached maximum.
      *
-     * @param maxVisibleItems should be great then 0, if bot an {@link IllegalAccessException} will be thrown
      */
     @CallSuper
     @SuppressWarnings("unused")
@@ -232,6 +231,7 @@ public class CarouselLayoutManager extends LayoutManager implements RecyclerView
             return new PointF(0, direction);
         }
     }
+
 
     private float getScrollDirection(final int targetPosition) {
         final float currentScrollPosition = makeScrollPositionInRange0ToCount(getCurrentScrollPosition(), mItemsCount);
@@ -482,8 +482,11 @@ public class CarouselLayoutManager extends LayoutManager implements RecyclerView
     @Nullable
     @Override
     public View onInterceptFocusSearch(@NonNull View focused, int direction) {
+
         return super.onInterceptFocusSearch(focused, direction);
     }
+
+
 
     /**
      * @return current scroll position of center item. this value can be in any range if it is cycle layout.
