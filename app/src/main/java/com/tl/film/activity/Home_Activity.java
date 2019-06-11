@@ -268,6 +268,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.home_quanwan:
+                Buy_Vip_Activity.start(this);
                 if (install()) {
 
                 }

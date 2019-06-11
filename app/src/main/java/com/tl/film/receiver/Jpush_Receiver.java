@@ -5,9 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
-import com.tl.film.model.EventBus_Model;
+import com.google.gson.Gson;
+import com.tl.film.model.Push_Model;
 import com.tl.film.model.Save_Key;
+import com.tl.film.model.Tlid_Model;
 import com.tl.film.utils.ExampleUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
@@ -38,10 +41,21 @@ public class Jpush_Receiver extends BroadcastReceiver {
                 JPushInterface.setAlias(context, 0, SaveUtils.getString(Save_Key.S_TLID));
                 break;
             case JPushInterface.ACTION_MESSAGE_RECEIVED:
-                LogUtil.e(TAG, "接受到推送下来的自定义消息" + bundle.get(JPushInterface.EXTRA_MESSAGE));
-                EventBus_Model model = new EventBus_Model();
-                model.setCommand_1(bundle.get(JPushInterface.EXTRA_MESSAGE).toString());
-                EventBus.getDefault().post(model);
+                Push_Model model;
+                try {
+                    model = new Gson().fromJson(bundle.get(JPushInterface.EXTRA_MESSAGE).toString(), Push_Model.class);
+                    if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
+                        Tlid_Model model1 = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
+                        if (model1.getData().getTlid().equals(model.getData().getTlid())) {
+                            EventBus.getDefault().post(model);
+                        }
+                    } else {
+                        EventBus.getDefault().post(model);
+                    }
+
+                } catch (Exception e) {
+                    LogUtil.e(TAG, "无法解析推送数据：" + bundle.get(JPushInterface.EXTRA_MESSAGE));
+                }
                 break;
             case JPushInterface.ACTION_NOTIFICATION_RECEIVED:
                 LogUtil.d(TAG, "接受到推送下来的通知");

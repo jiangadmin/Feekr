@@ -16,6 +16,7 @@ import com.tl.film.R;
 import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Perpay_Model;
+import com.tl.film.model.Push_Model;
 import com.tl.film.servlet.Get_PerPay_Servlet;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
@@ -145,6 +146,13 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
             default:
                 Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onMessage(Push_Model model){
+        if (model.getEventId().equals("OPEN_TX_FILM")){
+            Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
         }
     }
 }
