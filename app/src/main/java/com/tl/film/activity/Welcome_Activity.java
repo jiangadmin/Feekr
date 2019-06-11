@@ -1,26 +1,18 @@
 package com.tl.film.activity;
 
-import android.app.AlertDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tl.film.BuildConfig;
-import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Tlid_Model;
 import com.tl.film.servlet.Bind_Servlet;
-import com.tl.film.servlet.DefTheme_Servlet;
-import com.tl.film.servlet.FirstFilms_Servlet;
-import com.tl.film.servlet.Update_Servlet;
 import com.tl.film.utils.SaveUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,20 +31,20 @@ public class Welcome_Activity extends Base_Activity {
 
         //验证本地是否存储tlid信息
         String str = SaveUtils.getString(Save_Key.S_Tlid_Model);
-        if(str==null || str.length() < 1 ){
+        if (str == null || str.length() < 1) {
             new Bind_Servlet().execute();
             return;
         }
 
         //验证本地tlid信息是否有效
         Tlid_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
-        if(model.getData().getTlid() == null || model.getData().getTlid().length() < 1){
+        if (model.getData().getTlid() == null || model.getData().getTlid().length() < 1) {
             new Bind_Servlet().execute();
             return;
         }
 
         //验证是否绑定商户
-        if(model.getData().getMerchantCode() == null || model.getData().getMerchantCode().length() < 1){
+        if (model.getData().getMerchantCode() == null || model.getData().getMerchantCode().length() < 1) {
             Register_Activity.start(this);
             finish();
             return;
@@ -62,7 +54,7 @@ public class Welcome_Activity extends Base_Activity {
         new Handler().postDelayed(() -> {
             Home_Activity.start(this);
             finish();
-            }, 1000);
+        }, 1000);
     }
 
     @Subscribe
@@ -77,10 +69,9 @@ public class Welcome_Activity extends Base_Activity {
                 finish();
                 break;
             case EventBus_Model.CMD_BIND_FAIL:
-                Toast.makeText(Welcome_Activity.this, "初始化失败，请联系酒店客服！",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Welcome_Activity.this, "初始化失败，请联系酒店客服！", Toast.LENGTH_SHORT).show();
                 break;
         }
-        return;
     }
 
 

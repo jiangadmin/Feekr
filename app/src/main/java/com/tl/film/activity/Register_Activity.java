@@ -2,6 +2,7 @@ package com.tl.film.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -40,7 +41,7 @@ public class Register_Activity extends Base_Activity {
         findViewById(R.id.submit).setOnClickListener(v -> {
             String tlsh = ((TextView) findViewById(R.id.tlsh)).getText().toString();
             if (!TextUtils.isEmpty(tlsh)) {
-                new Register_Servlet().execute(tlsh);
+                new Register_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,tlsh);
             } else {
                 Toast.makeText(this, "请输入渠道号", Toast.LENGTH_SHORT).show();
             }

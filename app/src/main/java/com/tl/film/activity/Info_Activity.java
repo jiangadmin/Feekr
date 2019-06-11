@@ -20,4 +20,5 @@ public class Info_Activity extends Base_Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
     }
+
 }

@@ -3,8 +3,6 @@ package com.tl.film.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -17,6 +15,7 @@ public class TvRecyclerView extends RecyclerView {
     private static final String TAG = "TvRecyclerView";
     private int mPosition;
     private static long lastClickTime = 0L;
+
     public TvRecyclerView(Context context) {
         this(context, null);
     }
@@ -155,8 +154,6 @@ public class TvRecyclerView extends RecyclerView {
     }
 
 
-
-
     /**
      * 设置为0，这样可以防止View获取焦点的时候，ScrollView自动滚动到焦点View的位置
      */
@@ -209,7 +206,7 @@ public class TvRecyclerView extends RecyclerView {
                 case KeyEvent.KEYCODE_ENTER:
                     return super.dispatchKeyEvent(event);
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    if (isFastDoubleClick()){
+                    if (isFastDoubleClick()) {
                         return true;
                     }
                     nextPosition = focusPosition + 1;
@@ -217,7 +214,7 @@ public class TvRecyclerView extends RecyclerView {
                         nextPosition = 0;
                     }
                     LogUtil.e(TAG, "右键=" + nextPosition);
-                    adapter = (RecyclerCoverFlow_Adapter) this.getAdapter();
+                    adapter = (RecyclerCoverFlow_Adapter) getAdapter();
                     vh = adapter.getViewHolder(nextPosition);
                     if (vh != null) {
                         vh.itemView.requestFocus();
@@ -225,7 +222,7 @@ public class TvRecyclerView extends RecyclerView {
                     }
                     return true;
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    if (isFastDoubleClick()){
+                    if (isFastDoubleClick()) {
                         return true;
                     }
                     nextPosition = focusPosition - 1;
@@ -261,7 +258,7 @@ public class TvRecyclerView extends RecyclerView {
      */
     public static boolean isFastDoubleClick() {
         //第一次按
-        if(lastClickTime == 0L){
+        if (lastClickTime == 0L) {
             lastClickTime = System.currentTimeMillis();
             return false;
         }

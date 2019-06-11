@@ -53,6 +53,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
         ViewHolderList.put(position, holder);
         FirstFilms_Model.DataBean bean = dataBeans.get(position);
 
+        holder.img.setTag(position);
         holder.itemView.setTag(position);
 
         holder.shoufei.setVisibility(bean.getTxPayStatus() == 8 ? View.GONE : View.VISIBLE);
@@ -64,6 +65,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
                 clickCb.clickItem(bean);
             }
         });
+
 //        holder.itemView.setOnFocusChangeListener((v, hasFocus) -> {
 //            LogUtil.e(TAG, hasFocus+",view position="+v.getTag());
 //            if (hasFocus) {
@@ -71,14 +73,14 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 //            }
 //        });
 
-//        holder.img.setOnFocusChangeListener((v, hasFocus) -> {
-//            LogUtil.e(TAG, position + "--" + hasFocus+",view position="+v.getTag());
-//            //只要当前有焦点的view
-//            if (hasFocus) {
-//                //当前焦点位置
-//                clickCb.focusableItem(position);
-//            }
-//        });
+        holder.img.setOnFocusChangeListener((v, hasFocus) -> {
+            LogUtil.e(TAG, position + "--" + hasFocus+",view position="+v.getTag());
+            //只要当前有焦点的view
+            if (hasFocus) {
+                //当前焦点位置
+                clickCb.focusableItem(position);
+            }
+        });
 
     }
 
