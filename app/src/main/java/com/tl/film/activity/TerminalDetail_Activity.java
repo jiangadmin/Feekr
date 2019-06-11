@@ -21,14 +21,14 @@ import com.tl.film.utils.SaveUtils;
  * date: 2019/4/21
  * Email: www.fangmu@qq.com
  * Phone: 186 6120 1018
- * TODO: 二维码显示页面
+ * TODO: 终端设备详情
  */
-public class QRCode_Activity extends Base_Activity {
-    private static final String TAG = "QRCode_Activity";
+public class TerminalDetail_Activity extends Base_Activity {
+    private static final String TAG = "TerminalDetail_Activity";
 
     public static void start(Context context) {
         Intent intent = new Intent();
-        intent.setClass(context, QRCode_Activity.class);
+        intent.setClass(context, TerminalDetail_Activity.class);
         context.startActivity(intent);
     }
 

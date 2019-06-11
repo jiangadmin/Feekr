@@ -17,11 +17,13 @@ import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Perpay_Model;
 import com.tl.film.servlet.Get_PerPay_Servlet;
+import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 /**
@@ -34,14 +36,14 @@ import java.net.URLDecoder;
 public class Moive_Activity extends Base_Activity implements View.OnClickListener {
     private static final String TAG = "Moive_Activity";
 
-    public static FirstFilms_Model.DataBean bean;
+    public static FirstFilms_Model.DataBean film;
 
     QRCode_Dialog qrCode_dialog;
 
-    public static void start(Context context, FirstFilms_Model.DataBean bean) {
+    public static void start(Context context, FirstFilms_Model.DataBean film) {
         Intent intent = new Intent();
         intent.setClass(context, Moive_Activity.class);
-        Moive_Activity.bean = bean;
+        Moive_Activity.film = film;
         context.startActivity(intent);
     }
 
@@ -74,20 +76,20 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
         type = findViewById(R.id.movie_type);
         profile = findViewById(R.id.movie_profile);
 
-        if (bean != null) {
-            name.setText(bean.getTitle());
-            if (bean.getScore() <= 10) {
-                score.setRating((float) (bean.getScore() / 2.0));
+        if (film != null) {
+            name.setText(film.getTitle());
+            if (film.getScore() <= 10) {
+                score.setRating((float) (film.getScore() / 2.0));
             } else {
                 score.setRating(8.8F);
             }
-            score_text.setText(String.valueOf(bean.getScore()));
-            Picasso.with(this).load(bean.getBgImage()).into(img);
-            time.setText(String.format("（%s 分钟）", bean.getDuratior()));
-            director.setText(bean.getDirectors());
-            type.setText(bean.getGenre());
-            tostar.setText(bean.getActors());
-            profile.setText(bean.getProfile());
+            score_text.setText(String.valueOf(film.getScore()));
+            Picasso.with(this).load(film.getBgImage()).into(img);
+            time.setText(String.format("（%s 分钟）", film.getDuratior()));
+            director.setText(film.getDirectors());
+            type.setText(film.getGenre());
+            tostar.setText(film.getActors());
+            profile.setText(film.getProfile());
         }
 
         play.setOnClickListener(this);
@@ -106,10 +108,10 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     public void onClick(View v) {
         if (v.getId() == R.id.movie_play) {
             //免费
-            if (bean.getTxPayStatus() == 8) {
-                Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
+            if (film.getTxPayStatus() == 8) {
+                Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
             } else {
-                new Get_PerPay_Servlet().execute(bean.getTxCoverId(), String.valueOf(bean.getId()));
+                new Get_PerPay_Servlet().execute(film.getTxCoverId(), String.valueOf(film.getId()));
             }
         }
     }
@@ -124,14 +126,20 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
         switch (model.getCode()) {
             case 1000:
                 if (qrCode_dialog == null) {
-                    qrCode_dialog = new QRCode_Dialog(this, URLDecoder.decode(model.getData()));
-                }
-                if (!qrCode_dialog.isShowing()) {
-                    qrCode_dialog.show();
+                    try{
+                        qrCode_dialog = new QRCode_Dialog(this, URLDecoder.decode(model.getData(),"utf-8"));
+
+                        //显示支付扫码弹窗
+                        if (!qrCode_dialog.isShowing()) {
+                            qrCode_dialog.show();
+                        }
+                    }catch (UnsupportedEncodingException ex){
+                        LogUtil.e(TAG,ex.getMessage());
+                    }
                 }
                 break;
             case 37003:
-                Open_Ktcp_Utils.openWithHomePageUri(this, bean.getTxJumpPath());
+                Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
                 break;
 
             default:

@@ -115,11 +115,6 @@
             android:screenOrientation="landscape" />
 
         <activity
-            android:name=".activity.QRCode_Activity"
-            android:screenOrientation="landscape"
-            android:theme="@style/translucent" />
-
-        <activity
             android:name=".activity.Info_Activity"
             android:screenOrientation="portrait" />
 

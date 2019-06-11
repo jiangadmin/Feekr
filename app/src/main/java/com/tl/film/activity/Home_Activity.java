@@ -67,10 +67,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     TvRecyclerView recyclerView;
     RecyclerCoverFlow_Adapter adapter;
-
     ImageView bg, logo, qrcode;
-
     View quanwang, lunbo;
+
+    private long[] mHits = new long[7]; //用于监听连续菜单按键
 
     public static void start(Context context) {
         Intent intent = new Intent();
@@ -248,12 +248,28 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         startActivity(intent);
     }
 
+
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
+            LogUtil.e(TAG, "菜单键");
+            System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
+            mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+            if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
+                TerminalDetail_Activity.start(this);
+            }
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.home_quanwan:
                 if (install()) {
-                    QRCode_Activity.start(this);
+
                 }
                 break;
             case R.id.home_lunbo:
