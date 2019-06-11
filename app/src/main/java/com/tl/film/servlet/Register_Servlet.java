@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.tl.film.activity.Register_Activity;
 import com.tl.film.dialog.Loading;
 import com.tl.film.model.Base_Model;
+import com.tl.film.model.Const;
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Tlid_Model;
 import com.tl.film.utils.HttpParamUtils;
@@ -21,12 +23,6 @@ import java.util.Map;
 
 public class Register_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
     private static final String TAG = "Register_Servlet";
-
-    Register_Activity activity;
-
-    public Register_Servlet(Register_Activity activity) {
-        this.activity = activity;
-    }
 
     @Override
     protected Tlid_Model doInBackground(String... strings) {
@@ -57,6 +53,28 @@ public class Register_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
     protected void onPostExecute(Tlid_Model model) {
         super.onPostExecute(model);
         Loading.dismiss();
-        activity.onMessage(model);
+        EventBus_Model eb = null;
+        switch (model.getCode()) {
+            case 1000:
+                Tlid_Model localModel = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
+                if(localModel != null && model.getData() != null){
+                    localModel.getData().setMerchantCode(model.getData().getMerchantCode());
+                    localModel.getData().setMerchantId(model.getData().getMerchantId());
+                    localModel.getData().setMerchantName(model.getData().getMerchantName());
+                    SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(localModel));
+                }
+
+                //绑定成功跳转到首页
+                eb = new EventBus_Model();
+                eb.setCommand_1(EventBus_Model.CMD_ENTRY_HOME);
+                EventBus.getDefault().post(eb);
+                break;
+            default:
+                eb = new EventBus_Model();
+                eb.setCommand_1(EventBus_Model.CMD_BIND_MERT_FAIL);
+                eb.setData(model.getMessage());
+                EventBus.getDefault().post(eb);
+                break;
+        }
     }
 }

@@ -221,6 +221,7 @@ public class TvRecyclerView extends RecyclerView {
                     vh = adapter.getViewHolder(nextPosition);
                     if (vh != null) {
                         vh.itemView.requestFocus();
+                        smoothScrollToPosition(nextPosition);
                     }
                     return true;
                 case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -236,6 +237,7 @@ public class TvRecyclerView extends RecyclerView {
                     vh = adapter.getViewHolder(nextPosition);
                     if (vh != null) {
                         vh.itemView.requestFocus();
+                        smoothScrollToPosition(nextPosition);
                     }
                     return true;
             }
@@ -258,9 +260,14 @@ public class TvRecyclerView extends RecyclerView {
      * @return
      */
     public static boolean isFastDoubleClick() {
+        //第一次按
+        if(lastClickTime == 0L){
+            lastClickTime = System.currentTimeMillis();
+            return false;
+        }
         long time = System.currentTimeMillis();
         long timeD = time - lastClickTime;
-        if (0 < timeD && timeD < 200) {
+        if (0 < timeD && timeD < 300) {
             return true;
         }
         lastClickTime = time;

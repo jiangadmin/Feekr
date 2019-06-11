@@ -142,37 +142,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         logo = findViewById(R.id.logo);
         qrcode = findViewById(R.id.qrcode);
         recyclerView = findViewById(R.id.recycler_view);
-
-        if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_Tlid_Model))) {
-            Tlid_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
-
-            if (TextUtils.isEmpty(model.getData().getMerchantCode())) {
-                if (MyAPP.register_activity == null)
-                    Register_Activity.start(this);
-            }
-        }
-    }
-
-    boolean showToast = true;
-    long[] mHits = new long[7];
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
-            LogUtil.e(TAG, "菜单键");
-            System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
-            mHits[mHits.length - 1] = SystemClock.uptimeMillis();
-            if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
-                if (MyAPP.register_activity == null)
-                    Register_Activity.start(this);
-
-            } else {
-                showToast = true;
-            }
-            return true;
-        }
-
-        return super.dispatchKeyEvent(event);
     }
 
     /**

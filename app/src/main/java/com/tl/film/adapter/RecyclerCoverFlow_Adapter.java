@@ -59,22 +59,26 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
 
         Picasso.with(mContext).load(bean.getBgImage()).into(holder.img);
 
-        holder.img.setTag(R.id.img, holder);
-
         holder.img.setOnClickListener(v -> {
             if (clickCb != null) {
                 clickCb.clickItem(bean);
             }
         });
+//        holder.itemView.setOnFocusChangeListener((v, hasFocus) -> {
+//            LogUtil.e(TAG, hasFocus+",view position="+v.getTag());
+//            if (hasFocus) {
+//                v.focusableItem(position);
+//            }
+//        });
 
-        holder.img.setOnFocusChangeListener((v, hasFocus) -> {
-            LogUtil.e(TAG, position + "--" + hasFocus);
-            //只要当前有焦点的view
-            if (hasFocus) {
-                //当前焦点位置
-                clickCb.focusableItem(position);
-            }
-        });
+//        holder.img.setOnFocusChangeListener((v, hasFocus) -> {
+//            LogUtil.e(TAG, position + "--" + hasFocus+",view position="+v.getTag());
+//            //只要当前有焦点的view
+//            if (hasFocus) {
+//                //当前焦点位置
+//                clickCb.focusableItem(position);
+//            }
+//        });
 
     }
 

@@ -66,16 +66,18 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
         super.onPostExecute(model);
         switch (model.getCode()) {
             case 1000:
-                SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(model));
                 if (model.getData() != null && !TextUtils.isEmpty(model.getData().getTlid())) {
+                    //本地存储tlid及相关信息
+                    SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(model));
                     Const.TLID = model.getData().getTlid();
                     SaveUtils.setString(Save_Key.S_TLID, Const.TLID);
 
+                    //判断是否绑定过商户未绑定则跳转绑定页面，如果已经绑定则直接跳转到首页
                     EventBus_Model model1 = new EventBus_Model();
                     if (TextUtils.isEmpty(model.getData().getMerchantCode())){
-                        model1.setCommand_1("渠道注册");
+                        model1.setCommand_1(EventBus_Model.CMD_BIND_MERT);
                     }else {
-                        model1.setCommand_1("主页初始化");
+                        model1.setCommand_1(EventBus_Model.CMD_ENTRY_HOME);
                     }
                     EventBus.getDefault().post(model1);
 
@@ -83,7 +85,7 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
                 break;
             default:
                 EventBus_Model model1 = new EventBus_Model();
-                model1.setCommand_1("渠道注册");
+                model1.setCommand_1(EventBus_Model.CMD_BIND_FAIL);
                 EventBus.getDefault().post(model1);
                 break;
         }

@@ -38,8 +38,6 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
     private static final String TAG = "MyAPP";
     public static Activity activity;
 
-    public static Register_Activity register_activity;
-
     private static Context context;
 
     public static final boolean LogShow = true;
