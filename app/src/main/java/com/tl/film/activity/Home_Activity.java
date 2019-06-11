@@ -252,10 +252,14 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.home_quanwan:
-                QRCode_Activity.start(this);
+                if (install()) {
+                    QRCode_Activity.start(this);
+                }
                 break;
             case R.id.home_lunbo:
-                Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");
+                if(install()){
+                    Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");
+                }
                 break;
         }
     }
