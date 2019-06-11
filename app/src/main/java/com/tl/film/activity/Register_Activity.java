@@ -8,11 +8,15 @@ import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.model.Base_Model;
+import com.tl.film.model.Save_Key;
+import com.tl.film.model.Tlid_Model;
 import com.tl.film.servlet.Bind_Servlet;
 import com.tl.film.servlet.Register_Servlet;
+import com.tl.film.utils.SaveUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,15 +33,13 @@ public class Register_Activity extends Base_Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+
         setContentView(R.layout.activity_register);
 
         findViewById(R.id.submit).setOnClickListener(v -> {
             String tlsh = ((TextView) findViewById(R.id.tlsh)).getText().toString();
             if (!TextUtils.isEmpty(tlsh)) {
-                new Register_Servlet().execute(tlsh);
+                new Register_Servlet(this).execute(tlsh);
             } else {
                 Toast.makeText(this, "请输入渠道号", Toast.LENGTH_SHORT).show();
             }
@@ -53,9 +55,6 @@ public class Register_Activity extends Base_Activity {
     @Override
     protected void onDestroy() {
         MyAPP.register_activity = null;
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
         super.onDestroy();
     }
 
@@ -71,13 +70,12 @@ public class Register_Activity extends Base_Activity {
         super.onStop();
     }
 
-    @Subscribe
-    public void onMessage(Base_Model model) {
+    public void onMessage(Tlid_Model model) {
         Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
         switch (model.getCode()) {
             case 1000:
             case 13406:
-                new Bind_Servlet().execute();
+                SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(model));
                 Home_Activity.start(this);
                 finish();
                 break;

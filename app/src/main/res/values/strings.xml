@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Film</string>
+    <string name="app_name">云试听极光</string>
     <string name="browse_title"><![CDATA[Videos by Your Company]]></string>
     <string name="related_movies">相关视频</string>
     <string name="grid_view">Grid View</string>
@@ -16,8 +16,6 @@
     <!-- Error messages -->
     <string name="error_fragment_message">An error occurred</string>
     <string name="dismiss_error">Dismiss</string>
-
-
 
 
     <string name="ok">确认</string>
