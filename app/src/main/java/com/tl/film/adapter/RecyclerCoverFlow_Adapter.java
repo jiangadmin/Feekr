@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.tl.film.R;
 import com.tl.film.model.FirstFilms_Model;
@@ -29,7 +28,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     private Context mContext;
 
     private List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
-    private Map<Integer, ViewHolder> ViewHolderList = new HashMap();
+    private static Map<Integer, ViewHolder> ViewHolderList = new HashMap<>();
 
     public void setDataBeans(List<FirstFilms_Model.DataBean> dataBeans) {
         this.dataBeans = dataBeans;
@@ -42,39 +41,39 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
         clickCb = cb;
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.layout_item, parent, false);
         return new ViewHolder(v);
     }
 
+    private FirstFilms_Model.DataBean getItem(int position) {
+        return dataBeans.get(position);
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ViewHolderList.put(position, holder);
-        FirstFilms_Model.DataBean bean = dataBeans.get(position);
+        if (ViewHolderList.get(position) == null) {
+            ViewHolderList.put(position, holder);
+        }
+        LogUtil.e(TAG, "存入：" + position + "___" + getItem(position).getTitle());
 
         holder.img.setTag(position);
         holder.itemView.setTag(position);
 
-        holder.shoufei.setVisibility(bean.getTxPayStatus() == 8 ? View.GONE : View.VISIBLE);
+        holder.shoufei.setVisibility(getItem(position).getTxPayStatus() == 8 ? View.GONE : View.VISIBLE);
 
-        Picasso.with(mContext).load(bean.getBgImage()).into(holder.img);
+        Picasso.with(mContext).load(getItem(position).getBgImage()).into(holder.img);
 
         holder.img.setOnClickListener(v -> {
             if (clickCb != null) {
-                clickCb.clickItem(bean);
+                clickCb.clickItem(getItem(position));
             }
         });
 
-//        holder.itemView.setOnFocusChangeListener((v, hasFocus) -> {
-//            LogUtil.e(TAG, hasFocus+",view position="+v.getTag());
-//            if (hasFocus) {
-//                v.focusableItem(position);
-//            }
-//        });
-
         holder.img.setOnFocusChangeListener((v, hasFocus) -> {
-            LogUtil.e(TAG, position + "--" + hasFocus+",view position="+v.getTag());
+            LogUtil.e(TAG, position + "--" + hasFocus + ",view position=" + v.getTag());
             //只要当前有焦点的view
             if (hasFocus) {
                 //当前焦点位置
@@ -99,14 +98,14 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     }
 
     public ViewHolder getViewHolder(int position) {
-        return this.ViewHolderList.get(position);
+        return ViewHolderList.get(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView img;
         RelativeLayout shoufei;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             shoufei = itemView.findViewById(R.id.shoufei);

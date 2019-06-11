@@ -163,7 +163,6 @@ public class TvRecyclerView extends RecyclerView {
     protected int getChildDrawingOrder(int childCount, int i) {
         View view = getFocusedChild();
         if (null != view) {
-
             mPosition = getChildAdapterPosition(view) - getFirstVisiblePosition();
             if (mPosition < 0) {
                 return i;
@@ -214,7 +213,7 @@ public class TvRecyclerView extends RecyclerView {
                         nextPosition = 0;
                     }
                     LogUtil.e(TAG, "右键=" + nextPosition);
-                    adapter = (RecyclerCoverFlow_Adapter) getAdapter();
+                    adapter = (RecyclerCoverFlow_Adapter) this.getAdapter();
                     vh = adapter.getViewHolder(nextPosition);
                     if (vh != null) {
                         vh.itemView.requestFocus();
@@ -241,7 +240,6 @@ public class TvRecyclerView extends RecyclerView {
         }
         return super.dispatchKeyEvent(event);
     }
-
 
     //防止Activity时,RecyclerView崩溃
     @Override

@@ -91,7 +91,7 @@ public class QRCode_Dialog extends Dialog {
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
                     lastClickTime = currentTime;
-                    new Get_PerPay_Servlet().execute(Moive_Activity.bean.getTxCoverId(), String.valueOf(Moive_Activity.bean.getId()));
+                    new Get_PerPay_Servlet().execute(Moive_Activity.film.getTxCoverId(), String.valueOf(Moive_Activity.film.getId()));
                     return false;
                 } else {
                     Toast.makeText(MyAPP.getContext(), "稍安勿躁", Toast.LENGTH_SHORT).show();
