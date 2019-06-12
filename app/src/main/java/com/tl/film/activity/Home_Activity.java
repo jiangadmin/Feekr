@@ -29,6 +29,7 @@ import com.tl.film.dialog.Loading;
 import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.Const;
 import com.tl.film.model.DefTheme_Model;
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Tlid_Model;
@@ -92,7 +93,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         registerMessageReceiver();  // used for receive msg
 
-        Loading.show(this, "请稍后");
+        Loading.show(this, "努力加载中请稍后...");
 
         //列表
         new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -109,9 +110,9 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         MyAPP.activity = this;
 
         //判断网络
-        if (!Tools.isNetworkConnected())
+        if (!Tools.isNetworkConnected()){
             NetDialog.showW();
-
+        }
     }
 
     @Override
@@ -144,58 +145,96 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         recyclerView = findViewById(R.id.recycler_view);
     }
 
-    /**
-     * 首发影院返回
-     *
-     * @param model 数据
-     */
     @Subscribe
-    public void onMessage(FirstFilms_Model model) {
-        Loading.dismiss();
-        if (model.getCode() == 1000) {
-            SaveUtils.setString(Save_Key.S_FirstFilms_Model, new Gson().toJson(model));
+    public void onMessage(EventBus_Model model) {
+        Object data = model.getData();
+        try{
+            switch (model.getCommand_1()) {
+                case EventBus_Model.CMD_FILL_DATA_THEME:
+                    if(data!=null){
+                        doFillTheme((DefTheme_Model.DataBean)data);
+                    }
+                    break;
+                case EventBus_Model.CMD_FILL_DATA_FILM:
+                    if(data!=null){
+                        doFillFirstFilm((ArrayList<FirstFilms_Model.DataBean>)data);
+                    }
+                    break;
+                case EventBus_Model.CMD_UPGRADE:
+                    if(data!=null){
+                        doUpgrade((Update_Model.DataBean)data);
+                    }
+                    break;
+            }
+        }catch(Exception ex){
+            LogUtil.e(TAG, "EventBus 报错："+ex.getMessage());
+        }
+        return;
+    }
+
+
+    /**
+     *  填充主题数据
+     * @param theme
+     */
+    private void doFillTheme(DefTheme_Model.DataBean theme){
+        if(theme!=null){
+            //本地存储
+            SaveUtils.setString(Save_Key.S_DefTheme_Model, new Gson().toJson(theme));
+            //背景图
+            if (!TextUtils.isEmpty(theme.getBgUrl())) {
+                Picasso.with(this).load(theme.getBgUrl()).error(R.mipmap.bg).placeholder(R.mipmap.bg).into(bg);
+            }
+            //logo
+            if (!TextUtils.isEmpty(theme.getLogo())) {
+                Picasso.with(this).load(theme.getLogo()).into(logo);
+            }
+            //二维码
+            if (!TextUtils.isEmpty(theme.getCpScan())) {
+                Picasso.with(this).load(theme.getCpScan()).into(qrcode);
+            }
+        }
+        return;
+    }
+
+    /**
+     * 填充首发影院视频数据
+     * @param filmList
+     */
+    private void doFillFirstFilm(ArrayList<FirstFilms_Model.DataBean> filmList){
+        if(filmList!=null && !filmList.isEmpty()){
+            SaveUtils.setString(Save_Key.S_FirstFilms_Model, new Gson().toJson(filmList));
 
             CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
             layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
             adapter = new RecyclerCoverFlow_Adapter(this, this);
-            adapter.setDataBeans(model.getData());
+            adapter.setDataBeans(filmList);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setHasFixedSize(true);
             recyclerView.addOnScrollListener(new CenterScrollListener());
-
             layoutManager.setItemPrefetchEnabled(true);
-
-            //触摸切换 传入控件
-//            layoutManager.addOnItemSelectionListener(adapterPosition -> recyclerView.setPosition(adapterPosition));
-
         }
+        return;
     }
 
     /**
-     * 主题返回
-     *
-     * @param model 数据
+     * 版本升级
+     * @param newVersioin
      */
-    @Subscribe
-    public void onMessage(DefTheme_Model model) {
-        if (model.getCode() == 1000) {//背景
-            SaveUtils.setString(Save_Key.S_DefTheme_Model, new Gson().toJson(model));
-
-            if (!TextUtils.isEmpty(model.getData().getBgUrl())) {
-                Picasso.with(this).load(model.getData().getBgUrl()).error(R.mipmap.bg).placeholder(R.mipmap.bg).into(bg);
-            }
-            //logo
-            if (!TextUtils.isEmpty(model.getData().getLogo())) {
-                Picasso.with(this).load(model.getData().getLogo()).into(logo);
-            }
-            //二维码
-            if (!TextUtils.isEmpty(model.getData().getCpScan())) {
-                Picasso.with(this).load(model.getData().getCpScan()).into(qrcode);
+    private void doUpgrade(Update_Model.DataBean newVersioin){
+        if(newVersioin != null){
+            if (newVersioin.getBuild() > BuildConfig.VERSION_CODE) {
+                String downloadUrl = newVersioin.getDownloadUrl();
+                if (downloadUrl != null && downloadUrl.toLowerCase().contains(".apk")) {
+                    Loading.show(this, "更新中");
+                    new DownUtil().downLoad(downloadUrl, "Film_" + newVersioin.getBuild() + ".apk", true);
+                }
             }
         }
-
+        return;
     }
+
 
     @Override
     public void clickItem(FirstFilms_Model.DataBean bean) {
@@ -215,24 +254,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         recyclerView.smoothScrollToPosition(position);
     }
 
-    /**
-     * 检查更新
-     *
-     * @param model 数据
-     */
-    @Subscribe
-    public void onMessage(Update_Model model) {
-        //                Toast.makeText(this, model.getMessage(), Toast.LENGTH_SHORT).show();
-        if (model.getCode() == 1000) {
-            if (model.getData().getBuild() > BuildConfig.VERSION_CODE) {
-                String downloadUrl = model.getData().getDownloadUrl();
-                if (downloadUrl != null && downloadUrl.toLowerCase().contains(".apk")) {
-                    Loading.show(this, "更新中");
-                    new DownUtil().downLoad(downloadUrl, "Film_" + model.getData().getBuild() + ".apk", true);
-                }
-            }
-        }
-    }
 
     /**
      * 启动安装
@@ -249,14 +270,20 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     }
 
 
-
+    /**
+     * 监听遥控按键
+     * @param event
+     * @return
+     */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+
+        //连续按菜单键跳转到设备详情页面
         if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
-            LogUtil.e(TAG, "菜单键");
             System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
             mHits[mHits.length - 1] = SystemClock.uptimeMillis();
             if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
+                mHits = new long[7];        //重置数组
                 TerminalDetail_Activity.start(this);
             }
             return true;
@@ -332,18 +359,15 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             builder.setTitle("未检测到云视听应用");
             builder.setMessage("为了更好的观影体验，本应用需要安装 云视听 应用");
             builder.setNegativeButton("安装", (dialog, which) -> {
-
                 File_Utils.openApk(File_Utils.copyAssetsFile(this, "tv_video_16188.apk", Const.FilePath), this);
                 dialog.dismiss();
             });
-
             builder.setCancelable(false);
             builder.show();
             return false;
         } else {
             return true;
         }
-
     }
 
     /**

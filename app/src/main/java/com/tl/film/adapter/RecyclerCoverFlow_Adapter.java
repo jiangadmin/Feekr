@@ -28,7 +28,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     private Context mContext;
 
     private List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
-     Map<Integer, ViewHolder> ViewHolderList = new HashMap<>();
+    private Map<Integer, ViewHolder> ViewHolderList = new HashMap<>();
 
     public void setDataBeans(List<FirstFilms_Model.DataBean> dataBeans) {
         this.dataBeans = dataBeans;

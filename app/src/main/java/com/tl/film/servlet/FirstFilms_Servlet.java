@@ -5,6 +5,8 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tl.film.activity.Home_Activity;
+import com.tl.film.dialog.Loading;
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.utils.HttpParamUtils;
@@ -64,6 +66,13 @@ public class FirstFilms_Servlet extends AsyncTask<String, Integer, FirstFilms_Mo
     @Override
     protected void onPostExecute(FirstFilms_Model model) {
         super.onPostExecute(model);
-        EventBus.getDefault().post(model);
+        Loading.dismiss();
+        if(model!=null && model.getCode() == 1000){
+            EventBus_Model eb = new EventBus_Model();
+            eb.setCommand_1(EventBus_Model.CMD_FILL_DATA_FILM);
+            eb.setData(model.getData());
+            EventBus.getDefault().post(eb);
+        }
+        return;
     }
 }

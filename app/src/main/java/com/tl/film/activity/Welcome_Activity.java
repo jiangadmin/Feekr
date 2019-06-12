@@ -1,5 +1,6 @@
 package com.tl.film.activity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -32,14 +33,14 @@ public class Welcome_Activity extends Base_Activity {
         //验证本地是否存储tlid信息
         String str = SaveUtils.getString(Save_Key.S_Tlid_Model);
         if (str == null || str.length() < 1) {
-            new Bind_Servlet().execute();
+            new Bind_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             return;
         }
 
         //验证本地tlid信息是否有效
         Tlid_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
         if (model.getData().getTlid() == null || model.getData().getTlid().length() < 1) {
-            new Bind_Servlet().execute();
+            new Bind_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             return;
         }
 

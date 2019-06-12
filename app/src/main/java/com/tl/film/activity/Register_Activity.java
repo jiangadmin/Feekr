@@ -69,9 +69,9 @@ public class Register_Activity extends Base_Activity {
                 finish();
                 break;
             case EventBus_Model.CMD_BIND_MERT_FAIL:
-                String msg = eb.getData();
-                if(msg == null || msg.length() < 1){
-                    msg = "渠道绑定失败";
+                String msg = "渠道绑定失败";
+                if(eb.getData() !=null){
+                    msg = (String)eb.getData();
                 }
                 Toast.makeText(Register_Activity.this, msg,Toast.LENGTH_SHORT).show();
                 break;

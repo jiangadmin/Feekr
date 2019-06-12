@@ -1,15 +1,17 @@
 package com.tl.film.model;
 
 public class EventBus_Model {
-    public static final String CMD_BIND_MERT  = "CMD_BIND_MERT";
-    public static final String CMD_BIND_MERT_FAIL = "CMD_BIND_MERT_FAIL";
-    public static final String CMD_BIND_FAIL = "CMD_BIND_FAIL";
-    public static final String CMD_ENTRY_HOME = "CMD_ENTRY_HOME";
-
+    public static final String CMD_BIND_MERT  = "CMD_BIND_MERT";                //绑定商户
+    public static final String CMD_BIND_MERT_FAIL = "CMD_BIND_MERT_FAIL";       //绑定商户失败提示
+    public static final String CMD_BIND_FAIL = "CMD_BIND_FAIL";                 //设备注册失败提示
+    public static final String CMD_ENTRY_HOME = "CMD_ENTRY_HOME";               //打开主界面
+    public static final String CMD_FILL_DATA_THEME = "CMD_FILL_DATA_THEME";     //加载主题数据
+    public static final String CMD_FILL_DATA_FILM = "CMD_FILL_DATA_FILM";       //加载影片数据
+    public static final String CMD_UPGRADE = "CMD_UPGRADE";                     //APP升级
 
     private String command_1;   //一级指令
     private String command_2;   //二级指令
-    private String data;
+    private Object data;
 
     public String getCommand_1() {
         return command_1;
@@ -27,11 +29,11 @@ public class EventBus_Model {
         this.command_2 = command_2;
     }
 
-    public String getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }

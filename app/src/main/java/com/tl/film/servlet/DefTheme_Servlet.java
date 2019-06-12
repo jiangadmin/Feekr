@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tl.film.activity.Home_Activity;
 import com.tl.film.model.DefTheme_Model;
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.utils.HttpParamUtils;
 import com.tl.film.utils.HttpUtil;
@@ -64,6 +65,12 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
     @Override
     protected void onPostExecute(DefTheme_Model model) {
         super.onPostExecute(model);
-        EventBus.getDefault().post(model);
+        if(model!=null && model.getCode() == 1000){
+            EventBus_Model eb = new EventBus_Model();
+            eb.setCommand_1(EventBus_Model.CMD_FILL_DATA_THEME);
+            eb.setData(model.getData());
+            EventBus.getDefault().post(eb);
+        }
+        return;
     }
 }
