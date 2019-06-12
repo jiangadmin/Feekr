@@ -10,11 +10,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.tl.film.BuildConfig;
 import com.tl.film.R;
+import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Tlid_Model;
 import com.tl.film.servlet.Bind_Servlet;
 import com.tl.film.utils.SaveUtils;
+import com.tl.film.utils.Tools;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,6 +31,8 @@ public class Welcome_Activity extends Base_Activity {
 
         //设置版本号
         ((TextView) findViewById(R.id.appversion)).setText(BuildConfig.VERSION_NAME);
+
+
 
         //验证本地是否存储tlid信息
         String str = SaveUtils.getString(Save_Key.S_Tlid_Model);

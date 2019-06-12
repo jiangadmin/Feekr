@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -32,7 +31,6 @@ import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Save_Key;
-import com.tl.film.model.Tlid_Model;
 import com.tl.film.model.Update_Model;
 import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.DownUtil;
@@ -110,7 +108,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         MyAPP.activity = this;
 
         //判断网络
-        if (!Tools.isNetworkConnected()){
+        if (!Tools.isNetworkConnected()) {
             NetDialog.showW();
         }
     }
@@ -148,39 +146,38 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     @Subscribe
     public void onMessage(EventBus_Model model) {
         Object data = model.getData();
-        try{
+        try {
             switch (model.getCommand_1()) {
                 case EventBus_Model.CMD_FILL_DATA_THEME:
-                    if(data!=null){
-                        doFillTheme((DefTheme_Model.DataBean)data);
+                    if (data != null) {
+                        doFillTheme((DefTheme_Model.DataBean) data);
                     }
                     break;
                 case EventBus_Model.CMD_FILL_DATA_FILM:
-                    if(data!=null){
-                        doFillFirstFilm((ArrayList<FirstFilms_Model.DataBean>)data);
+                    if (data != null) {
+                        doFillFirstFilm((ArrayList<FirstFilms_Model.DataBean>) data);
                     }
                     break;
                 case EventBus_Model.CMD_UPGRADE:
-                    if(data!=null){
-                        doUpgrade((Update_Model.DataBean)data);
+                    if (data != null) {
+                        doUpgrade((Update_Model.DataBean) data);
                     }
                     break;
             }
-        }catch(Exception ex){
-            LogUtil.e(TAG, "EventBus 报错："+ex.getMessage());
+        } catch (Exception ex) {
+            LogUtil.e(TAG, "EventBus 报错：" + ex.getMessage());
         }
         return;
     }
 
 
     /**
-     *  填充主题数据
+     * 填充主题数据
+     *
      * @param theme
      */
-    private void doFillTheme(DefTheme_Model.DataBean theme){
-        if(theme!=null){
-            //本地存储
-            SaveUtils.setString(Save_Key.S_DefTheme_Model, new Gson().toJson(theme));
+    private void doFillTheme(DefTheme_Model.DataBean theme) {
+        if (theme != null) {
             //背景图
             if (!TextUtils.isEmpty(theme.getBgUrl())) {
                 Picasso.with(this).load(theme.getBgUrl()).error(R.mipmap.bg).placeholder(R.mipmap.bg).into(bg);
@@ -199,10 +196,11 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     /**
      * 填充首发影院视频数据
+     *
      * @param filmList
      */
-    private void doFillFirstFilm(ArrayList<FirstFilms_Model.DataBean> filmList){
-        if(filmList!=null && !filmList.isEmpty()){
+    private void doFillFirstFilm(ArrayList<FirstFilms_Model.DataBean> filmList) {
+        if (filmList != null && !filmList.isEmpty()) {
             SaveUtils.setString(Save_Key.S_FirstFilms_Model, new Gson().toJson(filmList));
 
             CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
@@ -220,10 +218,11 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     /**
      * 版本升级
+     *
      * @param newVersioin
      */
-    private void doUpgrade(Update_Model.DataBean newVersioin){
-        if(newVersioin != null){
+    private void doUpgrade(Update_Model.DataBean newVersioin) {
+        if (newVersioin != null) {
             if (newVersioin.getBuild() > BuildConfig.VERSION_CODE) {
                 String downloadUrl = newVersioin.getDownloadUrl();
                 if (downloadUrl != null && downloadUrl.toLowerCase().contains(".apk")) {
@@ -272,6 +271,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     /**
      * 监听遥控按键
+     *
      * @param event
      * @return
      */
@@ -301,7 +301,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
                 }
                 break;
             case R.id.home_lunbo:
-                if(install()){
+                if (install()) {
                     Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");
                 }
                 break;

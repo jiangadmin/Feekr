@@ -23,8 +23,10 @@ public class Get_PerPay_Servlet extends AsyncTask<String, Integer, Perpay_Model>
     protected Perpay_Model doInBackground(String... strings) {
         Map<String, String> map = new HashMap<>();
         map.put("tlid", SaveUtils.getString(Save_Key.S_TLID));
-        map.put("txCoverId", strings[0]);
-        map.put("videosId", strings[1]);
+        if (strings.length > 1) {
+            map.put("txCoverId", strings[0]);
+            map.put("videosId", strings[1]);
+        }
         map = HttpParamUtils.getRequestParams(map);
 
         String res = HttpUtil.doPost("tencent/vuid/vuidOrderController/getPrePayInfo.do", map);

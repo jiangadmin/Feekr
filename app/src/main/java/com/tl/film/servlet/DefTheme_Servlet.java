@@ -65,12 +65,13 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
     @Override
     protected void onPostExecute(DefTheme_Model model) {
         super.onPostExecute(model);
-        if(model!=null && model.getCode() == 1000){
+        if (model != null && model.getCode() == 1000) {
+            SaveUtils.setString(Save_Key.S_DefTheme_Model, new Gson().toJson(model));
+
             EventBus_Model eb = new EventBus_Model();
             eb.setCommand_1(EventBus_Model.CMD_FILL_DATA_THEME);
             eb.setData(model.getData());
             EventBus.getDefault().post(eb);
         }
-        return;
     }
 }
