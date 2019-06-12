@@ -30,8 +30,8 @@ public class NetDialog {
      */
     public static void showW() {
         if (MyAPP.activity != null && netWarningDialog == null) {
-            netWarningDialog = new NetWarningDialog(MyAPP.activity);
             try {
+                netWarningDialog = new NetWarningDialog(MyAPP.activity);
                 netWarningDialog.show();
             } catch (RuntimeException e) {
 
