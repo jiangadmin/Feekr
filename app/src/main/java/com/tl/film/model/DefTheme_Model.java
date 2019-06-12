@@ -52,6 +52,15 @@ public class DefTheme_Model extends Base_Model {
         private String themeName;
         private String updateAuthor;
         private String updateTime;
+        private String chargeBg;
+
+        public String getChargeBg() {
+            return chargeBg;
+        }
+
+        public void setChargeBg(String chargeBg) {
+            this.chargeBg = chargeBg;
+        }
 
         public String getBgUrl() {
             return bgUrl;
