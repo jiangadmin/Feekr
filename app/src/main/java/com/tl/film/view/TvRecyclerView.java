@@ -160,7 +160,6 @@ public class TvRecyclerView extends RecyclerView {
      * 设置为0，这样可以防止View获取焦点的时候，ScrollView自动滚动到焦点View的位置
      */
 
-
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
         View view = getFocusedChild();
