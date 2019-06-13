@@ -79,6 +79,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             EventBus.getDefault().register(this);
         }
 
+        MyAPP.activity = this;
         setContentView(R.layout.activity_home);
 
         initview();
@@ -105,22 +106,16 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
     @Override
     protected void onResume() {
-        super.onResume();
 
         MyAPP.activity = this;
-
+        LogUtil.e(TAG, "判断网络：" + Tools.isNetworkConnected());
         //判断网络
         if (!Tools.isNetworkConnected()) {
             NetDialog.showW();
         }
-    }
+        super.onResume();
 
-    @Override
-    protected void onStop() {
-        MyAPP.activity = this;
-        super.onStop();
     }
-
 
     @Override
     protected void onDestroy() {

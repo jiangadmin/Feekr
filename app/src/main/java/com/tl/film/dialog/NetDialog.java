@@ -12,6 +12,7 @@ import android.widget.Button;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.model.EventBus_Model;
+import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Tools;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,7 +26,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class NetDialog {
-
+    private static final String TAG = "NetDialog";
     private static NetWarningDialog netWarningDialog;
     private static NetLoadingDialog netLoadingDialog;
 
@@ -35,12 +36,22 @@ public class NetDialog {
      * 显示警告框
      */
     public static void showW() {
-        if (MyAPP.activity != null && netWarningDialog == null) {
-            try {
-                netWarningDialog = new NetWarningDialog(MyAPP.activity);
-                netWarningDialog.show();
-            } catch (RuntimeException e) {
-
+        if (MyAPP.activity != null){
+            if (netWarningDialog == null){
+                try {
+                    netWarningDialog = new NetWarningDialog(MyAPP.activity);
+                    netWarningDialog.show();
+                    LogUtil.e(TAG,"显示");
+                } catch (RuntimeException e) {
+                    LogUtil.e(TAG,e.getMessage());
+                }
+            }else {
+                try {
+                    netWarningDialog.show();
+                    LogUtil.e(TAG,"显示");
+                } catch (RuntimeException e) {
+                    LogUtil.e(TAG,e.getMessage());
+                }
             }
         }
     }

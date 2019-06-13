@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.FirstFilms_Model;
@@ -60,7 +61,7 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
+        MyAPP.activity = this;
         initview();
 
     }
