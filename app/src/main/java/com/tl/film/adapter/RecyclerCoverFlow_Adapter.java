@@ -84,7 +84,6 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
                 clickCb.focusableItem(position);
             }
         });
-
     }
 
     @Override
@@ -117,7 +116,6 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
             img.setFocusable(true);
             img.setFocusableInTouchMode(true);
         }
-
     }
 
     public interface ItemClick {

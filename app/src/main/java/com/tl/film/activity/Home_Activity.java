@@ -1,12 +1,9 @@
 package com.tl.film.activity;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +23,6 @@ import com.tl.film.R;
 import com.tl.film.adapter.RecyclerCoverFlow_Adapter;
 import com.tl.film.dialog.Loading;
 import com.tl.film.dialog.NetDialog;
-import com.tl.film.model.Const;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.FirstFilms_Model;
@@ -37,7 +33,6 @@ import com.tl.film.servlet.DownUtil;
 import com.tl.film.servlet.FirstFilms_Servlet;
 import com.tl.film.servlet.Update_Servlet;
 import com.tl.film.utils.ExampleUtil;
-import com.tl.film.utils.File_Utils;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Open_Ktcp_Utils;
 import com.tl.film.utils.SaveUtils;
@@ -52,7 +47,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author jiangyao
@@ -91,6 +85,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         registerMessageReceiver();  // used for receive msg
 
+        init();
+    }
+
+    public void init() {
         if (!Tools.isNetworkConnected()) {
             NetDialog.showW();
         } else {
@@ -152,6 +150,9 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         Object data = model.getData();
         try {
             switch (model.getCommand_1()) {
+                case EventBus_Model.CMD_NET_CONNECT:
+                    init();
+                    break;
                 case EventBus_Model.CMD_FILL_DATA_THEME:
                     if (data != null) {
                         doFillTheme((DefTheme_Model.DataBean) data);
@@ -360,7 +361,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         LogUtil.e(TAG, "返回");
         super.onBackPressed();
     }
-
 
 
 }

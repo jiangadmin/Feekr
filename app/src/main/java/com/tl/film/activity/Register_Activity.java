@@ -9,16 +9,10 @@ import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
-import com.tl.film.model.Base_Model;
 import com.tl.film.model.EventBus_Model;
-import com.tl.film.model.Save_Key;
-import com.tl.film.model.Tlid_Model;
-import com.tl.film.servlet.Bind_Servlet;
 import com.tl.film.servlet.Register_Servlet;
-import com.tl.film.utils.SaveUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,12 +30,14 @@ public class Register_Activity extends Base_Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         findViewById(R.id.submit).setOnClickListener(v -> {
             String tlsh = ((TextView) findViewById(R.id.tlsh)).getText().toString();
             if (!TextUtils.isEmpty(tlsh)) {
-                new Register_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,tlsh);
+                new Register_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tlsh);
             } else {
                 Toast.makeText(this, "请输入渠道号", Toast.LENGTH_SHORT).show();
             }
@@ -56,8 +52,10 @@ public class Register_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
 
@@ -70,10 +68,10 @@ public class Register_Activity extends Base_Activity {
                 break;
             case EventBus_Model.CMD_BIND_MERT_FAIL:
                 String msg = "渠道绑定失败";
-                if(eb.getData() !=null){
-                    msg = (String)eb.getData();
+                if (eb.getData() != null) {
+                    msg = (String) eb.getData();
                 }
-                Toast.makeText(Register_Activity.this, msg,Toast.LENGTH_SHORT).show();
+                Toast.makeText(Register_Activity.this, msg, Toast.LENGTH_SHORT).show();
                 break;
         }
         return;

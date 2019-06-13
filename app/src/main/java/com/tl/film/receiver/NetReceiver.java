@@ -7,8 +7,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.tl.film.dialog.NetDialog;
+import com.tl.film.model.EventBus_Model;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Tools;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * @author jiangadmin
@@ -30,15 +33,25 @@ public class NetReceiver extends BroadcastReceiver {
                 if (networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET) {
                     LogUtil.e(TAG, "有线网络");
 
-                    if (Tools.isNetworkConnected())
+                    if (Tools.isNetworkConnected()) {
+                        EventBus_Model model = new EventBus_Model();
+                        model.setCommand_1(EventBus_Model.CMD_NET_CONNECT);
+                        EventBus.getDefault().post(model);
+
                         NetDialog.dismiss();
+                    }
 
                 }
                 if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                     LogUtil.e(TAG, "无线网络");
 
-                    if (Tools.isNetworkConnected())
+                    if (Tools.isNetworkConnected()) {
                         NetDialog.dismiss();
+
+                        EventBus_Model model = new EventBus_Model();
+                        model.setCommand_1(EventBus_Model.CMD_NET_CONNECT);
+                        EventBus.getDefault().post(model);
+                    }
                 }
             } else {
                 LogUtil.e(TAG, "网络断开");

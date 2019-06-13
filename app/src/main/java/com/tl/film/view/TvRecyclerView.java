@@ -105,7 +105,6 @@ public class TvRecyclerView extends RecyclerView {
         final int offScreenTop = Math.min(0, childTop - parentTop);
         final int offScreenBottom = Math.max(0, childBottom - parentBottom);
 
-
         final boolean canScrollHorizontal = getLayoutManager().canScrollHorizontally();
         final boolean canScrollVertical = getLayoutManager().canScrollVertically();
 

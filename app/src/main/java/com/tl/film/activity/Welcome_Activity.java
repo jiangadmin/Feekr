@@ -27,10 +27,20 @@ public class Welcome_Activity extends Base_Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         //设置版本号
         ((TextView) findViewById(R.id.appversion)).setText(BuildConfig.VERSION_NAME);
+
+        init();
+    }
+
+    public void init() {
+        if (!Tools.isNetworkConnected()) {
+            NetDialog.showW();
+        }
 
         //验证本地是否存储tlid信息
         String str = SaveUtils.getString(Save_Key.S_Tlid_Model);
@@ -63,6 +73,9 @@ public class Welcome_Activity extends Base_Activity {
     @Subscribe
     public void onMessage(EventBus_Model model) {
         switch (model.getCommand_1()) {
+            case EventBus_Model.CMD_NET_CONNECT:
+                init();
+                break;
             case EventBus_Model.CMD_ENTRY_HOME:
                 Home_Activity.start(this);
                 finish();
@@ -80,7 +93,9 @@ public class Welcome_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }
