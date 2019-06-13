@@ -32,8 +32,6 @@ public class Welcome_Activity extends Base_Activity {
         //设置版本号
         ((TextView) findViewById(R.id.appversion)).setText(BuildConfig.VERSION_NAME);
 
-
-
         //验证本地是否存储tlid信息
         String str = SaveUtils.getString(Save_Key.S_Tlid_Model);
         if (str == null || str.length() < 1) {

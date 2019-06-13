@@ -3,6 +3,7 @@ package com.tl.film.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,6 +30,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tl.film.MyAPP;
+import com.tl.film.model.Const;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -389,20 +391,6 @@ public final class Tools {
         }
     }
 
-    //下面介绍怎么判断手机已安装某程序的方法：
-    public static void isAvilible(Context context, String packageName) {
-        final PackageManager packageManager = context.getPackageManager();//获取packagemanager
-        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);//获取所有已安装程序的包信息
-        List<String> pName = new ArrayList<String>();//用于存储所有已安装程序的包名
-        //从pinfo中将包名字逐一取出，压入pName list中
-        if (pinfo != null) {
-            for (int i = 0; i < pinfo.size(); i++) {
-                String pn = pinfo.get(i).packageName;
-                pName.add(pn);
-            }
-        }
-//        return pName.contains(packageName);//判断pName中是否有目标程序的包名，有TRUE，没有FALSE
-    }
 
     /**
      * 判断是否有网络连接
@@ -621,6 +609,49 @@ public final class Tools {
         }
         reader.close();
         return fileData.toString();
+    }
+
+
+    public static boolean install(Context context) {
+        //检测有没有云视听
+        if (!isAvilible(context, "com.ktcp.tvvideo")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("未检测到云视听应用");
+            builder.setMessage("为了更好的观影体验，本应用需要安装 云视听 应用");
+            builder.setNegativeButton("安装", (dialog, which) -> {
+                File_Utils.openApk(File_Utils.copyAssetsFile(context, "tv_video_16188.apk", Const.FilePath), context);
+                dialog.dismiss();
+            });
+            builder.setCancelable(false);
+            builder.show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 判断应用存在性
+     *
+     * @param packageName 包名
+     * @return 是否存在
+     */
+    private static boolean isAvilible(Context context, String packageName) {
+        //获取packagemanager
+        final PackageManager packageManager = context.getPackageManager();
+        //获取所有已安装程序的包信息
+        List<PackageInfo> packinfo = packageManager.getInstalledPackages(0);
+        //用于存储所有已安装程序的包名
+        List<String> pName = new ArrayList<>();
+        //从pinfo中将包名字逐一取出，压入pName list中
+        if (packinfo != null) {
+            for (int i = 0; i < packinfo.size(); i++) {
+                String pn = packinfo.get(i).packageName;
+                pName.add(pn);
+            }
+        }
+        //判断pName中是否有目标程序的包名，有true，没有false
+        return pName.contains(packageName);
     }
 
 }

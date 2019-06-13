@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tl.film.BuildConfig;
@@ -73,9 +72,6 @@ public class TerminalDetail_Activity extends Base_Activity {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(this, "点击返回按钮",Toast.LENGTH_LONG).show();
-        this.finish();
-        return;
+        finish();
     }
-
 }

@@ -82,7 +82,6 @@ public class NetDialog {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setCancelable(false);
             setContentView(R.layout.dialog_netwarning);
         }
     }

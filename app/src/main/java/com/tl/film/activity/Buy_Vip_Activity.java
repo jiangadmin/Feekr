@@ -21,9 +21,11 @@ import com.tl.film.servlet.Get_PerPay_Servlet;
 import com.tl.film.utils.ImageUtils;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
+import com.tl.film.utils.Tools;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -67,23 +69,25 @@ public class Buy_Vip_Activity extends Base_Activity {
     @Override
     protected void onDestroy() {
         if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+            EventBus.getDefault().unregister(this);
         }
         super.onDestroy();
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(Push_Model model) {
         if (model.getEventId().equals("OPEN_TX_APP")) {
-            PackageManager packageManager = getPackageManager();
-            Intent intent = new Intent();
-            intent = packageManager.getLaunchIntentForPackage("com.ktcp.tvvideo");
-            if (intent == null) {
-                Toast.makeText(this, "未安装", Toast.LENGTH_LONG).show();
-            } else {
-                startActivity(intent);
+            if (Tools.install(this)) {
+                PackageManager packageManager = getPackageManager();
+                Intent intent = new Intent();
+                intent = packageManager.getLaunchIntentForPackage("com.ktcp.tvvideo");
+                if (intent == null) {
+                    Toast.makeText(this, "未安装", Toast.LENGTH_LONG).show();
+                } else {
+                    startActivity(intent);
+                }
+                finish();
             }
-            finish();
         }
     }
 
@@ -92,7 +96,7 @@ public class Buy_Vip_Activity extends Base_Activity {
      *
      * @param model 数据模型
      */
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(Perpay_Model model) {
         switch (model.getCode()) {
             case 1000:

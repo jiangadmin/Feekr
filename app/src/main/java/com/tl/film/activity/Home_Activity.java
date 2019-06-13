@@ -91,7 +91,11 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         registerMessageReceiver();  // used for receive msg
 
-        Loading.show(this, "努力加载中请稍后...");
+        if (!Tools.isNetworkConnected()) {
+            NetDialog.showW();
+        } else {
+            Loading.show(this, "努力加载中请稍后...");
+        }
 
         //列表
         new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -243,7 +247,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             return;
         }
 
-        if (install()) {
+        if (Tools.install(this)) {
             Moive_Activity.start(this, bean);
         }
     }
@@ -277,6 +281,10 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
      */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        //判断网络
+        if (!Tools.isNetworkConnected()) {
+            NetDialog.showW();
+        }
 
         //连续按菜单键跳转到设备详情页面
         if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
@@ -295,13 +303,15 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.home_quanwan:
-                Buy_Vip_Activity.start(this);
-                if (install()) {
-
+                //判断网络
+                if (!Tools.isNetworkConnected()) {
+                    NetDialog.showW();
+                    return;
                 }
+                Buy_Vip_Activity.start(this);
                 break;
             case R.id.home_lunbo:
-                if (install()) {
+                if (Tools.install(this)) {
                     Open_Ktcp_Utils.openWithHomePageUri(this, "tenvideo2://?action=29&round_play_id=0");
                 }
                 break;
@@ -352,45 +362,5 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     }
 
 
-    private boolean install() {
-        //检测有没有云视听
-        if (!isAvilible("com.ktcp.tvvideo")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("未检测到云视听应用");
-            builder.setMessage("为了更好的观影体验，本应用需要安装 云视听 应用");
-            builder.setNegativeButton("安装", (dialog, which) -> {
-                File_Utils.openApk(File_Utils.copyAssetsFile(this, "tv_video_16188.apk", Const.FilePath), this);
-                dialog.dismiss();
-            });
-            builder.setCancelable(false);
-            builder.show();
-            return false;
-        } else {
-            return true;
-        }
-    }
 
-    /**
-     * 判断应用存在性
-     *
-     * @param packageName 包名
-     * @return 是否存在
-     */
-    private boolean isAvilible(String packageName) {
-        //获取packagemanager
-        final PackageManager packageManager = getPackageManager();
-        //获取所有已安装程序的包信息
-        List<PackageInfo> packinfo = packageManager.getInstalledPackages(0);
-        //用于存储所有已安装程序的包名
-        List<String> pName = new ArrayList<>();
-        //从pinfo中将包名字逐一取出，压入pName list中
-        if (packinfo != null) {
-            for (int i = 0; i < packinfo.size(); i++) {
-                String pn = packinfo.get(i).packageName;
-                pName.add(pn);
-            }
-        }
-        //判断pName中是否有目标程序的包名，有true，没有false
-        return pName.contains(packageName);
-    }
 }

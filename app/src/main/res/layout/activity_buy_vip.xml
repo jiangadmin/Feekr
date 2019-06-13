@@ -5,10 +5,10 @@
     android:orientation="vertical">
 
     <ImageView
-        android:scaleType="fitXY"
         android:id="@+id/bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,20 +31,67 @@
                 android:layout_height="match_parent"
                 android:layout_weight="889" />
 
-            <RelativeLayout
-                android:background="@mipmap/buyvipbg0"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="350">
+                android:layout_weight="350"
+                android:background="@mipmap/buyvipbg0"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:scaleType="fitStart"
-                    android:id="@+id/qrcode"
-                    android:layout_margin="30dp"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="675" />
 
-            </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="204"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="526" />
+
+                    <ImageView
+                        android:id="@+id/qrcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="90"
+                        android:scaleType="centerInside" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="526" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="575"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="扫码解锁"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="会员版极光TV"
+                        android:textColor="#FF9800"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

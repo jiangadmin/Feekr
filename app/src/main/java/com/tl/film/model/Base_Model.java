@@ -29,7 +29,7 @@ public class Base_Model {
     public String getMessage() {
         switch (code) {
             case -1:
-                return "连接服务器失败";
+                return "服务器异常，请稍后再试";
             case -2:
                 return "数据解析失败";
         }
