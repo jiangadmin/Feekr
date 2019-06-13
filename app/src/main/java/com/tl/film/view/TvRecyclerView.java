@@ -201,7 +201,7 @@ public class TvRecyclerView extends RecyclerView {
                 int focusPosition = Integer.valueOf(focusView.getTag().toString());
                 int nextPosition = 0;
                 RecyclerCoverFlow_Adapter adapter;
-                ViewHolder vh;
+                View vh;
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_BACK:
                     case KeyEvent.KEYCODE_ENTER:
@@ -216,9 +216,10 @@ public class TvRecyclerView extends RecyclerView {
                         }
                         LogUtil.e(TAG, "右键=" + nextPosition);
                         adapter = (RecyclerCoverFlow_Adapter) this.getAdapter();
+                        LogUtil.e(TAG, "存入量：" + adapter.ViewHolderList.size());
                         vh = adapter.getViewHolder(nextPosition);
                         if (vh != null) {
-                            vh.itemView.requestFocus();
+                            vh.requestFocus();
                             smoothScrollToPosition(nextPosition);
                         }
                         return true;
@@ -234,7 +235,7 @@ public class TvRecyclerView extends RecyclerView {
                         adapter = (RecyclerCoverFlow_Adapter) this.getAdapter();
                         vh = adapter.getViewHolder(nextPosition);
                         if (vh != null) {
-                            vh.itemView.requestFocus();
+                            vh.requestFocus();
                             smoothScrollToPosition(nextPosition);
                         }
                         return true;

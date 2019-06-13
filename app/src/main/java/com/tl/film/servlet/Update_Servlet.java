@@ -1,11 +1,11 @@
 package com.tl.film.servlet;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tl.film.BuildConfig;
+import com.tl.film.activity.Home_Activity;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Update_Model;
 import com.tl.film.utils.HttpParamUtils;
@@ -28,9 +28,10 @@ import java.util.Map;
 
 public class Update_Servlet extends AsyncTask<String, Integer, Update_Model> {
     private static final String TAG = "Update_Servlet";
-    Activity activity;
 
-    public Update_Servlet(Activity activity) {
+    Home_Activity activity;
+
+    public Update_Servlet(Home_Activity activity) {
         this.activity = activity;
     }
 
@@ -65,7 +66,7 @@ public class Update_Servlet extends AsyncTask<String, Integer, Update_Model> {
     @Override
     protected void onPostExecute(Update_Model model) {
         super.onPostExecute(model);
-        EventBus.getDefault().post(model);
+        activity.doUpgrade(model.getData());
 
     }
 }

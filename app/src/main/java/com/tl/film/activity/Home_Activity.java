@@ -225,7 +225,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
      *
      * @param newVersioin
      */
-    private void doUpgrade(Update_Model.DataBean newVersioin) {
+    public void doUpgrade(Update_Model.DataBean newVersioin) {
         if (newVersioin != null) {
             if (newVersioin.getBuild() > BuildConfig.VERSION_CODE) {
                 String downloadUrl = newVersioin.getDownloadUrl();
