@@ -303,12 +303,9 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.home_quanwan:
-                //判断网络
-                if (!Tools.isNetworkConnected()) {
-                    NetDialog.showW();
-                    return;
+                if (Tools.install(this)) {
+                    Buy_Vip_Activity.start(this);
                 }
-                Buy_Vip_Activity.start(this);
                 break;
             case R.id.home_lunbo:
                 if (Tools.install(this)) {
