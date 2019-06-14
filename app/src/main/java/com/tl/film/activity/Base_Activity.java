@@ -1,9 +1,10 @@
 package com.tl.film.activity;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import com.tl.film.MyAPP;
 
 /**
  * @author jiangyao
@@ -13,6 +14,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * TODO:
  */
 public class Base_Activity extends AppCompatActivity {
-    public static List<String> logList = new CopyOnWriteArrayList<>();
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        MyAPP.activity = this;
+    }
 
+    @Override
+    protected void onResume() {
+        MyAPP.activity = this;
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        MyAPP.activity = null;
+        super.onDestroy();
+    }
 }

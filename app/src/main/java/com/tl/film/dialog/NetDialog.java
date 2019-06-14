@@ -2,13 +2,20 @@ package com.tl.film.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.widget.Button;
 
 import com.tl.film.MyAPP;
 import com.tl.film.R;
+import com.tl.film.model.EventBus_Model;
+import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Tools;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * @author jiangadmin
@@ -19,7 +26,7 @@ import com.tl.film.utils.Tools;
  */
 
 public class NetDialog {
-
+    private static final String TAG = "NetDialog";
     private static NetWarningDialog netWarningDialog;
     private static NetLoadingDialog netLoadingDialog;
 
@@ -29,12 +36,22 @@ public class NetDialog {
      * 显示警告框
      */
     public static void showW() {
-        if (MyAPP.activity != null && netWarningDialog == null) {
-            try {
-                netWarningDialog = new NetWarningDialog(MyAPP.activity);
-                netWarningDialog.show();
-            } catch (RuntimeException e) {
-
+        if (MyAPP.activity != null){
+            if (netWarningDialog == null){
+                try {
+                    netWarningDialog = new NetWarningDialog(MyAPP.activity);
+                    netWarningDialog.show();
+                    LogUtil.e(TAG,"显示");
+                } catch (RuntimeException e) {
+                    LogUtil.e(TAG,e.getMessage());
+                }
+            }else {
+                try {
+                    netWarningDialog.show();
+                    LogUtil.e(TAG,"显示");
+                } catch (RuntimeException e) {
+                    LogUtil.e(TAG,e.getMessage());
+                }
             }
         }
     }
@@ -67,6 +84,7 @@ public class NetDialog {
                 netWarningDialog.dismiss();
                 netWarningDialog = null;
             }
+
         } catch (Exception e) {
         }
     }
@@ -76,13 +94,22 @@ public class NetDialog {
      */
     public static class NetWarningDialog extends Dialog {
         public NetWarningDialog(@NonNull Context context) {
-            super(context, R.style.MyDialog);
+            super(context, R.style.Dialog);
         }
+
+        Button esc, setting;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.dialog_netwarning);
+            setCancelable(false);
+
+            esc = findViewById(R.id.dialog_esc);
+            setting = findViewById(R.id.dialog_setting);
+
+            esc.setOnClickListener(v -> System.exit(0));
+            setting.setOnClickListener(v -> getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
         }
     }
 

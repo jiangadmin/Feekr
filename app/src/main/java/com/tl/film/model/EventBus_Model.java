@@ -8,6 +8,7 @@ public class EventBus_Model {
     public static final String CMD_FILL_DATA_THEME = "CMD_FILL_DATA_THEME";     //加载主题数据
     public static final String CMD_FILL_DATA_FILM = "CMD_FILL_DATA_FILM";       //加载影片数据
     public static final String CMD_UPGRADE = "CMD_UPGRADE";                     //APP升级
+    public static final String CMD_NET_CONNECT = "CMD_NET_CONNECT";             //网络连接
 
     private String command_1;   //一级指令
     private String command_2;   //二级指令

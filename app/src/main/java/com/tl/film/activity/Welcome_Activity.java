@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tl.film.BuildConfig;
+import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.EventBus_Model;
@@ -27,10 +28,27 @@ public class Welcome_Activity extends Base_Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        EventBus.getDefault().register(this);
-
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+        MyAPP.activity = this;
         //设置版本号
         ((TextView) findViewById(R.id.appversion)).setText(BuildConfig.VERSION_NAME);
+
+        init();
+    }
+
+    @Override
+    protected void onResume() {
+        MyAPP.activity = this;
+        super.onResume();
+    }
+
+    public void init() {
+        if (!Tools.isNetworkConnected()) {
+            NetDialog.showW();
+            return;
+        }
 
         //验证本地是否存储tlid信息
         String str = SaveUtils.getString(Save_Key.S_Tlid_Model);
@@ -63,6 +81,9 @@ public class Welcome_Activity extends Base_Activity {
     @Subscribe
     public void onMessage(EventBus_Model model) {
         switch (model.getCommand_1()) {
+            case EventBus_Model.CMD_NET_CONNECT:
+                init();
+                break;
             case EventBus_Model.CMD_ENTRY_HOME:
                 Home_Activity.start(this);
                 finish();
@@ -80,7 +101,10 @@ public class Welcome_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
+        MyAPP.activity = null;
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }

@@ -28,7 +28,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     private Context mContext;
 
     private List<FirstFilms_Model.DataBean> dataBeans = new ArrayList<>();
-    private Map<Integer, ViewHolder> ViewHolderList = new HashMap<>();
+    public Map<Integer, View> ViewHolderList = new HashMap<>();
 
     public void setDataBeans(List<FirstFilms_Model.DataBean> dataBeans) {
         this.dataBeans = dataBeans;
@@ -55,9 +55,13 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (ViewHolderList.get(position) == null) {
-            ViewHolderList.put(position, holder);
+            ViewHolderList.put(position, holder.img);
+            LogUtil.e(TAG, "存入：" + position + "___" + getItem(position).getTitle());
+        }else {
+            ViewHolderList.remove(position);
+            ViewHolderList.put(position, holder.img);
+            LogUtil.e(TAG, "重新存入：" + position + "___" + getItem(position).getTitle());
         }
-        LogUtil.e(TAG, "存入：" + position + "___" + getItem(position).getTitle());
 
         holder.img.setTag(position);
         holder.itemView.setTag(position);
@@ -80,7 +84,6 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
                 clickCb.focusableItem(position);
             }
         });
-
     }
 
     @Override
@@ -97,7 +100,7 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
         }
     }
 
-    public ViewHolder getViewHolder(int position) {
+    public View getViewHolder(int position) {
         return ViewHolderList.get(position);
     }
 
@@ -113,7 +116,6 @@ public class RecyclerCoverFlow_Adapter extends RecyclerView.Adapter<RecyclerCove
             img.setFocusable(true);
             img.setFocusableInTouchMode(true);
         }
-
     }
 
     public interface ItemClick {
