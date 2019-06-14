@@ -140,7 +140,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         recyclerView = findViewById(R.id.recycler_view);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(EventBus_Model model) {
         Object data = model.getData();
         try {
