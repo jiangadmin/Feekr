@@ -23,7 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 public class Welcome_Activity extends Base_Activity {
-
+    private static final String TAG = "Welcome_Activity";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,18 +34,18 @@ public class Welcome_Activity extends Base_Activity {
         MyAPP.activity = this;
         //设置版本号
         ((TextView) findViewById(R.id.appversion)).setText(BuildConfig.VERSION_NAME);
-
-        init();
     }
 
     @Override
     protected void onResume() {
-        MyAPP.activity = this;
         super.onResume();
+        MyAPP.activity = this;
+        init();
     }
 
     public void init() {
         if (!Tools.isNetworkConnected()) {
+            Toast.makeText(this,"没有网络",Toast.LENGTH_SHORT).show();
             NetDialog.showW();
             return;
         }
@@ -105,6 +105,8 @@ public class Welcome_Activity extends Base_Activity {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        NetDialog.dismiss();
+
         super.onDestroy();
     }
 }

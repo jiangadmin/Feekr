@@ -94,7 +94,7 @@ public class NetDialog {
      */
     public static class NetWarningDialog extends Dialog {
         public NetWarningDialog(@NonNull Context context) {
-            super(context, R.style.Dialog);
+            super(context, R.style.DefDialog);
         }
 
         Button esc, setting;

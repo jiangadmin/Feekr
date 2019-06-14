@@ -75,7 +75,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/home_duiqidian"
                 android:background="@drawable/item_home_btn"
-                android:text="我看电视轮播" />
+                android:text="免费电视轮播" />
 
         </RelativeLayout>
 

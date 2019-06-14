@@ -74,17 +74,25 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        MyAPP.activity = this;
 
+        //注册eventbus
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
 
-        MyAPP.activity = this;
-        setContentView(R.layout.activity_home);
-
+        //初始化控件
         initview();
 
+        //注册消息接受事件
         registerMessageReceiver();  // used for receive msg
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyAPP.activity = this;
 
         init();
     }
@@ -105,24 +113,12 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
     }
 
     @Override
-    protected void onResume() {
-
-        MyAPP.activity = this;
-        LogUtil.e(TAG, "判断网络：" + Tools.isNetworkConnected());
-        //判断网络
-        if (!Tools.isNetworkConnected()) {
-            NetDialog.showW();
-        }
-        super.onResume();
-
-    }
-
-    @Override
     protected void onDestroy() {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
         MyAPP.activity = this;
+        NetDialog.dismiss();
         super.onDestroy();
     }
 

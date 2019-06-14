@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/qrcode"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/ic_net_error" />
 
         <TextView
@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="检测到您的网络已断开"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,39 +33,39 @@
             android:gravity="center"
             android:text="请您正确设置网络连接"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
             <Button
-                android:textColor="@color/white"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:id="@+id/dialog_esc"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_toLeftOf="@id/home_duiqidian"
                 android:background="@drawable/item_dialog_btn"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:text="退出"
-                android:textSize="20dp" />
+                android:textColor="@color/white"
+                android:textSize="15dp" />
 
             <Button
-                android:textColor="@color/white"
                 android:id="@+id/dialog_setting"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_toLeftOf="@id/home_duiqidian"
                 android:background="@drawable/item_dialog_btn"
                 android:text="设置"
-                android:textSize="20dp" />
+                android:textColor="@color/white"
+                android:textSize="15dp" />
 
         </LinearLayout>
 
