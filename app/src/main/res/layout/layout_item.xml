@@ -11,6 +11,7 @@
         android:minWidth="180dp"
         android:minHeight="320dp"
         android:padding="3dp"
+        android:nextFocusDown="@+id/home_quanwan"
         android:scaleType="fitXY" />
 
     <RelativeLayout
