@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
+import com.tl.film.dialog.Loading;
 import com.tl.film.dialog.QRCode_Dialog;
 import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Perpay_Model;
@@ -40,7 +41,6 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
 
     public static FirstFilms_Model.DataBean film;
 
-    QRCode_Dialog qrCode_dialog;
 
     public static void start(Context context, FirstFilms_Model.DataBean film) {
         Intent intent = new Intent();
@@ -113,6 +113,7 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
             if (film.getTxPayStatus() == 8) {
                 Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
             } else {
+                Loading.show(this, "请稍后");
                 new Get_PerPay_Servlet().execute(film.getTxCoverId(), String.valueOf(film.getId()));
             }
         }
@@ -125,20 +126,15 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
      */
     @Subscribe
     public void onMessage(Perpay_Model model) {
+        Loading.dismiss();
         switch (model.getCode()) {
             case 1000:
-                if (qrCode_dialog == null) {
-                    try{
-                        qrCode_dialog = new QRCode_Dialog(this, URLDecoder.decode(model.getData(),"utf-8"));
-
-                        //显示支付扫码弹窗
-                        if (!qrCode_dialog.isShowing()) {
-                            qrCode_dialog.show();
-                        }
-                    }catch (UnsupportedEncodingException ex){
-                        LogUtil.e(TAG,ex.getMessage());
-                    }
+                try {
+                   new QRCode_Dialog(this, URLDecoder.decode(model.getData(), "utf-8")).show();
+                } catch (UnsupportedEncodingException ex) {
+                    LogUtil.e(TAG, ex.getMessage());
                 }
+
                 break;
             case 37003:
                 Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
@@ -151,8 +147,8 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     }
 
     @Subscribe
-    public void onMessage(Push_Model model){
-        if (model.getEventId().equals("OPEN_TX_FILM")){
+    public void onMessage(Push_Model model) {
+        if (model.getEventId().equals("OPEN_TX_FILM")) {
             Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
         }
     }
