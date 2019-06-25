@@ -106,7 +106,7 @@ public class Buy_Vip_Activity extends Base_Activity {
                     e.printStackTrace();
                 }
                 break;
-            case 37003:
+            case 13703:
                 PackageManager packageManager = getPackageManager();
                 Intent intent = new Intent();
                 intent = packageManager.getLaunchIntentForPackage("com.ktcp.tvvideo");

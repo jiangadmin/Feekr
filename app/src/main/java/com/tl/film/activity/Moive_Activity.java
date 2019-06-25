@@ -136,7 +136,7 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
                 }
 
                 break;
-            case 37003:
+            case 13703:
                 Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
                 break;
 
