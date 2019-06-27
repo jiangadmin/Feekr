@@ -43,8 +43,10 @@ public class HttpUtil {
         String paramsStr = "";
         if (params != null)
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                if (TextUtils.isEmpty(entry.getValue())) {
+                if (entry.getValue() == null) {
                     paramsStr += (entry.getKey() + "=&");
+                }else if(entry.getValue().equals("")){
+                    paramsStr += (entry.getKey() + "=" + entry.getValue() + "&");
                 }else{
                     paramsStr += (entry.getKey() + "=" + entry.getValue() + "&");
                 }
@@ -119,7 +121,9 @@ public class HttpUtil {
         StringBuilder paramStr = new StringBuilder();
         for (Map.Entry<String, String> para : param.entrySet()) {
             try {
-                if (TextUtils.isEmpty(para.getValue())) {
+                if(para.getValue() == null){
+                    paramStr.append(para.getKey()).append("=").append("&");
+                }else if(para.getValue().equals("")){
                     paramStr.append(para.getKey()).append("=").append(URLEncoder.encode("", "UTF-8")).append("&");
                 }else{
                     paramStr.append(para.getKey()).append("=").append(URLEncoder.encode(para.getValue(), "UTF-8")).append("&");
