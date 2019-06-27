@@ -96,10 +96,12 @@
         </activity>
 
         <activity
+            android:launchMode="singleTask"
             android:name=".activity.Buy_Vip_Activity"
             android:screenOrientation="landscape" />
 
         <activity
+            android:launchMode="singleTask"
             android:name=".activity.Home_Activity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape">
@@ -113,6 +115,7 @@
 
         <activity
             android:name=".activity.Moive_Activity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <activity
