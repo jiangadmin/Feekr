@@ -9,10 +9,17 @@ import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.model.EventBus_Model;
+import com.tl.film.model.Info_Model;
+import com.tl.film.model.Save_Key;
+import com.tl.film.model.Tlid_Model;
+import com.tl.film.servlet.Get_Info_Servlet;
 import com.tl.film.servlet.Register_Servlet;
+import com.tl.film.utils.LogUtil;
+import com.tl.film.utils.SaveUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -46,7 +53,9 @@ public class Register_Activity extends Base_Activity {
 
     @Override
     public void onBackPressed() {
-        MyAPP.activity.finish();
+        if (MyAPP.activity != null) {
+            MyAPP.activity.finish();
+        }
         finish();
     }
 
@@ -63,8 +72,8 @@ public class Register_Activity extends Base_Activity {
     public void onMessage(EventBus_Model eb) {
         switch (eb.getCommand_1()) {
             case EventBus_Model.CMD_ENTRY_HOME:
-                Home_Activity.start(this);
-                finish();
+                new Get_Info_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, SaveUtils.getString(Save_Key.S_TLID));
+
                 break;
             case EventBus_Model.CMD_BIND_MERT_FAIL:
                 String msg = "渠道绑定失败";
@@ -75,6 +84,39 @@ public class Register_Activity extends Base_Activity {
                 break;
         }
         return;
+    }
+
+    /**
+     * 设备信息
+     *
+     * @param model
+     */
+    @Subscribe
+    public void onMessage(Info_Model model) {
+        switch (model.getCode()) {
+            case 1000:
+                if (model.getData().getMerchant() != null) {
+                    //二次存储
+                    try {
+                        Tlid_Model tlid_model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
+                        tlid_model.getData().setMerchantId(model.getData().getTerminal().getMerchantId());
+                        tlid_model.getData().setMerchantName(model.getData().getTerminal().getMerchantName());
+                        tlid_model.getData().setMerchantCode(model.getData().getTerminal().getMerchantCode());
+                        SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(tlid_model));
+                    } catch (Exception e) {
+                        LogUtil.e(TAG, e.getMessage());
+                    }
+
+                    if (model.getData().getMerchant().getJumpAction() == 1) {
+                        Home_Activity.start(this);
+                    } else {
+                        Buy_Vip_Activity.start(this);
+                    }
+                    finish();
+                }
+                break;
+
+        }
     }
 
 }

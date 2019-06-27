@@ -41,6 +41,7 @@ public class Jpush_Receiver extends BroadcastReceiver {
                 JPushInterface.setAlias(context, 0, SaveUtils.getString(Save_Key.S_TLID));
                 break;
             case JPushInterface.ACTION_MESSAGE_RECEIVED:
+                LogUtil.e(TAG, "JPush 自定义消息：" + bundle.get(JPushInterface.EXTRA_MESSAGE));
                 Push_Model model;
                 try {
                     model = new Gson().fromJson(bundle.get(JPushInterface.EXTRA_MESSAGE).toString(), Push_Model.class);
@@ -54,7 +55,7 @@ public class Jpush_Receiver extends BroadcastReceiver {
                     }
 
                 } catch (Exception e) {
-                    LogUtil.e(TAG, "无法解析推送数据：" + bundle.get(JPushInterface.EXTRA_MESSAGE));
+                    LogUtil.e(TAG, "无法解析推送数据");
                 }
                 break;
             case JPushInterface.ACTION_NOTIFICATION_RECEIVED:

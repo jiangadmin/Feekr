@@ -12,11 +12,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 import com.tl.film.R;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.Perpay_Model;
 import com.tl.film.model.Push_Model;
 import com.tl.film.model.Save_Key;
+import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.Get_PerPay_Servlet;
 import com.tl.film.utils.ImageUtils;
 import com.tl.film.utils.LogUtil;
@@ -63,7 +65,25 @@ public class Buy_Vip_Activity extends Base_Activity {
             } catch (Exception e) {
                 LogUtil.e(TAG, e.getMessage());
             }
+        }else{
+            //请求主题接口
+            new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         }
+    }
+
+    /**
+     * 填充主题数据
+     *
+     * @param model
+     */
+    private void onMessage(DefTheme_Model model) {
+        if (model.getCode()==1000){
+            if (model.getData().getChargeBg() != null) {
+                Glide.with(this).load(model.getData().getChargeBg()).into(bg);
+            }
+        }
+
     }
 
     @Override

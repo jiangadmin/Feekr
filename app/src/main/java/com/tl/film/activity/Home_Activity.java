@@ -31,6 +31,7 @@ import com.tl.film.model.Update_Model;
 import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.DownUtil;
 import com.tl.film.servlet.FirstFilms_Servlet;
+import com.tl.film.servlet.Get_Info_Servlet;
 import com.tl.film.servlet.Update_Servlet;
 import com.tl.film.utils.ExampleUtil;
 import com.tl.film.utils.LogUtil;
@@ -103,11 +104,11 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         } else {
             Loading.show(this, "努力加载中请稍后...");
         }
-
+        new Get_Info_Servlet().execute(SaveUtils.getString(Save_Key.S_Tlid_Model));
         //列表
         new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         //主题
-        new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         //检查更新
         new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

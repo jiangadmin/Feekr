@@ -16,4 +16,5 @@ public class Save_Key {
     public static String S_Tlid_Model = "S_Tlid_Model";
     public static String S_DefTheme_Model = "DefTheme_Model";
     public static String S_FirstFilms_Model = "FirstFilms_Model";
+    public static String S_Info_Model = "Info_Model";
 }

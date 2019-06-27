@@ -1,5 +1,6 @@
 package com.tl.film.servlet;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
@@ -27,12 +28,6 @@ import java.util.Map;
  */
 public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model> {
     private static final String TAG = "DefTheme_Servlet";
-
-    Home_Activity activity;
-
-    public DefTheme_Servlet(Home_Activity activity) {
-        this.activity = activity;
-    }
 
     @Override
     protected DefTheme_Model doInBackground(String... strings) {
@@ -72,6 +67,8 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
             eb.setCommand_1(EventBus_Model.CMD_FILL_DATA_THEME);
             eb.setData(model.getData());
             EventBus.getDefault().post(eb);
+
+            EventBus.getDefault().post(model);
         }
     }
 }
