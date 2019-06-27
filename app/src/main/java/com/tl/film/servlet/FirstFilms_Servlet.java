@@ -42,7 +42,7 @@ public class FirstFilms_Servlet extends AsyncTask<String, Integer, FirstFilms_Mo
         map.put("tlid", SaveUtils.getString(Save_Key.S_TLID));
 
         map = HttpParamUtils.getRequestParams(map);
-
+        LogUtil.e(TAG, new Gson().toJson(map));
         String res = HttpUtil.doPost("cms/channelsController/findFirstFilms.do", map);
         LogUtil.e(TAG, res);
 

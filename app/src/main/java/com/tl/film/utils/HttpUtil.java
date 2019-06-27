@@ -44,9 +44,10 @@ public class HttpUtil {
         if (params != null)
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 if (TextUtils.isEmpty(entry.getValue())) {
-                    continue;
+                    paramsStr += (entry.getKey() + "=&");
+                }else{
+                    paramsStr += (entry.getKey() + "=" + entry.getValue() + "&");
                 }
-                paramsStr += (entry.getKey() + "=" + entry.getValue() + "&");
             }
 
         HttpsURLConnection conn = null;
@@ -117,11 +118,12 @@ public class HttpUtil {
         }
         StringBuilder paramStr = new StringBuilder();
         for (Map.Entry<String, String> para : param.entrySet()) {
-            if (TextUtils.isEmpty(para.getValue())) {
-                continue;
-            }
             try {
-                paramStr.append(para.getKey()).append("=").append(URLEncoder.encode(para.getValue(), "UTF-8")).append("&");
+                if (TextUtils.isEmpty(para.getValue())) {
+                    paramStr.append(para.getKey()).append("=").append(URLEncoder.encode("", "UTF-8")).append("&");
+                }else{
+                    paramStr.append(para.getKey()).append("=").append(URLEncoder.encode(para.getValue(), "UTF-8")).append("&");
+                }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
