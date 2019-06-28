@@ -123,15 +123,11 @@ public class Buy_Vip_Activity extends Base_Activity {
                 }
                 break;
             case 13703:
-                PackageManager packageManager = getPackageManager();
-                Intent intent = new Intent();
-                intent = packageManager.getLaunchIntentForPackage("com.ktcp.tvvideo");
-                if (intent == null) {
-                    Toast.makeText(this, "未安装", Toast.LENGTH_LONG).show();
-                } else {
+                if (Tools.install(this)) {
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.ktcp.tvvideo");
                     startActivity(intent);
+                    finish();
                 }
-                finish();
                 break;
 
             default:
