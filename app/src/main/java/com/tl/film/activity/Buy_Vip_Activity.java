@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 import com.tl.film.R;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.Perpay_Model;
@@ -65,7 +64,7 @@ public class Buy_Vip_Activity extends Base_Activity {
             } catch (Exception e) {
                 LogUtil.e(TAG, e.getMessage());
             }
-        }else{
+        } else {
             //请求主题接口
             new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -78,7 +77,7 @@ public class Buy_Vip_Activity extends Base_Activity {
      * @param model
      */
     private void onMessage(DefTheme_Model model) {
-        if (model.getCode()==1000){
+        if (model.getCode() == 1000) {
             if (model.getData().getChargeBg() != null) {
                 Glide.with(this).load(model.getData().getChargeBg()).into(bg);
             }
@@ -97,16 +96,13 @@ public class Buy_Vip_Activity extends Base_Activity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(Push_Model model) {
         if (model.getEventId().equals("OPEN_TX_APP")) {
+
             if (Tools.install(this)) {
-                PackageManager packageManager = getPackageManager();
-                Intent intent = new Intent();
-                intent = packageManager.getLaunchIntentForPackage("com.ktcp.tvvideo");
-                if (intent == null) {
-                    Toast.makeText(this, "未安装", Toast.LENGTH_LONG).show();
-                } else {
-                    startActivity(intent);
-                }
+
+                Intent intent = getPackageManager().getLaunchIntentForPackage("com.ktcp.tvvideo");
+                startActivity(intent);
                 finish();
+
             }
         }
     }
