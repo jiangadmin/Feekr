@@ -133,8 +133,9 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
             case 1000:
                 try {
                     if (qrCode_dialog == null) {
-                        qrCode_dialog = new QRCode_Dialog(this, URLDecoder.decode(model.getData(), "utf-8"));
+                        qrCode_dialog = new QRCode_Dialog(this);
                     }
+                    qrCode_dialog.setString(URLDecoder.decode(model.getData(), "utf-8"));
                     if (!qrCode_dialog.isShowing()) {
                         qrCode_dialog.show();
                     }

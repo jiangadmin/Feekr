@@ -25,15 +25,22 @@ import java.util.Calendar;
 public class QRCode_Dialog extends Dialog {
     private static final String TAG = "QRCode_Dialog";
 
-    private static String string = null;
+    private String string = null;
 
     private static Moive_Activity moive_activity;
 
-    public QRCode_Dialog(@NonNull Activity activity, String string) {
+    public QRCode_Dialog(@NonNull Activity activity) {
         super(activity, R.style.MyDialogStyleBottom);
-        QRCode_Dialog.string = string;
+
         if (activity instanceof Moive_Activity) {
             QRCode_Dialog.moive_activity = (Moive_Activity) activity;
+        }
+    }
+
+    public void setString(String string) {
+        this.string = string;
+        if (qr != null) {
+            qr.setImageBitmap(ImageUtils.getQRcode(string));
         }
     }
 
