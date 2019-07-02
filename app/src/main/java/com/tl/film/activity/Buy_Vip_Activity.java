@@ -14,9 +14,12 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.tl.film.R;
 import com.tl.film.model.DefTheme_Model;
+import com.tl.film.model.EventBus_Model;
+import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Perpay_Model;
 import com.tl.film.model.Push_Model;
 import com.tl.film.model.Save_Key;
+import com.tl.film.model.Update_Model;
 import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.Get_PerPay_Servlet;
 import com.tl.film.utils.ImageUtils;
@@ -30,6 +33,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
 public class Buy_Vip_Activity extends Base_Activity {
     private static final String TAG = "Buy_Vip_Activity";
@@ -71,19 +75,18 @@ public class Buy_Vip_Activity extends Base_Activity {
         }
     }
 
-    /**
-     * 填充主题数据
-     *
-     * @param model
-     */
-    @Subscribe
-    private void onMessage(DefTheme_Model model) {
-        if (model.getCode() == 1000) {
-            if (model.getData().getChargeBg() != null) {
-                Glide.with(this).load(model.getData().getChargeBg()).into(bg);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessage(EventBus_Model model) {
+        Object data = model.getData();
+        try {
+            if (EventBus_Model.CMD_FILL_DATA_THEME.equals(model.getCommand_1())) {
+                if (data != null) {
+                    Glide.with(this).load(((DefTheme_Model.DataBean) data).getChargeBg()).into(bg);
+                }
             }
+        } catch (Exception ex) {
+            LogUtil.e(TAG, "EventBus 报错：" + ex.getMessage());
         }
-
     }
 
     @Override

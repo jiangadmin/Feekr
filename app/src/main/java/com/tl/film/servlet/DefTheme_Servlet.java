@@ -67,8 +67,6 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
             eb.setCommand_1(EventBus_Model.CMD_FILL_DATA_THEME);
             eb.setData(model.getData());
             EventBus.getDefault().post(eb);
-
-            EventBus.getDefault().post(model);
         }
     }
 }

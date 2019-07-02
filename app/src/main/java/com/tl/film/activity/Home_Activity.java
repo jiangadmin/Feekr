@@ -88,6 +88,8 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
 
         //注册消息接受事件
         registerMessageReceiver();  // used for receive msg
+
+        init();
     }
 
     @Override
@@ -95,7 +97,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         super.onResume();
         MyAPP.activity = this;
 
-        init();
+
     }
 
     public void init() {
@@ -164,7 +166,6 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         } catch (Exception ex) {
             LogUtil.e(TAG, "EventBus 报错：" + ex.getMessage());
         }
-        return;
     }
 
 
