@@ -119,7 +119,7 @@ public class Welcome_Activity extends Base_Activity {
                         tlid_model.getData().setMerchantCode(model.getData().getTerminal().getMerchantCode());
                         SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(tlid_model));
                     } catch (Exception e) {
-                        LogUtil.e(TAG,e.getMessage());
+                        LogUtil.e(TAG, e.getMessage());
                     }
                     //跳转方式
                     if (model.getData().getMerchant().getJumpAction() == 1) {
@@ -128,10 +128,14 @@ public class Welcome_Activity extends Base_Activity {
                         Buy_Vip_Activity.start(this);
                     }
                     finish();
-                }else {
+                } else {
                     Register_Activity.start(this);
                     finish();
                 }
+                break;
+
+            default:
+                ((TextView)findViewById(R.id.error_code)).setText(String.valueOf(model.getCode()));
                 break;
 
         }

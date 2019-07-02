@@ -54,6 +54,8 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     Button play;
     RatingBar score;
 
+    QRCode_Dialog qrCode_dialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,13 +132,22 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
         switch (model.getCode()) {
             case 1000:
                 try {
-                   new QRCode_Dialog(this, URLDecoder.decode(model.getData(), "utf-8")).show();
+                    if (qrCode_dialog == null) {
+                        qrCode_dialog = new QRCode_Dialog(this, URLDecoder.decode(model.getData(), "utf-8"));
+                    }
+                    if (!qrCode_dialog.isShowing()) {
+                        qrCode_dialog.show();
+                    }
+
                 } catch (UnsupportedEncodingException ex) {
                     LogUtil.e(TAG, ex.getMessage());
                 }
 
                 break;
             case 13703:
+                if (qrCode_dialog != null && qrCode_dialog.isShowing()) {
+                    qrCode_dialog.dismiss();
+                }
                 Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
                 break;
 
@@ -149,6 +160,9 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     @Subscribe
     public void onMessage(Push_Model model) {
         if (model.getEventId().equals("OPEN_TX_FILM")) {
+            if (qrCode_dialog != null && qrCode_dialog.isShowing()) {
+                qrCode_dialog.dismiss();
+            }
             Open_Ktcp_Utils.openWithHomePageUri(this, film.getTxJumpPath());
         }
     }

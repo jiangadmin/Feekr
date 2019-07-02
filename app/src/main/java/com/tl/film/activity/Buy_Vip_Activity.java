@@ -76,6 +76,7 @@ public class Buy_Vip_Activity extends Base_Activity {
      *
      * @param model
      */
+    @Subscribe
     private void onMessage(DefTheme_Model model) {
         if (model.getCode() == 1000) {
             if (model.getData().getChargeBg() != null) {
