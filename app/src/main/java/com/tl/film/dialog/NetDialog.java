@@ -11,11 +11,8 @@ import android.widget.Button;
 
 import com.tl.film.MyAPP;
 import com.tl.film.R;
-import com.tl.film.model.EventBus_Model;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Tools;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * @author jiangadmin
@@ -36,21 +33,22 @@ public class NetDialog {
      * 显示警告框
      */
     public static void showW() {
-        if (MyAPP.activity != null){
-            if (netWarningDialog == null){
+
+        if (MyAPP.activity != null) {
+            if (netWarningDialog == null) {
                 try {
                     netWarningDialog = new NetWarningDialog(MyAPP.activity);
                     netWarningDialog.show();
-                    LogUtil.e(TAG,"显示");
+                    LogUtil.e(TAG, "显示");
                 } catch (RuntimeException e) {
-                    LogUtil.e(TAG,e.getMessage());
+                    LogUtil.e(TAG, e.getMessage());
                 }
-            }else {
+            } else {
                 try {
                     netWarningDialog.show();
-                    LogUtil.e(TAG,"显示");
+                    LogUtil.e(TAG, "显示");
                 } catch (RuntimeException e) {
-                    LogUtil.e(TAG,e.getMessage());
+                    LogUtil.e(TAG, e.getMessage());
                 }
             }
         }
@@ -108,7 +106,11 @@ public class NetDialog {
             esc = findViewById(R.id.dialog_esc);
             setting = findViewById(R.id.dialog_setting);
 
-            esc.setOnClickListener(v -> System.exit(0));
+            esc.setOnClickListener(v -> {
+                        dismiss();
+                        MyAPP.AppExit();
+                    }
+            );
             setting.setOnClickListener(v -> getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
         }
     }

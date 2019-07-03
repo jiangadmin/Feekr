@@ -2,27 +2,26 @@ package com.tl.film.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.google.zxing.common.BitmapUtils;
+import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
-import com.tl.film.model.FirstFilms_Model;
 import com.tl.film.model.Perpay_Model;
 import com.tl.film.model.Push_Model;
 import com.tl.film.model.Save_Key;
-import com.tl.film.model.Update_Model;
 import com.tl.film.servlet.DefTheme_Servlet;
 import com.tl.film.servlet.Get_PerPay_Servlet;
-import com.tl.film.utils.ImageUtils;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
 import com.tl.film.utils.Tools;
@@ -31,11 +30,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-
-public class Buy_Vip_Activity extends Base_Activity {
+public class Buy_Vip_Activity extends AppCompatActivity {
     private static final String TAG = "Buy_Vip_Activity";
 
     public static void start(Context context) {
@@ -49,6 +44,7 @@ public class Buy_Vip_Activity extends Base_Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyAPP.AddActivity(this);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -91,6 +87,7 @@ public class Buy_Vip_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
+        MyAPP.finishActivity();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
@@ -121,8 +118,8 @@ public class Buy_Vip_Activity extends Base_Activity {
         switch (model.getCode()) {
             case 1000:
                 try {
-                    qrcode.setImageBitmap(ImageUtils.getQRcode(URLDecoder.decode(model.getData(), "utf-8")));
-                } catch (UnsupportedEncodingException e) {
+                    qrcode.setImageBitmap(BitmapUtils.create2DCode(model.getData()));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;

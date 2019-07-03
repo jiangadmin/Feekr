@@ -9,12 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitmapUtils;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.activity.Moive_Activity;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.servlet.Get_PerPay_Servlet;
-import com.tl.film.utils.ImageUtils;
 import com.tl.film.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,7 +41,12 @@ public class QRCode_Dialog extends Dialog {
     public void setString(String string) {
         this.string = string;
         if (qr != null) {
-            qr.setImageBitmap(ImageUtils.getQRcode(string));
+            qr.setImageBitmap(null);
+            try {
+                qr.setImageBitmap(BitmapUtils.create2DCode(string));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -61,7 +67,11 @@ public class QRCode_Dialog extends Dialog {
         message_0 = findViewById(R.id.message_0);
         message_1 = findViewById(R.id.message_1);
         LogUtil.e(TAG, string);
-        qr.setImageBitmap(ImageUtils.getQRcode(string));
+        try {
+            qr.setImageBitmap(BitmapUtils.create2DCode(string));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     @Subscribe

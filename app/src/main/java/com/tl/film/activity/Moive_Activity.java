@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,7 +37,7 @@ import java.net.URLDecoder;
  * Phone: 186 6120 1018
  * TODO: 电影详细
  */
-public class Moive_Activity extends Base_Activity implements View.OnClickListener {
+public class Moive_Activity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "Moive_Activity";
 
     public static FirstFilms_Model.DataBean film;
@@ -59,6 +60,7 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyAPP.AddActivity(this);
         setContentView(R.layout.activity_moive);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
@@ -102,6 +104,7 @@ public class Moive_Activity extends Base_Activity implements View.OnClickListene
 
     @Override
     protected void onDestroy() {
+        MyAPP.finishActivity();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

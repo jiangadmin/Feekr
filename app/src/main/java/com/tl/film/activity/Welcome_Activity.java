@@ -3,6 +3,7 @@ package com.tl.film.activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ import com.tl.film.utils.Tools;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class Welcome_Activity extends Base_Activity {
+public class Welcome_Activity extends AppCompatActivity {
     private static final String TAG = "Welcome_Activity";
 
     @Override
@@ -35,6 +36,7 @@ public class Welcome_Activity extends Base_Activity {
             EventBus.getDefault().register(this);
         }
         MyAPP.activity = this;
+        MyAPP.AddActivity(this);
         //设置版本号
         ((TextView) findViewById(R.id.appversion)).setText(BuildConfig.VERSION_NAME);
     }
@@ -127,10 +129,10 @@ public class Welcome_Activity extends Base_Activity {
                     } else {
                         Buy_Vip_Activity.start(this);
                     }
-                    finish();
+                    MyAPP.finishActivity(Welcome_Activity.class);
                 } else {
                     Register_Activity.start(this);
-                    finish();
+                    MyAPP.finishActivity(Welcome_Activity.class);
                 }
                 break;
 
@@ -143,6 +145,7 @@ public class Welcome_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
+        MyAPP.finishActivity(Welcome_Activity.class);
         MyAPP.activity = null;
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);

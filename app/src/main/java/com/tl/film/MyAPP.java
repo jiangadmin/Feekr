@@ -22,7 +22,9 @@ import org.json.JSONObject;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.jpush.android.api.JPushInterface;
@@ -45,6 +47,9 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
     public static Context getContext() {
         return context;
     }
+
+    private static List<Activity> activities;
+
 
     @Override
     public void onCreate() {
@@ -264,4 +269,129 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
             LogUtil.e(TAG, e.getMessage());
         }
     }
+
+
+
+    /**
+     * 添加Activity到栈
+     *
+     * @param activity
+     */
+    public static void AddActivity(Activity activity) {
+        if (activities == null) {
+            activities = new ArrayList<>();
+        }
+
+        if (QueryActivity(activity.getClass())) {
+            activities.remove(activity);
+        }
+
+        activities.add(activity);
+    }
+
+    /**
+     * get current Activity 获取当前Activity（栈中最后一个压入的）
+     */
+    public static Activity currentActivity() {
+        if (activities != null && activities.size() > 0) {
+            return activities.get(activities.size() - 1);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 结束当前Activity（栈中最后一个压入的）
+     */
+    public static void finishActivity() {
+        if (activities != null && activities.size() > 0) {
+            finishActivity(activities.get(activities.size() - 1));
+        } else {
+            LogUtil.e(TAG, "无法关闭");
+        }
+    }
+
+    /**
+     * 结束指定的Activity
+     *
+     * @param activity
+     */
+
+    public static void finishActivity(Activity activity) {
+        if (activity != null) {
+            activities.remove(activity);
+            activity.finish();
+        }
+    }
+
+    /**
+     * 结束其他Activity
+     */
+    public static void finishOtherActivity(Class<?> cls) {
+        if (activities != null) {
+            for (Activity activity : activities) {
+                if (!activity.getClass().equals(cls)) {
+                    activities.remove(activity);
+                    finishActivity(activity);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 结束指定类名的Activity
+     */
+    public static void finishActivity(Class<?> cls) {
+        if (activities != null) {
+            for (Activity activity : activities) {
+                if (activity.getClass().equals(cls)) {
+                    activities.remove(activity);
+                    finishActivity(activity);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 查询栈中是否有这个
+     *
+     * @param cls
+     */
+    public static boolean QueryActivity(Class<?> cls) {
+        if (activities != null) {
+            for (Activity activity : activities) {
+                if (activity.getClass().equals(cls)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 结束所有Activity
+     */
+    public static void finishAllActivity() {
+        for (int i = 0, size = activities.size(); i < size; i++) {
+            if (null != activities.get(i)) {
+                activities.get(i).finish();
+            }
+        }
+        activities.clear();
+        System.exit(0);
+    }
+
+    /**
+     * 退出应用程序
+     */
+    public static void AppExit() {
+        try {
+            finishAllActivity();
+        } catch (Exception e) {
+            System.exit(0);
+        }
+    }
+
 }

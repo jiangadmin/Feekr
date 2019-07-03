@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import com.tl.film.utils.SaveUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class Register_Activity extends Base_Activity {
+public class Register_Activity extends AppCompatActivity {
     private static final String TAG = "Register_Activity";
 
     public static void start(Context context) {
@@ -37,6 +38,7 @@ public class Register_Activity extends Base_Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        MyAPP.AddActivity(this);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -61,6 +63,7 @@ public class Register_Activity extends Base_Activity {
 
     @Override
     protected void onDestroy() {
+        MyAPP.finishActivity();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

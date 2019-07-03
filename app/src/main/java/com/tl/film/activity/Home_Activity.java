@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -56,7 +57,7 @@ import java.util.ArrayList;
  * Phone: 186 6120 1018
  * TODO: 主页面
  */
-public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Adapter.ItemClick, View.OnClickListener {
+public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlow_Adapter.ItemClick, View.OnClickListener {
     private static final String TAG = "Home_Activity";
 
     TvRecyclerView recyclerView;
@@ -77,6 +78,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         MyAPP.activity = this;
+        MyAPP.AddActivity(this);
 
         //注册eventbus
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -121,6 +123,7 @@ public class Home_Activity extends Base_Activity implements RecyclerCoverFlow_Ad
             EventBus.getDefault().unregister(this);
         }
         MyAPP.activity = this;
+        MyAPP.finishActivity();
         NetDialog.dismiss();
         super.onDestroy();
     }
