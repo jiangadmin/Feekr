@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.zxing.common.BitmapUtils;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
+import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Perpay_Model;
@@ -30,6 +33,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.net.URLDecoder;
+
 public class Buy_Vip_Activity extends AppCompatActivity {
     private static final String TAG = "Buy_Vip_Activity";
 
@@ -40,6 +45,7 @@ public class Buy_Vip_Activity extends AppCompatActivity {
     }
 
     ImageView bg, qrcode;
+    private long[] mHits = new long[7]; //用于监听连续菜单按键
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,13 +103,9 @@ public class Buy_Vip_Activity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(Push_Model model) {
         if (model.getEventId().equals("OPEN_TX_APP")) {
-
             if (Tools.install(this)) {
-
-                Intent intent = getPackageManager().getLaunchIntentForPackage("com.ktcp.tvvideo");
-                startActivity(intent);
+                startActivity(getPackageManager().getLaunchIntentForPackage("com.ktcp.tvvideo"));
                 finish();
-
             }
         }
     }
@@ -118,7 +120,7 @@ public class Buy_Vip_Activity extends AppCompatActivity {
         switch (model.getCode()) {
             case 1000:
                 try {
-                    qrcode.setImageBitmap(BitmapUtils.create2DCode(model.getData()));
+                    qrcode.setImageBitmap(BitmapUtils.create2DCode(URLDecoder.decode(model.getData(), "UTF-8")));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -136,4 +138,40 @@ public class Buy_Vip_Activity extends AppCompatActivity {
                 break;
         }
     }
+
+
+    /**
+     * 监听遥控按键
+     *
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        //判断网络
+        if (!Tools.isNetworkConnected()) {
+            NetDialog.showW();
+        }
+
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_MENU:
+                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 数组向左移位操作
+                mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+                if (mHits[0] >= (SystemClock.uptimeMillis() - 5000)) {
+                    mHits = new long[7];        //重置数组
+                    TerminalDetail_Activity.start(this);
+                }
+                return true;
+            case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                if (Tools.install(this)) {
+                    startActivity(getPackageManager().getLaunchIntentForPackage("com.ktcp.tvvideo"));
+                    finish();
+                }
+                break;
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
+
 }

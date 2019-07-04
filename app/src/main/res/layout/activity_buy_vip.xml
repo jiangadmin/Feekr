@@ -15,10 +15,12 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="748" />
+            android:layout_weight="748" >
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,6 +71,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="575"
@@ -80,15 +83,15 @@
                         android:layout_marginTop="4dp"
                         android:text="扫码解锁"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="会员版极光TV"
+                        android:text="极光TV影院客房天会员"
                         android:textColor="#FF9800"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
 
             </LinearLayout>
