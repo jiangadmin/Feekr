@@ -3,7 +3,7 @@ package com.tl.film.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;

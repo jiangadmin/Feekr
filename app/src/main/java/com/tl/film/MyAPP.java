@@ -380,7 +380,6 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
             }
         }
         activities.clear();
-        System.exit(0);
     }
 
     /**
@@ -388,8 +387,10 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
      */
     public static void AppExit() {
         try {
+            LogUtil.e(TAG,"走正常关闭流程");
             finishAllActivity();
         } catch (Exception e) {
+            LogUtil.e(TAG,"直接干死");
             System.exit(0);
         }
     }

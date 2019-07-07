@@ -3,8 +3,8 @@ package com.tl.film.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +30,6 @@ import java.util.Map;
  * TODO: 终端设备详情
  */
 public class TerminalDetail_Activity extends AppCompatActivity {
-    private static final String TAG = "TerminalDetail_Activity";
 
     public static void start(Context context) {
         Intent intent = new Intent();
@@ -46,7 +45,7 @@ public class TerminalDetail_Activity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code);
-MyAPP.AddActivity(this);
+        MyAPP.AddActivity(this);
         qr = findViewById(R.id.qr);
 
 
@@ -61,7 +60,7 @@ MyAPP.AddActivity(this);
         info_2.setText(String.format("版本:%s", BuildConfig.VERSION_NAME));
         info_3.setText(String.format("构建版本:%s", BuildConfig.VERSION_CODE));
 
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("VERSION_NAME", BuildConfig.VERSION_NAME);
         map.put("VERSION_CODE", BuildConfig.VERSION_CODE);
 

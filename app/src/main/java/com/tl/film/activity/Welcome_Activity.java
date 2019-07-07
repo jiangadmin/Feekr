@@ -2,8 +2,8 @@ package com.tl.film.activity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +50,7 @@ public class Welcome_Activity extends AppCompatActivity {
 
     public void init() {
         if (!Tools.isNetworkConnected()) {
+//            NetDialog.Net_Error();
             Toast.makeText(this, "没有网络", Toast.LENGTH_SHORT).show();
             NetDialog.showW();
             return;
@@ -105,41 +106,35 @@ public class Welcome_Activity extends AppCompatActivity {
     /**
      * 设备信息
      *
-     * @param model
+     * @param model 数据模型
      */
     @Subscribe
     public void onMessage(Info_Model model) {
-        switch (model.getCode()) {
-            case 1000:
-                //渠道信息
-                if (model.getData().getMerchant() != null) {
-                    //二次存储
-                    try {
-                        Tlid_Model tlid_model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
-                        tlid_model.getData().setMerchantId(model.getData().getTerminal().getMerchantId());
-                        tlid_model.getData().setMerchantName(model.getData().getTerminal().getMerchantName());
-                        tlid_model.getData().setMerchantCode(model.getData().getTerminal().getMerchantCode());
-                        SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(tlid_model));
-                    } catch (Exception e) {
-                        LogUtil.e(TAG, e.getMessage());
-                    }
-                    //跳转方式
-                    if (model.getData().getMerchant().getJumpAction() == 1) {
-                        Home_Activity.start(this);
-                    } else {
-                        Buy_Vip_Activity.start(this);
-                    }
-                    MyAPP.finishActivity(Welcome_Activity.class);
-                } else {
-                    Register_Activity.start(this);
-                    MyAPP.finishActivity(Welcome_Activity.class);
+        if (model.getCode() == 1000) {//渠道信息
+            if (model.getData().getMerchant() != null) {
+                //二次存储
+                try {
+                    Tlid_Model tlid_model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_Tlid_Model), Tlid_Model.class);
+                    tlid_model.getData().setMerchantId(model.getData().getTerminal().getMerchantId());
+                    tlid_model.getData().setMerchantName(model.getData().getTerminal().getMerchantName());
+                    tlid_model.getData().setMerchantCode(model.getData().getTerminal().getMerchantCode());
+                    SaveUtils.setString(Save_Key.S_Tlid_Model, new Gson().toJson(tlid_model));
+                } catch (Exception e) {
+                    LogUtil.e(TAG, e.getMessage());
                 }
-                break;
-
-            default:
-                ((TextView)findViewById(R.id.error_code)).setText(String.valueOf(model.getCode()));
-                break;
-
+                //跳转方式
+                if (model.getData().getMerchant().getJumpAction() == 1) {
+                    Home_Activity.start(this);
+                } else {
+                    Buy_Vip_Activity.start(this);
+                }
+                MyAPP.finishActivity(Welcome_Activity.class);
+            } else {
+                Register_Activity.start(this);
+                MyAPP.finishActivity(Welcome_Activity.class);
+            }
+        } else {
+            ((TextView) findViewById(R.id.error_code)).setText(String.valueOf(model.getCode()));
         }
     }
 

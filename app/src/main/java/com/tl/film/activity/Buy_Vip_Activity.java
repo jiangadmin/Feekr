@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -70,11 +70,11 @@ public class Buy_Vip_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 LogUtil.e(TAG, e.getMessage());
             }
-        } else {
-            //请求主题接口
-            new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         }
+        //请求主题接口
+        new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

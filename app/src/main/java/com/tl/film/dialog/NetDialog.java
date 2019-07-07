@@ -6,13 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
+import android.view.WindowManager;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
 
 import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.Tools;
+
+import per.goweii.anylayer.AnyLayer;
 
 /**
  * @author jiangadmin
@@ -29,10 +33,13 @@ public class NetDialog {
 
     static TimeCount timeCount;
 
+    static AnyLayer layer;
+
     /**
      * 显示警告框
      */
     public static void showW() {
+//        Net_Error();
 
         if (MyAPP.activity != null) {
             if (netWarningDialog == null) {
@@ -52,6 +59,21 @@ public class NetDialog {
                 }
             }
         }
+    }
+
+    public static void Net_Error() {
+        AnyLayer.with()
+                .outsideInterceptTouchEvent(true)
+                .contentView(R.layout.dialog_netwarning)
+                .backgroundBlurPercent(0.05f)
+                .backgroundColorInt(0x33000000)
+                .onClick(R.id.dialog_esc, (anyLayer, v) -> {
+                    layer.dismiss();
+                    layer = null;
+                    MyAPP.AppExit();
+                })
+                .onClick(R.id.dialog_setting, (anyLayer, v) -> MyAPP.getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)))
+                .show();
     }
 
     /**
@@ -83,6 +105,10 @@ public class NetDialog {
                 netWarningDialog = null;
             }
 
+            if (layer != null) {
+                layer.dismiss();
+                layer = null;
+            }
         } catch (Exception e) {
         }
     }
@@ -100,6 +126,7 @@ public class NetDialog {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
             setContentView(R.layout.dialog_netwarning);
             setCancelable(false);
 
