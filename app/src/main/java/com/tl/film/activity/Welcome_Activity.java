@@ -35,7 +35,6 @@ public class Welcome_Activity extends AppCompatActivity {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        MyAPP.activity = this;
         MyAPP.AddActivity(this);
         //设置版本号
         ((TextView) findViewById(R.id.appversion)).setText(BuildConfig.VERSION_NAME);
@@ -44,15 +43,14 @@ public class Welcome_Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MyAPP.activity = this;
         init();
     }
 
     public void init() {
         if (!Tools.isNetworkConnected()) {
 //            NetDialog.Net_Error();
+            NetDialog.showW(this);
             Toast.makeText(this, "没有网络", Toast.LENGTH_SHORT).show();
-            NetDialog.showW();
             return;
         }
 
@@ -140,8 +138,7 @@ public class Welcome_Activity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        MyAPP.finishActivity(Welcome_Activity.class);
-        MyAPP.activity = null;
+
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

@@ -51,7 +51,7 @@ public class DownUtil {
         });
 
         if (showpd)
-            if (MyAPP.activity == null || MyAPP.activity.isDestroyed() || MyAPP.activity.isFinishing()) {
+            if (MyAPP.currentActivity() == null) {
                 LogUtil.e(TAG, "当前活动已经被销毁");
             } else {
                 try {

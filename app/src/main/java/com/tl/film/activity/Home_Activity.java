@@ -77,7 +77,7 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        MyAPP.activity = this;
+
         MyAPP.AddActivity(this);
 
         //注册eventbus
@@ -94,17 +94,9 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
         init();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        MyAPP.activity = this;
-
-
-    }
-
     public void init() {
         if (!Tools.isNetworkConnected()) {
-            NetDialog.showW();
+            NetDialog.showW(this);
         } else {
             Loading.show(this, "努力加载中请稍后...");
         }
@@ -237,7 +229,7 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
     public void clickItem(FirstFilms_Model.DataBean bean) {
         //判断网络
         if (!Tools.isNetworkConnected()) {
-            NetDialog.showW();
+            NetDialog.showW(this);
             return;
         }
 
@@ -277,7 +269,7 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
     public boolean dispatchKeyEvent(KeyEvent event) {
         //判断网络
         if (!Tools.isNetworkConnected()) {
-            NetDialog.showW();
+            NetDialog.showW(this);
         }
 
         //连续按菜单键跳转到设备详情页面

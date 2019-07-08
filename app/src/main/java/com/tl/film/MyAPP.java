@@ -3,13 +3,13 @@ package com.tl.film;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.ktcp.video.thirdagent.JsonUtils;
 import com.ktcp.video.thirdagent.KtcpContants;
 import com.ktcp.video.thirdagent.KtcpPaySDKCallback;
 import com.ktcp.video.thirdagent.KtcpPaySdkProxy;
-import com.tl.film.activity.Register_Activity;
 import com.tl.film.model.Save_Key;
 import com.tl.film.servlet.Get_MyIP_Servlet;
 import com.tl.film.servlet.Get_Vuid_Servlet;
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -38,7 +39,6 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class MyAPP extends Application implements KtcpPaySDKCallback {
     private static final String TAG = "MyAPP";
-    public static Activity activity;
 
     private static Context context;
 
@@ -50,11 +50,22 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
     private static List<Activity> activities;
 
+    //记录Activity的总个数
+    public int count = 0;
+
+    public static Stack<Activity> store;
+
+    public static boolean isShow = true;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
+        store = new Stack<>();
+
+        registerActivityLifecycleCallbacks(new SwitchBackgroundCallbacks());
+
 
         new Get_MyIP_Servlet().execute();
 
@@ -271,7 +282,6 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
     }
 
 
-
     /**
      * 添加Activity到栈
      *
@@ -380,6 +390,8 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
             }
         }
         activities.clear();
+
+        System.exit(0);
     }
 
     /**
@@ -387,12 +399,74 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
      */
     public static void AppExit() {
         try {
-            LogUtil.e(TAG,"走正常关闭流程");
+            LogUtil.e(TAG, "走正常关闭流程");
             finishAllActivity();
         } catch (Exception e) {
-            LogUtil.e(TAG,"直接干死");
+            LogUtil.e(TAG, "直接干死");
             System.exit(0);
         }
     }
+
+
+    private class SwitchBackgroundCallbacks implements ActivityLifecycleCallbacks {
+
+        @Override
+        public void onActivityCreated(Activity activity, Bundle bundle) {
+//            if(activity instanceof ActivityDetail) {
+//                if(store.size() >= MAX_ACTIVITY_DETAIL_NUM){
+//                    store.peek().finish(); //移除栈底的详情页并finish,保证商品详情页个数最大为10
+//                }
+            store.add(activity);
+//            }
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+            if (count == 0) { //后台切换到前台
+                isShow = true;
+                LogUtil.v(TAG, ">>>>>>>>>>>>>>>>>>>App切到前台");
+            }
+            count++;
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+            count--;
+            if (count == 0) { //前台切换到后台
+                isShow = false;
+                LogUtil.v(TAG, ">>>>>>>>>>>>>>>>>>>App切到后台");
+            }
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+            store.remove(activity);
+        }
+    }
+
+    /**
+     * 获取当前的Activity
+     *
+     * @return
+     */
+    public static Activity getCurActivity() {
+        return store.lastElement();
+    }
+
 
 }

@@ -150,7 +150,7 @@ public class Buy_Vip_Activity extends AppCompatActivity {
     public boolean dispatchKeyEvent(KeyEvent event) {
         //判断网络
         if (!Tools.isNetworkConnected()) {
-            NetDialog.showW();
+            NetDialog.showW(this);
         }
 
         switch (event.getKeyCode()) {

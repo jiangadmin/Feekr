@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.tl.film.MyAPP;
 import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.EventBus_Model;
 import com.tl.film.utils.LogUtil;
@@ -55,7 +56,9 @@ public class NetReceiver extends BroadcastReceiver {
                 }
             } else {
                 LogUtil.e(TAG, "网络断开");
-                NetDialog.showW();
+                if (MyAPP.isShow) {
+                    NetDialog.showW(null);
+                }
             }
         }
     }

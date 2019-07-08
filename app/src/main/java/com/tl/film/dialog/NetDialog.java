@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.utils.LogUtil;
-import com.tl.film.utils.Tools;
 
 import per.goweii.anylayer.AnyLayer;
 
@@ -38,26 +36,22 @@ public class NetDialog {
     /**
      * 显示警告框
      */
-    public static void showW() {
+    public static void showW(Context context) {
 //        Net_Error();
-
-        if (MyAPP.activity != null) {
+        try {
             if (netWarningDialog == null) {
-                try {
-                    netWarningDialog = new NetWarningDialog(MyAPP.activity);
-                    netWarningDialog.show();
-                    LogUtil.e(TAG, "显示");
-                } catch (RuntimeException e) {
-                    LogUtil.e(TAG, e.getMessage());
-                }
-            } else {
-                try {
-                    netWarningDialog.show();
-                    LogUtil.e(TAG, "显示");
-                } catch (RuntimeException e) {
-                    LogUtil.e(TAG, e.getMessage());
+                if (context != null) {
+                    LogUtil.e(TAG, "当前活动");
+                    netWarningDialog = new NetWarningDialog(context);
+                } else if (MyAPP.currentActivity() != null) {
+                    LogUtil.e(TAG, "记录的活动");
+                    netWarningDialog = new NetWarningDialog(MyAPP.getCurActivity());
                 }
             }
+            LogUtil.e(TAG, "显示");
+            netWarningDialog.show();
+        } catch (Exception e) {
+            LogUtil.e(TAG, e.getMessage());
         }
     }
 
@@ -80,8 +74,8 @@ public class NetDialog {
      * 显示等待框
      */
     public static void showL() {
-        if (MyAPP.activity != null && netLoadingDialog == null) {
-            netLoadingDialog = new NetLoadingDialog(MyAPP.activity);
+        if (MyAPP.currentActivity() != null && netLoadingDialog == null) {
+            netLoadingDialog = new NetLoadingDialog(MyAPP.getCurActivity());
             netLoadingDialog.show();
 
             timeCount = new TimeCount(30000, 1000);
@@ -174,9 +168,6 @@ public class NetDialog {
             if (netLoadingDialog != null) {
                 //关闭等待框
                 dismiss();
-                //判断网络
-                if (!Tools.isNetworkConnected())
-                    showW();
             }
 
         }

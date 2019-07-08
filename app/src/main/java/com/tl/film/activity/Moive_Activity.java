@@ -65,7 +65,6 @@ public class Moive_Activity extends AppCompatActivity implements View.OnClickLis
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        MyAPP.activity = this;
         initview();
 
     }
@@ -104,7 +103,6 @@ public class Moive_Activity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     protected void onDestroy() {
-        MyAPP.finishActivity();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
