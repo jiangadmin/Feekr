@@ -37,7 +37,7 @@ public class File_Utils {
             if (!file.exists()) {
                 file.mkdir();
             }
-            File mFile = new File(path + File.separator + "tv_video_16188.apk");
+            File mFile = new File(path + File.separator + "tv_video_3.9.0.2054_android_16188.apk");
             if (!mFile.exists()) mFile.createNewFile();
             LogUtil.e(TAG, "开始拷贝");
             FileOutputStream mFileOutputStream = new FileOutputStream(mFile);

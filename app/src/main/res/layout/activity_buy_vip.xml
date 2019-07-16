@@ -18,7 +18,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="748" >
+            android:layout_weight="748">
 
         </RelativeLayout>
 
@@ -57,13 +57,13 @@
                         android:layout_weight="526" />
 
                     <ImageView
-                        android:scaleX="1.1"
-                        android:scaleY="1.1"
                         android:id="@+id/qrcode"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="90"
-                        android:scaleType="centerInside" />
+                        android:scaleType="centerInside"
+                        android:scaleX="1.1"
+                        android:scaleY="1.1" />
 
                     <View
                         android:layout_width="match_parent"
@@ -73,35 +73,44 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="575"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="扫码解锁"
+                        android:textSize="18sp"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <TextView
+                        android:id="@+id/text1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="极光TV影院客房天会员"
-                        android:textColor="#FF9800"
-                        android:textSize="18sp" />
+                        android:layout_height="wrap_content">
+
+                    </TextView>
+
                 </LinearLayout>
 
             </LinearLayout>
 
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="919" />
+                android:layout_weight="919"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:id="@+id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:drawableLeft="@drawable/ic_xia"
+                    android:drawablePadding="3dp"
+                    android:gravity="center"
+                    android:textSize="14sp">
+
+                </TextView>
+            </LinearLayout>
 
         </LinearLayout>
 

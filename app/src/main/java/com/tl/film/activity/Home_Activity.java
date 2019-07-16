@@ -289,9 +289,9 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.home_quanwan:
-                if (Tools.install(this)) {
-                    Buy_Vip_Activity.start(this);
-                }
+                Buy_Vip_Activity.start(this);
+//                if (Tools.install(this)) {
+//                }
                 break;
             case R.id.home_lunbo:
                 if (Tools.install(this)) {

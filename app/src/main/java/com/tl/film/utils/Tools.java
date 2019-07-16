@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.Settings;
-import androidx.annotation.RequiresApi;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.tl.film.MyAPP;
 import com.tl.film.model.Const;
@@ -619,12 +620,14 @@ public final class Tools {
             builder.setTitle("未检测到云视听应用");
             builder.setMessage("为了更好的观影体验，本应用需要安装 云视听 应用");
             builder.setNegativeButton("安装", (dialog, which) -> {
-                File_Utils.openApk(File_Utils.copyAssetsFile(context, "tv_video_16188.apk", Const.FilePath), context);
                 dialog.dismiss();
+                Toast.makeText(context, "正在准备资源，请稍后...", Toast.LENGTH_SHORT).show();
+                File_Utils.openApk(File_Utils.copyAssetsFile(context, "tv_video_3.9.0.2054_android_16188.apk", Const.FilePath), context);
             });
             builder.setCancelable(false);
             builder.show();
             return false;
+
         } else {
             return true;
         }

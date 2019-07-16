@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import android.text.Html;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -45,6 +50,8 @@ public class Buy_Vip_Activity extends AppCompatActivity {
     }
 
     ImageView bg, qrcode;
+
+    TextView view1,view2;
     private long[] mHits = new long[7]; //用于监听连续菜单按键
 
     @Override
@@ -58,6 +65,8 @@ public class Buy_Vip_Activity extends AppCompatActivity {
 
         bg = findViewById(R.id.bg);
         qrcode = findViewById(R.id.qrcode);
+        view1 = findViewById(R.id.text1);
+        view2 = findViewById(R.id.text2);
 
         new Get_PerPay_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -74,6 +83,9 @@ public class Buy_Vip_Activity extends AppCompatActivity {
         //请求主题接口
         new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+
+        view1.setText(Html.fromHtml("扫码解锁<font color='#FF9800'>极光TV影院客房天会员</font>"));
+        view2.setText(Html.fromHtml("按方向键<font color='#FF9800'>【下键】</font>刷新二维码"));
 
     }
 
