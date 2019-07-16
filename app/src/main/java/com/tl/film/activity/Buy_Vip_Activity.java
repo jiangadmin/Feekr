@@ -39,6 +39,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URLDecoder;
+import java.util.Calendar;
 
 public class Buy_Vip_Activity extends AppCompatActivity {
     private static final String TAG = "Buy_Vip_Activity";
@@ -84,7 +85,7 @@ public class Buy_Vip_Activity extends AppCompatActivity {
         new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
-        view1.setText(Html.fromHtml("扫码解锁<font color='#FF9800'>极光TV影院客房天会员</font>"));
+        view1.setText(Html.fromHtml("扫码解锁<font color='#FF9800'>会员版极光TV</font>"));
         view2.setText(Html.fromHtml("按方向键<font color='#FF9800'>【下键】</font>刷新二维码"));
 
     }
@@ -152,6 +153,9 @@ public class Buy_Vip_Activity extends AppCompatActivity {
     }
 
 
+    private long lastClickTime = 0;
+
+    public static final int MIN_CLICK_DELAY_TIME = 10 * 1000;
     /**
      * 监听遥控按键
      *
@@ -181,6 +185,17 @@ public class Buy_Vip_Activity extends AppCompatActivity {
                     finish();
                 }
                 break;
+
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+                    lastClickTime = currentTime;
+                    new Get_PerPay_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    return false;
+                } else {
+                    Toast.makeText(MyAPP.getContext(), "稍安勿躁", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
         }
 
         return super.dispatchKeyEvent(event);

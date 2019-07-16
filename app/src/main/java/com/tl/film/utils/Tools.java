@@ -612,22 +612,25 @@ public final class Tools {
         return fileData.toString();
     }
 
+    static AlertDialog.Builder builder;
 
     public static boolean install(Context context) {
         //检测有没有云视听
         if (!isAvilible(context, "com.ktcp.tvvideo")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("未检测到云视听应用");
-            builder.setMessage("为了更好的观影体验，本应用需要安装 云视听 应用");
-            builder.setNegativeButton("安装", (dialog, which) -> {
-                dialog.dismiss();
-                Toast.makeText(context, "正在准备资源，请稍后...", Toast.LENGTH_SHORT).show();
-                File_Utils.openApk(File_Utils.copyAssetsFile(context, "tv_video_3.9.0.2054_android_16188.apk", Const.FilePath), context);
-            });
-            builder.setCancelable(false);
-            builder.show();
+            if (builder == null) {
+                builder = new AlertDialog.Builder(context);
+                builder.setTitle("未检测到云视听应用");
+                builder.setMessage("为了更好的观影体验，本应用需要安装 云视听 应用");
+                builder.setNegativeButton("安装", (dialog, which) -> {
+                    dialog.dismiss();
+                    builder = null;
+                    Toast.makeText(context, "正在准备资源，请稍后...", Toast.LENGTH_SHORT).show();
+                    File_Utils.openApk(File_Utils.copyAssetsFile(context, "tv_video_3.9.0.2054_android_16188.apk", Const.FilePath), context);
+                });
+                builder.setCancelable(false);
+                builder.show();
+            }
             return false;
-
         } else {
             return true;
         }
