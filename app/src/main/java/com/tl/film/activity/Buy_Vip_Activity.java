@@ -7,12 +7,10 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +22,6 @@ import com.tl.film.MyAPP;
 import com.tl.film.R;
 import com.tl.film.dialog.NetDialog;
 import com.tl.film.model.DefTheme_Model;
-import com.tl.film.model.EventBus_Model;
 import com.tl.film.model.Perpay_Model;
 import com.tl.film.model.Push_Model;
 import com.tl.film.model.Save_Key;
@@ -52,7 +49,7 @@ public class Buy_Vip_Activity extends AppCompatActivity {
 
     ImageView bg, qrcode;
 
-    TextView view1,view2;
+    TextView view1, view2;
     private long[] mHits = new long[7]; //用于监听连续菜单按键
 
     @Override
@@ -73,16 +70,17 @@ public class Buy_Vip_Activity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(SaveUtils.getString(Save_Key.S_DefTheme_Model))) {
             try {
+
                 DefTheme_Model model = new Gson().fromJson(SaveUtils.getString(Save_Key.S_DefTheme_Model), DefTheme_Model.class);
                 if (model.getData().getChargeBg() != null) {
-                    Glide.with(this).load(model.getData().getChargeBg()).into(bg);
+                    CallBack_Theme(model.getData());
                 }
             } catch (Exception e) {
                 LogUtil.e(TAG, e.getMessage());
             }
         }
         //请求主题接口
-        new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
         view1.setText(Html.fromHtml("扫码解锁<font color='#FF9800'>会员版极光TV</font>"));
@@ -90,17 +88,16 @@ public class Buy_Vip_Activity extends AppCompatActivity {
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessage(EventBus_Model model) {
-        Object data = model.getData();
-        try {
-            if (EventBus_Model.CMD_FILL_DATA_THEME.equals(model.getCommand_1())) {
-                if (data != null) {
-                    Glide.with(this).load(((DefTheme_Model.DataBean) data).getChargeBg()).into(bg);
-                }
-            }
-        } catch (Exception ex) {
-            LogUtil.e(TAG, "EventBus 报错：" + ex.getMessage());
+    /**
+     * 主题返回
+     *
+     * @param dataBean 数据
+     */
+    public void CallBack_Theme(DefTheme_Model.DataBean dataBean) {
+        if (dataBean != null && dataBean.getChargeBg() != null) {
+            Glide.with(this).load(dataBean.getChargeBg()).into(bg);
+        } else {
+            Glide.with(this).load(R.mipmap.bg).into(bg);
         }
     }
 
@@ -156,6 +153,7 @@ public class Buy_Vip_Activity extends AppCompatActivity {
     private long lastClickTime = 0;
 
     public static final int MIN_CLICK_DELAY_TIME = 10 * 1000;
+
     /**
      * 监听遥控按键
      *

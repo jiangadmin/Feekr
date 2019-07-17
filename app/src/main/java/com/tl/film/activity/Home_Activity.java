@@ -104,7 +104,7 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
         //列表
         new FirstFilms_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         //主题
-        new DefTheme_Servlet().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new DefTheme_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         //检查更新
         new Update_Servlet(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -166,7 +166,7 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
      *
      * @param theme
      */
-    private void doFillTheme(DefTheme_Model.DataBean theme) {
+    public void doFillTheme(DefTheme_Model.DataBean theme) {
         if (theme != null) {
             //背景图
             if (!TextUtils.isEmpty(theme.getBgUrl())) {
@@ -181,7 +181,6 @@ public class Home_Activity extends AppCompatActivity implements RecyclerCoverFlo
                 Picasso.with(this).load(theme.getCpScan()).into(qrcode);
             }
         }
-        return;
     }
 
     /**

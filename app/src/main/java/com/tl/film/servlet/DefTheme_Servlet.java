@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tl.film.activity.Buy_Vip_Activity;
 import com.tl.film.activity.Home_Activity;
 import com.tl.film.model.DefTheme_Model;
 import com.tl.film.model.EventBus_Model;
@@ -28,6 +29,12 @@ import java.util.Map;
  */
 public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model> {
     private static final String TAG = "DefTheme_Servlet";
+
+    Activity activity;
+
+    public DefTheme_Servlet(Activity activity) {
+        this.activity = activity;
+    }
 
     @Override
     protected DefTheme_Model doInBackground(String... strings) {
@@ -63,10 +70,13 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
         if (model != null && model.getCode() == 1000) {
             SaveUtils.setString(Save_Key.S_DefTheme_Model, new Gson().toJson(model));
 
-            EventBus_Model eb = new EventBus_Model();
-            eb.setCommand_1(EventBus_Model.CMD_FILL_DATA_THEME);
-            eb.setData(model.getData());
-            EventBus.getDefault().post(eb);
+            if (activity instanceof Buy_Vip_Activity){
+                ((Buy_Vip_Activity)activity).CallBack_Theme(model.getData());
+            }
+
+            if (activity instanceof Home_Activity){
+                ((Home_Activity)activity).doFillTheme(model.getData());
+            }
         }
     }
 }

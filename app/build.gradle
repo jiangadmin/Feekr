@@ -1,14 +1,30 @@
 apply plugin: 'com.android.application'
 
+
+def ver(){
+    return 106
+}
+
+def vername() {
+    def name = ver().toString().replaceAll("", ".")
+    return name.substring(1, name.length() - 1)
+}
+
+def releaseTime() {
+    return new Date().format("yyMMddHHmmss", TimeZone.getTimeZone("UTC+8"))
+}
+
+
 android {
+
 
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.tl.film"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 104
-        versionName "1.0.4"
+        versionCode ver()
+        versionName vername()
 
         ndk {
             //选择要添加的对应 cpu 类型的 .so 库。
@@ -16,9 +32,9 @@ android {
         }
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME : applicationId,
+                JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "9a31dde7bacec4872009d698", //JPush 上注册的包名对应的 Appkey.
-                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
     buildTypes {
@@ -27,7 +43,25 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                def outputFile = output.outputFile
+                if (outputFile != null && outputFile.name.endsWith('.apk')
+                        && 'release'.equals(variant.buildType.name)) {
+                    // 输出apk名称为OPDecoy_v1.0_2015-01-15_wandoujia.apk
+                    def fileName = "Film_v${vername()}_${releaseTime()}.apk"
+                    // output.outputFileName = new File(outputFile.parent, fileName)
+                    output.outputFileName = fileName
+                }
+            }
+        }
+
     }
+
+    productFlavors {
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
