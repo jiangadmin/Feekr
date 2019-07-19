@@ -180,7 +180,6 @@ public class Buy_Vip_Activity extends AppCompatActivity {
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (Tools.install(this)) {
                     startActivity(getPackageManager().getLaunchIntentForPackage("com.ktcp.tvvideo"));
-                    finish();
                 }
                 break;
 
