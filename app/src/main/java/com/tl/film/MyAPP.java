@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.ktcp.video.thirdagent.JsonUtils;
 import com.ktcp.video.thirdagent.KtcpContants;
 import com.ktcp.video.thirdagent.KtcpPaySDKCallback;
 import com.ktcp.video.thirdagent.KtcpPaySdkProxy;
-import com.tencent.bugly.Bugly;
-import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tl.film.model.Save_Key;
 import com.tl.film.servlet.Get_MyIP_Servlet;
@@ -81,12 +78,7 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
         CrashReport.initCrashReport(getApplicationContext(), "7d4e7db30b", false);
 
-        LogUtil.e(TAG,"MyId:"+ Tools.MyID());
-//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("wlan1"));
-//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("eth0"));
-//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("eth1"));
-//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("lo"));
-
+        LogUtil.e(TAG, "MyId:" + Tools.MyID());
 
     }
 
@@ -101,9 +93,18 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
         StringBuffer buf = new StringBuffer();
         NetworkInterface networkInterface;
         try {
-            networkInterface = NetworkInterface.getByName("eth1");
+            networkInterface = NetworkInterface.getByName("eth0");
+            if (networkInterface == null) {
+                networkInterface = NetworkInterface.getByName("eth1");
+            }
             if (networkInterface == null) {
                 networkInterface = NetworkInterface.getByName("wlan0");
+            }
+            if (networkInterface == null) {
+                networkInterface = NetworkInterface.getByName("wlan1");
+            }
+            if (networkInterface == null) {
+                networkInterface = NetworkInterface.getByName("dummy0");
             }
             if (networkInterface == null) {
                 return "02:00:00:00:00:02";
