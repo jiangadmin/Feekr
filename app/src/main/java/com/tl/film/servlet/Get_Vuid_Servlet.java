@@ -16,6 +16,7 @@ import com.tl.film.utils.HttpParamUtils;
 import com.tl.film.utils.HttpUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
+import com.tl.film.utils.Tools;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class Get_Vuid_Servlet extends AsyncTask<String, Integer, Vuid_Model> {
         Map<String, String> map = new HashMap<>();
         map.put("tlid", SaveUtils.getString(Save_Key.S_TLID));
         map.put("mac", MyAPP.getMacAddress());
+        map.put("terminal", Tools.MyID());
         map.put("guid", strings[0]);
         map = HttpParamUtils.getRequestParams(map);
 

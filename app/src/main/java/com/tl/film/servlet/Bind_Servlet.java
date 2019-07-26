@@ -15,6 +15,7 @@ import com.tl.film.utils.HttpParamUtils;
 import com.tl.film.utils.HttpUtil;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
+import com.tl.film.utils.Tools;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,6 +38,7 @@ public class Bind_Servlet extends AsyncTask<String, Integer, Tlid_Model> {
         map.put("mde", Build.MODEL);
         map.put("ip", MyAPP.getIp());
         map.put("mac", MyAPP.getMacAddress());
+        map.put("terminal", Tools.MyID());
         map.put("mainBoard", Build.BOARD);
         map.put("ver", BuildConfig.VERSION_NAME);
         map.put("build", String.valueOf(BuildConfig.VERSION_CODE));

@@ -182,7 +182,6 @@ public class Buy_Vip_Activity extends AppCompatActivity {
                     startActivity(getPackageManager().getLaunchIntentForPackage("com.ktcp.tvvideo"));
                 }
                 break;
-
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {

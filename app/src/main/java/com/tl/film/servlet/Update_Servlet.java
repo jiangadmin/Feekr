@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tl.film.BuildConfig;
+import com.tl.film.MyAPP;
 import com.tl.film.activity.Home_Activity;
 import com.tl.film.model.Save_Key;
 import com.tl.film.model.Update_Model;
@@ -41,6 +42,7 @@ public class Update_Servlet extends AsyncTask<String, Integer, Update_Model> {
         map.put("tlid", SaveUtils.getString(Save_Key.S_TLID));
         map.put("build", String.valueOf(BuildConfig.VERSION_CODE));
         map.put("ver", BuildConfig.VERSION_NAME);
+        map.put("ip", MyAPP.getIp());
         map = HttpParamUtils.getRequestParams(map);
 
         String res = HttpUtil.doPost("fapp/upgradeController/upgrade.do", map);

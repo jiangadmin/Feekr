@@ -4,18 +4,23 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.ktcp.video.thirdagent.JsonUtils;
 import com.ktcp.video.thirdagent.KtcpContants;
 import com.ktcp.video.thirdagent.KtcpPaySDKCallback;
 import com.ktcp.video.thirdagent.KtcpPaySdkProxy;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.BuglyStrategy;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tl.film.model.Save_Key;
 import com.tl.film.servlet.Get_MyIP_Servlet;
 import com.tl.film.servlet.Get_Vuid_Servlet;
 import com.tl.film.servlet.VIPCallBack_Servlet;
 import com.tl.film.utils.LogUtil;
 import com.tl.film.utils.SaveUtils;
+import com.tl.film.utils.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,14 +71,22 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
 
         registerActivityLifecycleCallbacks(new SwitchBackgroundCallbacks());
 
-
         new Get_MyIP_Servlet().execute();
 
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
-        JPushInterface.init(this);            // 初始化 JPush
+        JPushInterface.init(this);    // 初始化 JPush
 
         //添加监听
         KtcpPaySdkProxy.getInstance().setPaySDKCallback(this);
+
+        CrashReport.initCrashReport(getApplicationContext(), "7d4e7db30b", false);
+
+        LogUtil.e(TAG,"MyId:"+ Tools.MyID());
+//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("wlan1"));
+//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("eth0"));
+//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("eth1"));
+//        LogUtil.e(TAG,"MyId:"+ Tools.getMac("lo"));
+
 
     }
 
@@ -209,7 +222,6 @@ public class MyAPP extends Application implements KtcpPaySDKCallback {
             default:
                 break;
         }
-        return;
     }
 
 

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tl.film.MyAPP;
 import com.tl.film.activity.Buy_Vip_Activity;
 import com.tl.film.activity.Home_Activity;
 import com.tl.film.model.DefTheme_Model;
@@ -40,6 +41,7 @@ public class DefTheme_Servlet extends AsyncTask<String, Integer, DefTheme_Model>
     protected DefTheme_Model doInBackground(String... strings) {
         Map<String, String> map = new HashMap<>();
         map.put("tlid", SaveUtils.getString(Save_Key.S_TLID));
+        map.put("ip", MyAPP.getIp());
         map = HttpParamUtils.getRequestParams(map);
 
         String res = HttpUtil.doPost("fapp/themeController/findDefTheme.do", map);

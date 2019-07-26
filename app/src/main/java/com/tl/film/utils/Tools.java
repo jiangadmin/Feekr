@@ -42,6 +42,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.ParseException;
@@ -49,7 +51,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -587,16 +588,93 @@ public final class Tools {
 
 
     /**
-     * 获取Ethernet的MAC地址
+     * 我的唯一身份
+     * 依次获取
      *
      * @return
      */
-    public static String getMacAddress() {
+    public static String MyID() {
+        //有线网卡一
+        if (getMac("eth0") != null) {
+            return getMac("eth0");
+        }
+        //有线网卡二
+        if (getMac("eth1") != null) {
+            return getMac("eth1");
+        }
+        //无线网卡一
+        if (getMac("wlan0") != null) {
+            return getMac("wlan0");
+        }
+        //无线网卡二
+        if (getMac("wlan1") != null) {
+            return getMac("wlan1");
+        }
+        //虚拟网卡
+        if (getMac("dummy0") != null) {
+            return getMac("dummy0");
+        }
+        //AndroidID
+        if (AndroidID() != null) {
+            return AndroidID();
+        }
+        return "NULLFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+    }
+
+    public static String AndroidID() {
+        String androidid;
+        androidid = Settings.System.getString(MyAPP.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        androidid = androidid + "AndroidIDFFFFFFFFFFFFFFFFFFFFFFF";
+        androidid = androidid.substring(0, 32);
+        return androidid;
+    }
+
+
+    /**
+     * 根据名称获取MAC地址【补位32】
+     *
+     * @param name
+     * @return
+     */
+    public static String getMac(String name) {
+
+        String macAddress;
+        StringBuffer buf = new StringBuffer();
+        NetworkInterface anInterface;
         try {
-            return loadFileAsString("/sys/class/net/eth0/address").toUpperCase(Locale.ENGLISH).substring(0, 17);
-        } catch (IOException e) {
+            anInterface = NetworkInterface.getByName(name);
+
+            //都获取不到
+            if (anInterface == null) {
+                return null;
+            }
+
+            byte[] addr = anInterface.getHardwareAddress();
+
+            if (addr != null) {
+                for (byte b : addr) {
+                    buf.append(String.format("%02X:", b));
+                }
+                if (buf.length() > 0) {
+                    buf.deleteCharAt(buf.length() - 1);
+                }
+                macAddress = buf.toString();
+            } else {
+                return null;
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
             return null;
         }
+
+        String mac = macAddress.replaceAll(":", "");
+
+        mac = mac + name + "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+        mac = mac.substring(0, 32);
+
+        return mac;
     }
 
     private static String loadFileAsString(String filePath) throws IOException {
